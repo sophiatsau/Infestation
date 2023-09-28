@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     scopes: {
-      all: {},
+      // all: {},
     }
   });
   return User;
