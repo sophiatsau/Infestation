@@ -52,6 +52,20 @@ router.delete('/', async(req,res,next) => {
 
 
 //Get session user: GET /api/session
-
+router.get('/', (req, res) => {
+    //req.user is assigned when restoreUser middleware is called
+    const { user } = req;
+    if (user) {
+      const safeUser = {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+      };
+      return res.json({
+        user: safeUser
+      });
+    } else return res.json({ user: null });
+}
+);
 
 module.exports = router;
