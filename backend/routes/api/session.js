@@ -45,6 +45,12 @@ router.post('/', async(req,res,next) => {
 
 
 //Logout: DELETE /api/session
+router.delete('/', async(req,res,next) => {
+    res.clearCookie('token');
+    res.json({message: "Successfully logged out"});
+})
+
+
 //Get session user: GET /api/session
 
 
