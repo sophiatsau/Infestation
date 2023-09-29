@@ -37,13 +37,13 @@ const router = express.Router();
 
 // Signup: POST /api/users
 router.post('/', validateSignup, async(req,res,next) => {
-    const {username, email, password} = req.body;
+    const {username, email, password, firstName, lastName} = req.body;
     const hashedPassword = bcrypt.hashSync(password);
 
-    const user = await User.create({username, email, hashedPassword});
+    const user = await User.create({username, email, hashedPassword, firstName, lastName});
 
     const safeUser = {
-        username, email, id: user.id,
+        username, email, id: user.id, firstName, lastName,
     }
 
     //log the user in immediately

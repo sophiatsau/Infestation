@@ -50,7 +50,9 @@ router.post('/', validateLogin, async(req,res,next) => {
     const safeUser = {
         id: user.id,
         email: user.email,
-        username: user.username
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
     }
 
     //set cookies based on safe user info
@@ -78,6 +80,8 @@ router.get('/', (req, res) => {
         id: user.id,
         email: user.email,
         username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
       };
       return res.json({
         user: safeUser
