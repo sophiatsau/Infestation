@@ -6,7 +6,6 @@ const { validationResult } = require('express-validator');
 const handleValidationErrors = (req, _res, next) => {
     //gather results of check middlewares to determine what parts of body are valid, what parts invalid
   const validationErrors = validationResult(req);
-  console.log('validation errors:', validationErrors)
 
   //if there are errors
   if (!validationErrors.isEmpty()) {

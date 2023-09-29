@@ -83,6 +83,7 @@ router.get('/', (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
       };
+
       return res.json({
         user: safeUser
       });
