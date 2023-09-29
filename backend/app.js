@@ -5,7 +5,7 @@ const cors = require('cors');
 const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const {ValidationError} = require('sequelize')
+const { ValidationError } = require('sequelize');
 
 //check config.index.js to see if environment is production
 const { environment } = require('./config');
@@ -52,8 +52,6 @@ app.use(
 const routes = require('./routes');
 
 app.use(routes);
-
-const { ValidationError } = require('sequelize');
 
 /*************** ERROR HANDLING ******************* */
 app.use((_req, _res, next) => {
