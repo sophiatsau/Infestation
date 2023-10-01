@@ -4,7 +4,7 @@ const {Op} = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { User } = require('../../db/models');
+const { Group } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
@@ -26,8 +26,12 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
+//Returns all the groups.
 router.get('/', async (req,res,next) => {
-    res.json();
+    //include num members
+    //include preview images
+    const Groups = await Group.findAll();
+    res.json({Groups});
 })
 
 
