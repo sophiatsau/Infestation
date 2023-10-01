@@ -80,13 +80,25 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
 
-  const errBody = {
-    title: err.title || 'Server Error',
-    message: err.message,
-    errors: err.errors,
-  }
+  const isProduction = true;
 
-  if (!isProduction) errBody.stack = err.stack;
+  const errBody = isProduction && res.statusCode === 400 ? {
+      message: err.message,
+      errors: err.errors,
+    }
+    : isProduction && res.statusCode === 500 ? {
+      title: err.title || 'Server Error',
+      message: err.message,
+      errors: err.errors,
+    }
+    : isProduction ?
+      {message: err.message}
+    : {
+      title: err.title || 'Server Error',
+      message: err.message,
+      errors: err.errors,
+      stack: err.stack
+    }
 
   res.json(errBody);
 });
