@@ -5,7 +5,7 @@ const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, restoreUser, requireAuth } = require('../../utils/auth');
-const { Group, Membership, GroupImage, sequelize } = require('../../db/models');
+const { Group, Membership, GroupImage, User, Venue, sequelize } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
@@ -62,18 +62,33 @@ router.get('/:groupId', async (req,res,next) => {
     //include Venues (array)
     const include = [
         {
-            model: "GroupImages",
+            model: GroupImage,
+            attributes: ["id", 'url', 'preview']
+        },
+        {
+            model: User,
+            as: "Organizer",
+            attributes: ['id', 'firstName', 'lastName']
+        },
+        {
+            model: Venue,
+            attributes: ["id", "groupId", "address", "city", "state", "lat", "lng"]
+        },
+        {
+            model: Membership,
         }
     ]
-    const groups = await Group.findByPk(req.params.groupId);
+    let group = await Group.findByPk(req.params.groupId, {include});
 
-    if (!groups) {
+    if (!group) {
         const err = new Error("Group couldn't be found")
         err.status = 404;
         return next(err)
     }
 
-    res.json({Groups: groups});
+    group = group.addNumMembers();
+
+    res.json({Groups: group});
 })
 
 //Creates and returns a new group.

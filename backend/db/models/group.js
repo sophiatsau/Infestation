@@ -5,6 +5,13 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Group extends Model {
 
+    addNumMembers() {
+      const group = this.toJSON();
+      group.numMembers = group.Memberships.length;
+      delete group.Memberships;
+      return group;
+    }
+
     static async findCountMembersGetPreview(queryObj) {
       const {numMembers, previewImage, currentUser} = queryObj;
 
@@ -47,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
           group.numMembers = group.Memberships.length;
           delete group.Memberships;
           return group
-      })
+        })
       }
 
       if (previewImage) {
@@ -64,6 +71,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Group.belongsTo(models.User, {
         foreignKey: 'organizerId',
+        as: "Organizer"
       })
 
       Group.hasMany(models.Event, {
