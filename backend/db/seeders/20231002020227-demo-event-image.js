@@ -8,6 +8,8 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
 
+options.tableName = "EventImages"
+
 const eventImageInfo = [
   {
     eventId: 1,
@@ -30,8 +32,10 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete('EventImages', {
-      url: eventImageInfo.map(data => data.url),
-    });
+    await queryInterface.bulkDelete(options)
+
+    // await queryInterface.bulkDelete('EventImages', {
+    //   url: eventImageInfo.map(data => data.url),
+    // });
   }
 };

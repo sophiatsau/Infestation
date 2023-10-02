@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       const {numMembers, previewImage, currentUser} = queryObj;
 
       const {Membership, GroupImage} = require('../models')
-      const include = [];
+      const include = queryObj.include || [];
 
       if (numMembers) {
         const query = {

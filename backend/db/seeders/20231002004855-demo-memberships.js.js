@@ -40,10 +40,12 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete(options, {userId: membershipsData.map(data => data.userId),
-      groupId: membershipsData.map(data => data.groupId),
-      status: membershipsData.map(data => data.status)
-    })
+    await queryInterface.bulkDelete(options)
+
+    // await queryInterface.bulkDelete(options, {userId: membershipsData.map(data => data.userId),
+    //   groupId: membershipsData.map(data => data.groupId),
+    //   status: membershipsData.map(data => data.status)
+    // })
 
   }
 };

@@ -48,11 +48,7 @@ router.get('/', async (req,res,next) => {
 //Get all Groups joined or organized by the Current User
 //authentication: true
 router.get('/current', requireAuth, async (req,res,next) => {
-    //where organizerId = current user's id
-    // OR where Membership.userId = groups, groupId = users
-    // make membership into join table!
     const userId = req.user.id;
-    // const groups = await Group.findCountMembersGetPreview({numMembers: true, previewImage: true, currentUser: userId});
 
     res.json({Groups: await Group.findCountMembersGetPreview({numMembers: true, previewImage: true, currentUser: userId})});
 })
@@ -64,6 +60,11 @@ router.get('/:groupId', async (req,res,next) => {
     //include GroupImages (array)
     //include Organizer id, firstName, lastName
     //include Venues (array)
+    const include = [
+        {
+            model: "GroupImages",
+        }
+    ]
     const groups = await Group.findByPk(req.params.groupId);
 
     if (!groups) {
