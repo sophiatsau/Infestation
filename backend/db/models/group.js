@@ -10,12 +10,22 @@ module.exports = (sequelize, DataTypes) => {
 
       const {Membership, GroupImage} = require('../models')
       const include = [];
-      const where = {};
+
       if (numMembers) {
-        include.push({
-            model: Membership,
-            group: ['groupId'],
-        })
+        const query = {
+          model: Membership,
+          group: ['groupId'],
+        };
+
+        //!problem if numMembers isn't involved
+        if (currentUser) {
+          query.where = {
+            status:
+              {[Op.in]: ["co-host","member"]},
+            userId: currentUser,
+          };
+        }
+        include.push(query);
       }
 
       if (previewImage) {
@@ -28,23 +38,25 @@ module.exports = (sequelize, DataTypes) => {
         })
       }
 
-      //can concat separate query for memberships?
-      if (currentUser) {
-        where.where = {
-          organizerId: currentUser,
-        }
-      }
+      let groups = await Group.findAll({include});
 
-      let groups = await Group.findAll({include, ...where});
+      groups = groups.map(group => group.toJSON())
 
-      groups = groups.map( group => {
-          group = group.toJSON();
+      if (numMembers) {
+        groups = groups.map( group => {
           group.numMembers = group.Memberships.length;
-          group.previewImage = group.GroupImages[0].url || "Preview not found";
           delete group.Memberships;
-          delete group.GroupImages;
           return group
       })
+      }
+
+      if (previewImage) {
+        groups = groups.map( group => {
+          group.previewImage = group.GroupImages[0].url || "Preview not found";
+          delete group.GroupImages;
+          return group
+        })
+      }
 
       return groups
     }

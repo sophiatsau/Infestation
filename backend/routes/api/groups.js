@@ -42,45 +42,12 @@ const router = express.Router();
 //Returns all the groups.
 //authenticate: false
 router.get('/', async (req,res,next) => {
-    // const query = {
-    //     include: [
-    //         {
-    //             model: Membership,
-    //             group: ['groupId'],
-    //             // attributes: [[sequelize.fn('COUNT',sequelize.col('Memberships.groupId')), 'numMembers'],],
-    //             //where: {groupId: this.id}
-    //         },
-    //         {
-    //             model: GroupImage,
-    //             where: {
-    //                 preview: true,
-    //             },
-    //             attributes: ['url'],
-    //         }
-    //     ],
-    // }
-
-    // //include num members
-    // //include preview images
-    // let groups = await Group.findAll(query);
-
-    // groups = groups.map( group => {
-    //     group = group.toJSON();
-    //     group.numMembers = group.Memberships.length;
-    //     group.previewImage = group.GroupImages[0].url || "Preview not found";
-    //     delete group.Memberships;
-    //     delete group.GroupImages;
-    //     return group
-    // })
-
     res.json({Groups: await Group.findCountMembersGetPreview({numMembers: true, previewImage: true})});
 })
 
 //Get all Groups joined or organized by the Current User
 //authentication: true
 router.get('/current', requireAuth, async (req,res,next) => {
-    //include num members
-    //include preview images
     //where organizerId = current user's id
     // OR where Membership.userId = groups, groupId = users
     // make membership into join table!
