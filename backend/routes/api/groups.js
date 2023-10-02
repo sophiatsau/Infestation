@@ -41,24 +41,36 @@ const router = express.Router();
 //Returns all the groups.
 //authenticate: false
 router.get('/', async (req,res,next) => {
-    const include = [
-        {
-            model: Membership,
-            group: ['groupId'],
-            // attributes: [[sequelize.fn('COUNT', sequelize.col('groupId')), 'numMembers'],],
-        },
-        {
-            model: GroupImage,
-        }
-    ]
+    const query = {
+        include: [
+            {
+                model: Membership,
+                group: ['groupId'],
+                // attributes: [[sequelize.fn('COUNT',sequelize.col('Memberships.groupId')), 'numMembers'],],
+            },
+            {
+                model: GroupImage,
+                where: {
+                    preview: true,
+                },
+                attributes: ['url'],
+            }
+        ],
+    }
 
     //include num members
-
     //include preview images
-    const groups = await Group.findAll({
-        include
-    });
-    // const groups = await Membership.findAll();
+    let groups = await Group.findAll(query);
+
+    groups = groups.map( group => {
+        group = group.toJSON();
+        group.numMembers = group.Memberships.length;
+        group.previewImage = group.GroupImages[0].url || "Preview not found";
+        delete group.Memberships;
+        delete group.GroupImages;
+        return group
+    })
+
     res.json({Groups: groups});
 })
 
