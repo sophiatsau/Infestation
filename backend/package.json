@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "npx dotenv sequelize db:migrate",
     "seed": "npx dotenv sequelize db:seed:all",
+    "reset": "npx dotenv sequelize db:seed:undo:all \n npx dotenv sequelize db:migrate:undo:all \n npx dotenv sequelize db:migrate \n npx dotenv sequelize db:seed:all",
     "sequelize": "sequelize",
     "sequelize-cli": "sequelize-cli",
     "start": "per-env",

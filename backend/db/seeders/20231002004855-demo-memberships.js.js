@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
 
-options.tableName = "Membership";
+options.tableName = "Memberships";
 
 const membershipsData = [
   {
@@ -40,7 +40,10 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete(options, {name: membershipsData.map(data => data.name)})
+    await queryInterface.bulkDelete(options, {userId: membershipsData.map(data => data.userId),
+      groupId: membershipsData.map(data => data.groupId),
+      status: membershipsData.map(data => data.status)
+    })
 
   }
 };

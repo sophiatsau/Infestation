@@ -29,7 +29,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,},
     groupId: {
       type: DataTypes.INTEGER,
-      allowNull: false,},
+      allowNull: false,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -57,14 +58,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
       validate: {
-        isAfter: new Date(),
+        isAfter: new Date().toJSON().slice(0,10),
       }
     },
     endDate: {
       type: DataTypes.DATE,
       allowNull: false,
       validate: {
-        isAfter: this.startDate,
+        afterDate(value) {
+          if (this.startDate > value) {
+            throw new Error("End date must be after start date")
+          }
+        },
       }
     },
   }, {
