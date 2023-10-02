@@ -65,7 +65,7 @@ router.post('/', validateLogin, async(req,res,next) => {
 
 
 //Logout: DELETE /api/session
-router.delete('/', async(req,res,next) => {
+router.delete('/', (_req,res,_next) => {
     res.clearCookie('token');
     res.json({message: "Successfully logged out"});
 })

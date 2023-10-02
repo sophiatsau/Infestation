@@ -16,6 +16,15 @@ const groupsData = [
     "private": true,
     "city": "New York",
     "state": "NY",
+  },
+  {
+    "organizerId": 1,
+    "name": "Evening Swimming on the Water",
+    "about": "Enjoy rounds of swimming with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
+    "type": "In person",
+    "private": false,
+    "city": "New York",
+    "state": "NY",
   }
 ]
 
