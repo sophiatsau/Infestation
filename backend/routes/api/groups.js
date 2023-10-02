@@ -13,26 +13,29 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 /******************* MIDDLEWARE *************** */
 const validateGroup = [
-    // check('name')
-    //   .exists({ checkFalsy: true })
-    //   .notEmpty()
-    //   .withMessage("Name must be 60 characters or less"),
-    // check('about')
-    //   .exists({ checkFalsy: true })
-    //   .withMessage("About must be 50 characters or more"),
-    // check('type')
-    //   .exists({ checkFalsy: true })
-    //   .withMessage("Type must be 'Online' or 'In person'"),
-    // check('private')
-    //   .exists({ checkFalsy: false })
-    //   .withMessage("Private must be a boolean"),
-    // check('city')
-    //   .exists({ checkFalsy: true })
-    //   .withMessage("City is required"),
-    // check('state')
-    //   .exists({ checkFalsy: true })
-    //   .withMessage("State is required"),
-    // handleValidationErrors
+    check('name')
+      .exists({ checkFalsy: true })
+      .isLength({max: 60}) //inclusive
+      .withMessage("Name must be 60 characters or less"),
+    check('about')
+      .exists({ checkFalsy: true })
+      .isLength({min: 50}) //inclusive
+      .withMessage("About must be 50 characters or more"),
+    check('type')
+      .exists({ checkFalsy: true })
+      .isIn(['Online', 'In person'])
+      .withMessage("Type must be 'Online' or 'In person'"),
+    check('private')
+      .exists({ checkFalsy: false })
+      .isBoolean() //if want strictly true, false, use {strict: true}
+      .withMessage("Private must be a boolean"),
+    check('city')
+      .exists({ checkFalsy: true })
+      .withMessage("City is required"),
+    check('state')
+      .exists({ checkFalsy: true })
+      .withMessage("State is required"),
+    handleValidationErrors
 ];
 
 /***************** ROUTE HANDLERS *********** */
@@ -56,10 +59,6 @@ router.get('/current', requireAuth, async (req,res,next) => {
 //Get details of a Group from an id
 //authenticate: false
 router.get('/:groupId', async (req,res,next) => {
-    //include numMembers
-    //include GroupImages (array)
-    //include Organizer id, firstName, lastName
-    //include Venues (array)
     const include = [
         {
             model: GroupImage,
@@ -95,13 +94,9 @@ router.get('/:groupId', async (req,res,next) => {
 //authentication: true
 //validate body
 router.post('/', requireAuth, validateGroup, async (req,res,next) => {
-    //get group data from body
-    const groupData = req.body;
-
-    //get organizerId. Use req.user?
-    groupData.organizerId = req.user.id
-    const newGroup = await Group.create(groupData);
-    res.status(201).json(newGroup);
+    req.body.organizerId = req.user.id
+    const newGroup = await Group.create(req.body);
+    return res.status(201).json(newGroup);
 })
 
 // Create and return a new image for a group specified by id.
