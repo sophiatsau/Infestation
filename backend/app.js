@@ -17,7 +17,7 @@ const app = express();
 app.use(morgan('dev'));
 
 //middleware for parsing cookies and json
-app.use(cookieParser());
+app.use(cookieParser()); //such as csrf tokens, jwts
 app.use(express.json());
 
 //middleware for security
@@ -54,6 +54,7 @@ const routes = require('./routes');
 app.use(routes);
 
 /*************** ERROR HANDLING ******************* */
+// 404 page not found
 app.use((_req, _res, next) => {
   const err = new Error("The requested resource couldn't be found.");
   err.title = "Resource Not Found";
@@ -79,12 +80,28 @@ app.use((err, _req, _res, next) => {
 app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
-  res.json({
-    title: err.title || 'Server Error',
-    message: err.message,
-    errors: err.errors,
-    stack: isProduction ? null : err.stack
-  });
+
+  // const isProduction = true;
+
+  const errBody = isProduction && res.statusCode === 400 ? {
+      message: err.message,
+      errors: err.errors,
+    }
+    : isProduction && res.statusCode === 500 ? {
+      title: err.title || 'Server Error',
+      message: err.message,
+      errors: err.errors,
+    }
+    : isProduction ?
+      {message: err.message}
+    : {
+      title: err.title || 'Server Error',
+      message: err.message,
+      errors: err.errors,
+      stack: err.stack
+    }
+
+  res.json(errBody);
 });
 
 module.exports = app;
