@@ -3,70 +3,17 @@ const {
   Model, Op
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+
+  // const {Membership, GroupImage} = require('../models')
+
   class Group extends Model {
 
-    addNumMembers() {
-      const group = this.toJSON();
-      group.numMembers = group.Memberships.length;
-      delete group.Memberships;
-      return group;
-    }
-
-    static async findCountMembersGetPreview(queryObj) {
-      const {numMembers, previewImage, currentUser} = queryObj;
-
-      const {Membership, GroupImage} = require('../models')
-      const include = queryObj.include || [];
-
-      if (numMembers) {
-        const query = {
-          model: Membership,
-          group: ['groupId'],
-        };
-
-        //!problem if numMembers isn't involved
-        if (currentUser) {
-          query.where = {
-            status:
-              {[Op.in]: ["co-host","member"]},
-            userId: currentUser,
-          };
-        }
-        include.push(query);
-      }
-
-      if (previewImage) {
-        include.push({
-          model: GroupImage,
-          where: {
-              preview: true,
-          },
-          attributes: ['url'],
-        })
-      }
-
-      let groups = await Group.findAll({include});
-
-      groups = groups.map(group => group.toJSON())
-
-      if (numMembers) {
-        groups = groups.map( group => {
-          group.numMembers = group.Memberships.length;
-          delete group.Memberships;
-          return group
-        })
-      }
-
-      if (previewImage) {
-        groups = groups.map( group => {
-          group.previewImage = group.GroupImages[0].url || "Preview not found";
-          delete group.GroupImages;
-          return group
-        })
-      }
-
-      return groups
-    }
+    // addNumMembers() {
+    //   const group = this.toJSON();
+    //   group.numMembers = group.Memberships.length;
+    //   delete group.Memberships;
+    //   return group;
+    // }
 
     static associate(models) {
       Group.belongsTo(models.User, {
