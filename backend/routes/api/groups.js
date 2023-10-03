@@ -9,13 +9,36 @@ const { requireAuth,
     checkGroup,
     isOrganizer,
     isCoHost, } = require('../../utils/auth');
-const { Group, Membership, GroupImage, User, Venue, sequelize } = require('../../db/models');
+const { Group, Membership, GroupImage, User, Venue, Event, sequelize } = require('../../db/models');
 
 //used to validate request bodies. check, handleValidationErrors are now unnecessary.
 const { check } = require('express-validator');
 const { handleValidationErrors, validateVenue, validateGroup } = require('../../utils/validation');
 
 /******************* HELPER FUNCTIONS ********* */
+//!might move into event model
+async function addEventDetails(events) {
+    let jsonEvents = events.map((event) => event.toJSON())
+
+    for (let i=0; i<events.length; i++) {
+        jsonEvents[i].numAttending = (await events[i].getAttendances({
+            where: {status: "attending"}
+        })).length;
+
+        const previewImage = (await events[i].getEventImages({where: {preview: true}}))[0];
+        jsonEvents[i].previewImage = previewImage ? previewImage.url : null
+
+        jsonEvents[i].Group = await events[i].getGroup({
+            attributes: ["id","name","city","state"]
+        });
+
+        jsonEvents[i].Venue = await events[i].getVenue({
+            attributes: ["id","city","state"]
+        });
+    }
+
+    return jsonEvents;
+}
 
 async function addNumMembersPreviewImage(groups) {
     let jsonGroups = groups.map((group) => group.toJSON())
@@ -164,6 +187,8 @@ router.delete('/:groupId', requireAuth, checkGroup, isOrganizer, async (req,res,
     });
 })
 
+/************************** VENUES ***************** */
+
 /*Returns all venues for a group specified by its id
 Require Authentication: true
 Require Authorization: Current User must be the organizer of the group or a member of the group with a status of "co-host"
@@ -189,6 +214,17 @@ router.post('/:groupId/venues', requireAuth, checkGroup, isCoHost, validateVenue
     delete venue.updatedAt
 
     res.json(venue);
+})
+
+/************************** EVENTS ***************** */
+router.get('/:groupId/events', checkGroup, async (req,res,next) => {
+    const events = await Event.findAll({
+        where: {groupId: req.params.groupId},
+    })
+
+    const Events = await addEventDetails(events)
+
+    res.json({Events})
 })
 
 module.exports = router;
