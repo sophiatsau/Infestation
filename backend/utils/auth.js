@@ -4,7 +4,7 @@
 
 const jwt = require('jsonwebtoken');
 const {jwtConfig} = require('../config');
-const {User} = require('../db/models');
+const {Group, Membership, GroupImage, User, Venue, sequelize} = require('../db/models');
 
 const {secret, expiresIn} = jwtConfig;
 
@@ -80,9 +80,64 @@ const authorizationError = function () {
   return err;
 }
 
-const authorize = function (req,res,next) {
-  // attach stuff that need to be authorized to req.auth
-  // for each model in req.auth, check if req.user has authority?
+async function checkGroup(req,res,next) {
+  const group = await Group.findByPk(req.params.groupId);
+
+  if (!group) {
+      const err = new Error("Group couldn't be found")
+      err.status = 404;
+      return next(err)
+  }
+
+  return next();
 }
 
-module.exports = {setTokenCookie, restoreUser, requireAuth, authorizationError, authorize};
+async function checkVenue(req, res, next) {
+  req.venue = await Venue.findByPk(req.params.venueId)
+
+  if (!req.venue) {
+      const err = new Error("Venue couldn't be found")
+      err.status = 404;
+      return next(err)
+  }
+
+  return next();
+}
+
+function addGroupToVenue(req, res, next) {
+  req.params.groupId = req.venue.toJSON().groupId;
+
+  return next();
+}
+
+async function isCoHost(req, res, next) {
+  //check is user is co-host of groupId
+  const group = await Group.findByPk(req.params.groupId);
+
+  const isCoHost = await Membership.findOne({
+      where: {
+          userId: req.user.id,
+          groupId: group.toJSON().id,
+          status: "co-host"
+      }
+  })
+
+  console.log(req.body, 'body')
+
+  if (!isCoHost) return next(authorizationError());
+
+  return next()
+}
+
+module.exports = {
+  setTokenCookie,
+  restoreUser,
+  requireAuth,
+  authorizationError,
+
+  checkGroup,
+
+  checkVenue,
+  addGroupToVenue,
+  isCoHost,
+};

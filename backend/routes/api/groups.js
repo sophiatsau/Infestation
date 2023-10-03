@@ -4,10 +4,10 @@ const {Op} = require('sequelize');
 const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
-const { setTokenCookie, restoreUser, requireAuth, authorizationError } = require('../../utils/auth');
+const { requireAuth, authorizationError } = require('../../utils/auth');
 const { Group, Membership, GroupImage, User, Venue, sequelize } = require('../../db/models');
 
-//used to validate request bodies
+//used to validate request bodies. check, handleValidationErrors are now unnecessary.
 const { check } = require('express-validator');
 const { handleValidationErrors, validateVenue, validateGroup } = require('../../utils/validation');
 
@@ -239,7 +239,9 @@ router.post('/:groupId/venues', requireAuth, validateVenue, async (req,res,next)
         return authorizationError(next);
     }
 
-    let venue = await group.createVenue(req.body);
+    const {address, city, state, lat, lng} = req.body;
+
+    let venue = await group.createVenue({address, city, state, lat, lng});
 
     venue = venue.toJSON();
 
