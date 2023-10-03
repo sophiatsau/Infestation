@@ -72,7 +72,7 @@ const requireAuth = function (req, _res, next) {
     return next(err);
 }
 
-const authorizationError = function (_req, _res, next) {
+const authorizationError = function (next) {
   const err = new Error('Forbidden');
   err.title = 'Authorization required';
   err.errors = { message: 'Forbidden' };

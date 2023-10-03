@@ -167,11 +167,13 @@ router.post('/:groupId/images', requireAuth, async (req,res,next) => {
     groupValidate(group, next);
 
     if (group.toJSON().organizerId !== organizerId) {
-        return next(authorizationError())
+        return next(authorizationError(next))
     }
 
-    const newGroup = await group.createGroupImage(req.body);
-    return res.json(newGroup);
+    const newImg = await group.createGroupImage(req.body);
+    const {id, url, preview} = newImg.toJSON()
+
+    return res.json({id, url, preview});
 })
 
 // Updates and returns an existing group.
