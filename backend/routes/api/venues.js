@@ -25,23 +25,21 @@ const { handleValidationErrors } = require('../../utils/validation');
 const validateVenue = [
     check('address')
       .exists({ checkFalsy: true })
-      .isLength({max: 60, min: 1}) //inclusive
-      .withMessage("Name must be 60 characters or less"),
+      .withMessage("Street address is required"),
     check('city')
       .exists({ checkFalsy: true })
-      .isLength({min: 50}) //inclusive
-      .withMessage("About must be 50 characters or more"),
+      .withMessage("City is required"),
     check('state')
       .exists({ checkFalsy: true })
-      .isIn(['Online', 'In person'])
-      .withMessage("Type must be 'Online' or 'In person'"),
+      .withMessage("State is required"),
     check('lat')
       .exists({ checkFalsy: false })
-      .isBoolean() //if want strictly true, false, use {strict: true}
-      .withMessage("Private must be a boolean"),
+      .isFloat({min:-90, max:90})
+      .withMessage("Latitude is not valid"),
     check('lng')
-      .exists({ checkFalsy: true })
-      .withMessage("City is required"),
+      .exists({ checkFalsy: false })
+      .isFloat({min:-180, max:180})
+      .withMessage("Longitude is not valid"),
     handleValidationErrors
 ];
 

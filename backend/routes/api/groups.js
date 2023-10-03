@@ -84,6 +84,27 @@ const validateGroup = [
     handleValidationErrors
 ];
 
+const validateVenue = [
+    check('address')
+      .exists({ checkFalsy: true })
+      .withMessage("Street address is required"),
+    check('city')
+      .exists({ checkFalsy: true })
+      .withMessage("City is required"),
+    check('state')
+      .exists({ checkFalsy: true })
+      .withMessage("State is required"),
+    check('lat')
+      .exists({ checkFalsy: false })
+      .isFloat({min:-90, max:90})
+      .withMessage("Latitude is not valid"),
+    check('lng')
+      .exists({ checkFalsy: false })
+      .isFloat({min:-180, max:180})
+      .withMessage("Longitude is not valid"),
+    handleValidationErrors
+];
+
 /***************** ROUTE HANDLERS *********** */
 
 const router = express.Router();
@@ -250,7 +271,7 @@ router.get('/:groupId/venues', requireAuth, async (req,res,next) => {
     res.json({Venues: venues});
 })
 
-router.post('/:groupId/venues', requireAuth, async (req,res,next) => {
+router.post('/:groupId/venues', requireAuth, validateVenue, async (req,res,next) => {
     const userId = req.user.id;
     const {groupId} = req.params;
 
@@ -263,9 +284,14 @@ router.post('/:groupId/venues', requireAuth, async (req,res,next) => {
         return authorizationError(next);
     }
 
-    const venues = await group.getVenues();
+    let venue = await group.createVenue(req.body);
 
-    res.json(venues);
+    venue = venue.toJSON();
+
+    delete venue.createdAt
+    delete venue.updatedAt
+
+    res.json(venue);
 })
 
 module.exports = router;
