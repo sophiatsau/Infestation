@@ -4,12 +4,12 @@ const {Op} = require('sequelize');
 const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
-const { requireAuth, checkEvent, authorizationError} = require('../../utils/auth');
-const { Event, Attendance, Group, Membership, sequelize } = require('../../db/models');
+const { requireAuth, checkEvent, authorizationError, isCoHost} = require('../../utils/auth');
+const { Event, Attendance, Group, Membership, Venue, sequelize, } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
-const { handleValidationErrors, validateVenue } = require('../../utils/validation');
+const { handleValidationErrors, validateVenue, validateEvent } = require('../../utils/validation');
 
 /***************** HELPER FUNCTIONS ********** */
 async function addEventDetails(events) {
@@ -56,6 +56,11 @@ async function isAttending(req,res,next) {
 
     if (!isCoHost && !isAttending) return next(authorizationError());
 
+    next();
+}
+
+async function addGroupIdToEvent(req,res,next) {
+    req.params.groupId = req.event.toJSON().groupId
     next();
 }
 
@@ -112,6 +117,33 @@ router.post("/:eventId/images", requireAuth, checkEvent, isAttending, async (req
     const {id} = image.toJSON();
 
     res.json({id, url, preview});
+})
+
+//do we really need to check venue...
+router.put('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isCoHost, validateEvent, async (req,res,next) => {
+    const {venueId, name, type, capacity, price, description, startDate, endDate} = req.body;
+    const {id, groupId} = req.event
+
+    const venue = await Venue.findByPk(venueId);
+
+    // kinda redundant since we already have validateEvent?
+    if (!venue) {
+        const err = new Error("Venue couldn't be found");
+        err.status = 404;
+        next(err);
+    }
+
+    await req.event.update({venueId, name, type, capacity, price, description, startDate, endDate})
+
+    const eventObj = {id, groupId, venueId, name, type, capacity, price, description, startDate, endDate}
+
+    res.json(eventObj);
+});
+
+router.delete('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isCoHost, async (req,res,next) => {
+    await req.event.destroy();
+
+    res.json({"message": "Successfully deleted"})
 })
 
 module.exports = router;
