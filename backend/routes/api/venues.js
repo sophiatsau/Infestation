@@ -9,7 +9,7 @@ const { Group, Membership, GroupImage, User, Venue, sequelize } = require('../..
 
 //used to validate request bodies
 const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
+const { handleValidationErrors, validateVenue } = require('../../utils/validation');
 
 /******************* HELPER FUNCTIONS ********* */
 
@@ -64,26 +64,6 @@ async function isCoHost(req, res, next) {
 }
 
 /******************* MIDDLEWARE *************** */
-const validateVenue = [
-    check('address')
-      .exists({ checkFalsy: true })
-      .withMessage("Street address is required"),
-    check('city')
-      .exists({ checkFalsy: true })
-      .withMessage("City is required"),
-    check('state')
-      .exists({ checkFalsy: true })
-      .withMessage("State is required"),
-    check('lat')
-      .exists({ checkFalsy: false })
-      .isFloat({min:-90, max:90})
-      .withMessage("Latitude is not valid"),
-    check('lng')
-      .exists({ checkFalsy: false })
-      .isFloat({min:-180, max:180})
-      .withMessage("Longitude is not valid"),
-    handleValidationErrors
-];
 
 /***************** ROUTE HANDLERS *********** */
 
