@@ -21,7 +21,7 @@ async function addNumMembersPreviewImage(groups) {
 
         const previewImage = (await groups[i].getGroupImages({where: {preview: true}}))[0];
 
-        jsonGroups[i].previewImage = previewImage ? previewImage.url : "Preview not found"
+        jsonGroups[i].previewImage = previewImage ? previewImage.url : null
     }
 
     return jsonGroups;
@@ -33,18 +33,28 @@ function addNumMembers(group) {
     return group;
 }
 
-function addPreviewImage(group) {
-    group.previewImage = group.GroupImages[0].url || "Preview not found";
-    delete group.GroupImages;
-    return group;
-}
-
 function groupValidate(group, next) {
     if (!group) {
         const err = new Error("Group couldn't be found")
         err.status = 404;
         return next(err)
     }
+
+    return true;
+}
+
+async function isCoHost(userId, group, next) {
+    const isCoHost = await Membership.findOne({
+        where: {
+            userId: userId,
+            groupId: group.toJSON().id,
+            status: "co-host"
+        }
+    })
+
+    if (!isCoHost) return false;
+
+    return true;
 }
 
 /******************* MIDDLEWARE *************** */
@@ -215,7 +225,47 @@ router.delete('/:groupId', requireAuth, async (req,res,next) => {
 
     return res.json({
         "message": "Successfully deleted"
-      });
+    });
+})
+
+/*Returns all venues for a group specified by its id
+Require Authentication: true
+Require Authentication: Current User must be the organizer of the group or a member of the group with a status of "co-host"
+*/
+router.get('/:groupId/venues', requireAuth, async (req,res,next) => {
+    const userId = req.user.id;
+    const {groupId} = req.params;
+
+    const group = await Group.findByPk(groupId);
+
+    groupValidate(group, next);
+
+    //check is user is co-host
+    if (! await isCoHost(userId, group, next)) {
+        return authorizationError(next);
+    }
+
+    const venues = await group.getVenues();
+
+    res.json({Venues: venues});
+})
+
+router.post('/:groupId/venues', requireAuth, async (req,res,next) => {
+    const userId = req.user.id;
+    const {groupId} = req.params;
+
+    const group = await Group.findByPk(groupId);
+
+    groupValidate(group, next);
+
+    //check is user is co-host
+    if (! await isCoHost(userId, group, next)) {
+        return authorizationError(next);
+    }
+
+    const venues = await group.getVenues();
+
+    res.json(venues);
 })
 
 module.exports = router;
