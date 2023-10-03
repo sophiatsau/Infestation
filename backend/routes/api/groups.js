@@ -4,7 +4,11 @@ const {Op} = require('sequelize');
 const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
-const { requireAuth, authorizationError } = require('../../utils/auth');
+const { requireAuth,
+    authorizationError,
+    checkGroup,
+    isOrganizer,
+    isCoHost, } = require('../../utils/auth');
 const { Group, Membership, GroupImage, User, Venue, sequelize } = require('../../db/models');
 
 //used to validate request bodies. check, handleValidationErrors are now unnecessary.
@@ -31,30 +35,6 @@ function addNumMembers(group) {
     group.numMembers = group.Memberships.length;
     delete group.Memberships;
     return group;
-}
-
-function groupValidate(group, next) {
-    if (!group) {
-        const err = new Error("Group couldn't be found")
-        err.status = 404;
-        return next(err)
-    }
-
-    return true;
-}
-
-async function isCoHost(userId, group, next) {
-    const isCoHost = await Membership.findOne({
-        where: {
-            userId: userId,
-            groupId: group.toJSON().id,
-            status: "co-host"
-        }
-    })
-
-    if (!isCoHost) return false;
-
-    return true;
 }
 
 /******************* MIDDLEWARE *************** */
@@ -92,13 +72,14 @@ router.get('/current', requireAuth, async (req,res,next) => {
         }
     });
 
-    res.json({Groups: await addNumMembersPreviewImage(groups)});
+    let Groups = await addNumMembersPreviewImage(groups)
 
+    res.json({Groups});
 })
 
 //Get details of a Group from an id
 //authenticate: false
-router.get('/:groupId', async (req,res,next) => {
+router.get('/:groupId', checkGroup, async (req,res,next) => {
     const include = [
         {
             model: GroupImage,
@@ -117,9 +98,8 @@ router.get('/:groupId', async (req,res,next) => {
             model: Membership,
         }
     ]
-    let group = await Group.findByPk(req.params.groupId, {include});
 
-    groupValidate(group, next);
+    let group = await Group.findByPk(req.params.groupId, {include});
 
     group = addNumMembers(group.toJSON());
 
@@ -134,9 +114,7 @@ router.post('/', requireAuth, validateGroup, async (req,res,next) => {
     const newGroup = await Group.create(req.body);
 
     //create new membership, automatically adding user as a co-host
-    const newMembership = await newGroup.createMembership({userId: req.user.id, status: "co-host"})
-
-    console.log(newMembership)
+    await newGroup.createMembership({userId: req.user.id, status: "co-host"})
 
     return res.status(201).json(newGroup);
 })
@@ -144,20 +122,18 @@ router.post('/', requireAuth, validateGroup, async (req,res,next) => {
 // Create and return a new image for a group specified by id.
 // Require Authentication: true
 // Require proper authorization: Current User must be the organizer for the group
-router.post('/:groupId/images', requireAuth, async (req,res,next) => {
+router.post('/:groupId/images', requireAuth, checkGroup, async (req,res,next) => {
     const organizerId = req.user.id;
-    const {groupId} = req.params;
-
-    const group = await Group.findByPk(groupId);
-
-    groupValidate(group, next);
+    const group = req.group
 
     if (group.toJSON().organizerId !== organizerId) {
-        return next(authorizationError(next))
+        return next(authorizationError())
     }
 
+    const {url, preview} = req.body;
+
     const newImg = await group.createGroupImage(req.body);
-    const {id, url, preview} = newImg.toJSON()
+    const {id} = newImg.toJSON()
 
     return res.json({id, url, preview});
 })
@@ -165,19 +141,14 @@ router.post('/:groupId/images', requireAuth, async (req,res,next) => {
 // Updates and returns an existing group.
 // Require Authentication: true
 // Require proper authorization: Group must belong to the current user
-router.put('/:groupId', requireAuth, validateGroup, async (req,res,next) => {
-    const organizerId = req.user.id;
-    const {groupId} = req.params;
+router.put('/:groupId', requireAuth, checkGroup, isOrganizer, validateGroup, async (req,res,next) => {
+    let group = req.group;
+    const {name, about, type, private, city, state} = req.body
 
-    const group = await Group.findByPk(groupId);
+    await group.update({name, about, type, private, city, state})
 
-    groupValidate(group, next);
-
-    if (group.toJSON().organizerId !== organizerId) {
-        return next(authorizationError(next))
-    }
-
-    await group.update(req.body)
+    group = group.toJSON();
+    delete group.updatedAt;
 
     return res.json(group);
 })
@@ -185,19 +156,8 @@ router.put('/:groupId', requireAuth, validateGroup, async (req,res,next) => {
 // Deletes an existing group.
 // Require Authentication: true
 // Require proper authorization: Group must belong to the current user
-router.delete('/:groupId', requireAuth, async (req,res,next) => {
-    const organizerId = req.user.id;
-    const {groupId} = req.params;
-
-    const group = await Group.findByPk(groupId);
-
-    groupValidate(group, next);
-
-    if (group.toJSON().organizerId !== organizerId) {
-        return next(authorizationError(next))
-    }
-
-    await group.destroy()
+router.delete('/:groupId', requireAuth, checkGroup, isOrganizer, async (req,res,next) => {
+    await req.group.destroy()
 
     return res.json({
         "message": "Successfully deleted"
@@ -206,38 +166,18 @@ router.delete('/:groupId', requireAuth, async (req,res,next) => {
 
 /*Returns all venues for a group specified by its id
 Require Authentication: true
-Require Authentication: Current User must be the organizer of the group or a member of the group with a status of "co-host"
+Require Authorization: Current User must be the organizer of the group or a member of the group with a status of "co-host"
 */
-router.get('/:groupId/venues', requireAuth, async (req,res,next) => {
-    const userId = req.user.id;
-    const {groupId} = req.params;
-
-    const group = await Group.findByPk(groupId);
-
-    groupValidate(group, next);
-
-    //check is user is co-host
-    if (! await isCoHost(userId, group, next)) {
-        return authorizationError(next);
-    }
+router.get('/:groupId/venues', requireAuth, checkGroup, isCoHost, async (req,res,next) => {
+    const group = req.group;
 
     const venues = await group.getVenues();
 
     res.json({Venues: venues});
 })
 
-router.post('/:groupId/venues', requireAuth, validateVenue, async (req,res,next) => {
-    const userId = req.user.id;
-    const {groupId} = req.params;
-
-    const group = await Group.findByPk(groupId);
-
-    groupValidate(group, next);
-
-    //check is user is co-host
-    if (! await isCoHost(userId, group, next)) {
-        return authorizationError(next);
-    }
+router.post('/:groupId/venues', requireAuth, checkGroup, isCoHost, validateVenue, async (req,res,next) => {
+    const group = req.group
 
     const {address, city, state, lat, lng} = req.body;
 

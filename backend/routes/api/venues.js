@@ -23,6 +23,9 @@ router.put('/:venueId', requireAuth, checkVenue, addGroupToVenue, isCoHost, vali
 
     let venue = await req.venue.update({address, city, state, lat, lng})
 
+    venue = venue.toJSON();
+    delete venue.updatedAt;
+
     return res.json(venue);
 })
 

@@ -80,6 +80,8 @@ const authorizationError = function () {
   return err;
 }
 
+/*************** GROUP **************** */
+
 async function checkGroup(req,res,next) {
   const group = await Group.findByPk(req.params.groupId);
 
@@ -89,8 +91,20 @@ async function checkGroup(req,res,next) {
       return next(err)
   }
 
+  req.group = group;
+
   return next();
 }
+
+function isOrganizer(req,res,next) {
+  if (req.group.toJSON().organizerId !== req.user.id) {
+      return next(authorizationError())
+  }
+
+  next();
+}
+
+/*************** VENUE **************** */
 
 async function checkVenue(req, res, next) {
   req.venue = await Venue.findByPk(req.params.venueId)
@@ -104,6 +118,7 @@ async function checkVenue(req, res, next) {
   return next();
 }
 
+//optional? remove? not optimal?
 function addGroupToVenue(req, res, next) {
   req.params.groupId = req.venue.toJSON().groupId;
 
@@ -136,6 +151,7 @@ module.exports = {
   authorizationError,
 
   checkGroup,
+  isOrganizer,
 
   checkVenue,
   addGroupToVenue,
