@@ -4,8 +4,8 @@ const {Op} = require('sequelize');
 const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
-const { requireAuth, checkEvent} = require('../../utils/auth');
-const { Event, sequelize } = require('../../db/models');
+const { requireAuth, checkEvent, authorizationError} = require('../../utils/auth');
+const { Event, Attendance, Group, Membership, sequelize } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
@@ -33,6 +33,30 @@ async function addEventDetails(events) {
     }
 
     return jsonEvents;
+}
+
+async function isAttending(req,res,next) {
+    const eventId = req.params.eventId;
+    const userId = req.user.id;
+    const groupId = req.event.groupId;
+
+    const isAttending = await Attendance.findOne({
+        where: {
+            eventId, userId, status: "attending"
+        }
+    })
+
+    const isCoHost = await Membership.findOne({
+        where: {
+            userId,
+            groupId,
+            status: "co-host"
+        }
+    })
+
+    if (!isCoHost && !isAttending) return next(authorizationError());
+
+    next();
 }
 
 /***************** ROUTE HANDLERS *********** */
@@ -77,5 +101,17 @@ router.get('/:eventId', checkEvent, async(req,res,next) => {
 
     res.json(jsonEvent);
 });
+
+router.post("/:eventId/images", requireAuth, checkEvent, isAttending, async (req,res,next) => {
+    const {url, preview} = req.body;
+
+    const event = req.event;
+
+    const image = await event.createEventImage({url, preview});
+
+    const {id} = image.toJSON();
+
+    res.json({id, url, preview});
+})
 
 module.exports = router;

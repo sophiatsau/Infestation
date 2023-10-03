@@ -137,8 +137,6 @@ async function isCoHost(req, res, next) {
       }
   })
 
-  console.log(req.body, 'body')
-
   if (!isCoHost) return next(authorizationError());
 
   return next()
