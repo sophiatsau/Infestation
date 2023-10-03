@@ -39,6 +39,14 @@ function addPreviewImage(group) {
     return group;
 }
 
+function groupValidate(group, next) {
+    if (!group) {
+        const err = new Error("Group couldn't be found")
+        err.status = 404;
+        return next(err)
+    }
+}
+
 /******************* MIDDLEWARE *************** */
 const validateGroup = [
     check('name')
@@ -125,11 +133,7 @@ router.get('/:groupId', async (req,res,next) => {
     ]
     let group = await Group.findByPk(req.params.groupId, {include});
 
-    if (!group) {
-        const err = new Error("Group couldn't be found")
-        err.status = 404;
-        return next(err)
-    }
+    groupValidate(group, next);
 
     group = addNumMembers(group.toJSON());
 
@@ -144,7 +148,9 @@ router.post('/', requireAuth, validateGroup, async (req,res,next) => {
     const newGroup = await Group.create(req.body);
 
     //create new membership, automatically adding user as a co-host
-    await newGroup.createMembership({userId: req.user.id, status: "co-host"})
+    const newMembership = await newGroup.createMembership({userId: req.user.id, status: "co-host"})
+
+    console.log(newMembership)
 
     return res.status(201).json(newGroup);
 })
@@ -158,11 +164,7 @@ router.post('/:groupId/images', requireAuth, async (req,res,next) => {
 
     const group = await Group.findByPk(groupId);
 
-    if (!group) {
-        const err = new Error("Group couldn't be found")
-        err.status = 404;
-        return next(err)
-    }
+    groupValidate(group, next);
 
     if (group.toJSON().organizerId !== organizerId) {
         return next(authorizationError())
