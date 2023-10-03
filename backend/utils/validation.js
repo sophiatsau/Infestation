@@ -75,8 +75,49 @@ const validateVenue = [
   handleValidationErrors
 ];
 
+const validateEvent = [
+  check("venueId")
+    .exists({ checkFalsy: true })
+    .custom( async(venueId) => {
+      const {Venue} = require('../db/models');
+      const venueExists = await Venue.findByPk(venueId)
+
+      if (!venueExists) throw new Error()
+      return true;
+    })
+    .withMessage("Venue does not exist"),
+  check("name")
+    .exists({ checkFalsy: true })
+    .isLength({min: 5})
+    .withMessage("Name must be at least 5 characters"),
+  check("type")
+    .isIn(["Online", "In person"])
+    .withMessage("Type must be Online or In person"),
+  check("capacity")
+    .exists({ checkFalsy: false })
+    .isInt()
+    .withMessage("Capacity must be an integer"),
+  check("price")
+    .exists({ checkFalsy: false })
+    .isDecimal()
+    .withMessage("Price is invalid"),
+  check("description")
+    .exists({ checkFalsy: true })
+    .withMessage("Description is required"),
+  check("startDate")
+    .exists({ checkFalsy: true })
+    .isAfter(new Date().toLocaleDateString())
+    .withMessage("Start date must be in the future"),
+  check("endDate")
+    .exists({ checkFalsy: true })
+    .isAfter(this.startDate)
+    .withMessage("End date is less than start date"),
+  handleValidationErrors
+];
+
 module.exports = {
   handleValidationErrors,
   validateGroup,
   validateVenue,
+  validateEvent,
 };

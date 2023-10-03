@@ -13,7 +13,7 @@ const { Group, Membership, GroupImage, User, Venue, Event, sequelize } = require
 
 //used to validate request bodies. check, handleValidationErrors are now unnecessary.
 const { check } = require('express-validator');
-const { handleValidationErrors, validateVenue, validateGroup } = require('../../utils/validation');
+const { handleValidationErrors, validateVenue, validateGroup, validateEvent } = require('../../utils/validation');
 
 /******************* HELPER FUNCTIONS ********* */
 //!might move into event model
@@ -225,6 +225,19 @@ router.get('/:groupId/events', checkGroup, async (req,res,next) => {
     const Events = await addEventDetails(events)
 
     res.json({Events})
+});
+
+router.post('/:groupId/events', requireAuth, checkGroup, isCoHost, validateEvent, async (req,res,next) => {
+    const {venueId, name, type, capacity, price, description, startDate, endDate} = req.body;
+    const groupId = parseInt(req.params.groupId);
+
+    const newEvent = await Event.create({groupId, venueId, name, type, capacity, price, description, startDate, endDate})
+
+    const cleanEvent = newEvent.toJSON()
+    delete cleanEvent.createdAt;
+    delete cleanEvent.updatedAt;
+
+    res.json(cleanEvent);
 })
 
 module.exports = router;

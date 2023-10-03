@@ -76,6 +76,6 @@ router.get('/:eventId', checkEvent, async(req,res,next) => {
     });
 
     res.json(jsonEvent);
-})
+});
 
 module.exports = router;
