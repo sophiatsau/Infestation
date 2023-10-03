@@ -52,6 +52,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING.BINARY,
       validate: {len: [60,60]}
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'User',

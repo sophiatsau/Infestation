@@ -22,9 +22,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     groupId: DataTypes.INTEGER,
     status: DataTypes.ENUM("co-host","member","pending"),
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Membership',
+    defaultScope: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
   });
   return Membership;
 };

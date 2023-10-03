@@ -72,12 +72,17 @@ const requireAuth = function (req, _res, next) {
     return next(err);
 }
 
-const authorizationError = function (next) {
+const authorizationError = function () {
   const err = new Error('Forbidden');
   err.title = 'Authorization required';
   err.errors = { message: 'Forbidden' };
   err.status = 403;
-  return next(err);
+  return err;
 }
 
-module.exports = {setTokenCookie, restoreUser, requireAuth, authorizationError};
+const authorize = function (req,res,next) {
+  // attach stuff that need to be authorized to req.auth
+  // for each model in req.auth, check if req.user has authority?
+}
+
+module.exports = {setTokenCookie, restoreUser, requireAuth, authorizationError, authorize};

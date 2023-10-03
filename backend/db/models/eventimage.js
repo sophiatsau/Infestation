@@ -14,10 +14,17 @@ module.exports = (sequelize, DataTypes) => {
   EventImage.init({
     eventId: DataTypes.INTEGER,
     url: DataTypes.STRING,
-    preview: DataTypes.BOOLEAN
+    preview: DataTypes.BOOLEAN,
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'EventImage',
+    defaultScope: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
   });
   return EventImage;
 };
