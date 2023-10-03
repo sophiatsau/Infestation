@@ -4,7 +4,7 @@
 
 const jwt = require('jsonwebtoken');
 const {jwtConfig} = require('../config');
-const {Group, Membership, GroupImage, User, Venue, sequelize} = require('../db/models');
+const {Group, Membership, GroupImage, User, Venue, Event, sequelize} = require('../db/models');
 
 const {secret, expiresIn} = jwtConfig;
 
@@ -144,6 +144,19 @@ async function isCoHost(req, res, next) {
   return next()
 }
 
+/********************* EVENTS ******************* */
+async function checkEvent(req, res, next) {
+  req.event = await Event.findByPk(req.params.eventId)
+
+  if (!req.event) {
+      const err = new Error("Event couldn't be found")
+      err.status = 404;
+      return next(err)
+  }
+
+  return next();
+}
+
 module.exports = {
   setTokenCookie,
   restoreUser,
@@ -156,4 +169,6 @@ module.exports = {
   checkVenue,
   addGroupToVenue,
   isCoHost,
+
+  checkEvent,
 };
