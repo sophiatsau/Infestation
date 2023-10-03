@@ -4,14 +4,41 @@ const {Op} = require('sequelize');
 const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
-const { setTokenCookie, restoreUser, requireAuth, authorizationError } = require('../../utils/auth');
-const { Group, Membership, GroupImage, User, Venue, sequelize } = require('../../db/models');
+const { requireAuth,
+    authorizationError,
+    checkGroup,
+    isOrganizer,
+    isCoHost, } = require('../../utils/auth');
+const { Group, Membership, GroupImage, User, Venue, Event, sequelize } = require('../../db/models');
 
-//used to validate request bodies
+//used to validate request bodies. check, handleValidationErrors are now unnecessary.
 const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
+const { handleValidationErrors, validateVenue, validateGroup, validateEvent } = require('../../utils/validation');
 
 /******************* HELPER FUNCTIONS ********* */
+//!might move into event model
+async function addEventDetails(events) {
+    let jsonEvents = events.map((event) => event.toJSON())
+
+    for (let i=0; i<events.length; i++) {
+        jsonEvents[i].numAttending = (await events[i].getAttendances({
+            where: {status: "attending"}
+        })).length;
+
+        const previewImage = (await events[i].getEventImages({where: {preview: true}}))[0];
+        jsonEvents[i].previewImage = previewImage ? previewImage.url : null
+
+        jsonEvents[i].Group = await events[i].getGroup({
+            attributes: ["id","name","city","state"]
+        });
+
+        jsonEvents[i].Venue = await events[i].getVenue({
+            attributes: ["id","city","state"]
+        });
+    }
+
+    return jsonEvents;
+}
 
 async function addNumMembersPreviewImage(groups) {
     let jsonGroups = groups.map((group) => group.toJSON())
@@ -21,7 +48,7 @@ async function addNumMembersPreviewImage(groups) {
 
         const previewImage = (await groups[i].getGroupImages({where: {preview: true}}))[0];
 
-        jsonGroups[i].previewImage = previewImage ? previewImage.url : "Preview not found"
+        jsonGroups[i].previewImage = previewImage ? previewImage.url : null
     }
 
     return jsonGroups;
@@ -33,46 +60,8 @@ function addNumMembers(group) {
     return group;
 }
 
-function addPreviewImage(group) {
-    group.previewImage = group.GroupImages[0].url || "Preview not found";
-    delete group.GroupImages;
-    return group;
-}
-
-function groupValidate(group, next) {
-    if (!group) {
-        const err = new Error("Group couldn't be found")
-        err.status = 404;
-        return next(err)
-    }
-}
-
 /******************* MIDDLEWARE *************** */
-const validateGroup = [
-    check('name')
-      .exists({ checkFalsy: true })
-      .isLength({max: 60, min: 1}) //inclusive
-      .withMessage("Name must be 60 characters or less"),
-    check('about')
-      .exists({ checkFalsy: true })
-      .isLength({min: 50}) //inclusive
-      .withMessage("About must be 50 characters or more"),
-    check('type')
-      .exists({ checkFalsy: true })
-      .isIn(['Online', 'In person'])
-      .withMessage("Type must be 'Online' or 'In person'"),
-    check('private')
-      .exists({ checkFalsy: false })
-      .isBoolean() //if want strictly true, false, use {strict: true}
-      .withMessage("Private must be a boolean"),
-    check('city')
-      .exists({ checkFalsy: true })
-      .withMessage("City is required"),
-    check('state')
-      .exists({ checkFalsy: true })
-      .withMessage("State is required"),
-    handleValidationErrors
-];
+
 
 /***************** ROUTE HANDLERS *********** */
 
@@ -106,13 +95,14 @@ router.get('/current', requireAuth, async (req,res,next) => {
         }
     });
 
-    res.json({Groups: await addNumMembersPreviewImage(groups)});
+    let Groups = await addNumMembersPreviewImage(groups)
 
+    res.json({Groups});
 })
 
 //Get details of a Group from an id
 //authenticate: false
-router.get('/:groupId', async (req,res,next) => {
+router.get('/:groupId', checkGroup, async (req,res,next) => {
     const include = [
         {
             model: GroupImage,
@@ -131,9 +121,8 @@ router.get('/:groupId', async (req,res,next) => {
             model: Membership,
         }
     ]
-    let group = await Group.findByPk(req.params.groupId, {include});
 
-    groupValidate(group, next);
+    let group = await Group.findByPk(req.params.groupId, {include});
 
     group = addNumMembers(group.toJSON());
 
@@ -148,9 +137,7 @@ router.post('/', requireAuth, validateGroup, async (req,res,next) => {
     const newGroup = await Group.create(req.body);
 
     //create new membership, automatically adding user as a co-host
-    const newMembership = await newGroup.createMembership({userId: req.user.id, status: "co-host"})
-
-    console.log(newMembership)
+    await newGroup.createMembership({userId: req.user.id, status: "co-host"})
 
     return res.status(201).json(newGroup);
 })
@@ -158,20 +145,18 @@ router.post('/', requireAuth, validateGroup, async (req,res,next) => {
 // Create and return a new image for a group specified by id.
 // Require Authentication: true
 // Require proper authorization: Current User must be the organizer for the group
-router.post('/:groupId/images', requireAuth, async (req,res,next) => {
+router.post('/:groupId/images', requireAuth, checkGroup, async (req,res,next) => {
     const organizerId = req.user.id;
-    const {groupId} = req.params;
-
-    const group = await Group.findByPk(groupId);
-
-    groupValidate(group, next);
+    const group = req.group
 
     if (group.toJSON().organizerId !== organizerId) {
-        return next(authorizationError(next))
+        return next(authorizationError())
     }
 
+    const {url, preview} = req.body;
+
     const newImg = await group.createGroupImage(req.body);
-    const {id, url, preview} = newImg.toJSON()
+    const {id} = newImg.toJSON()
 
     return res.json({id, url, preview});
 })
@@ -179,19 +164,14 @@ router.post('/:groupId/images', requireAuth, async (req,res,next) => {
 // Updates and returns an existing group.
 // Require Authentication: true
 // Require proper authorization: Group must belong to the current user
-router.put('/:groupId', requireAuth, validateGroup, async (req,res,next) => {
-    const organizerId = req.user.id;
-    const {groupId} = req.params;
+router.put('/:groupId', requireAuth, checkGroup, isOrganizer, validateGroup, async (req,res,next) => {
+    let group = req.group;
+    const {name, about, type, private, city, state} = req.body
 
-    const group = await Group.findByPk(groupId);
+    await group.update({name, about, type, private, city, state})
 
-    groupValidate(group, next);
-
-    if (group.toJSON().organizerId !== organizerId) {
-        return next(authorizationError(next))
-    }
-
-    await group.update(req.body)
+    group = group.toJSON();
+    delete group.updatedAt;
 
     return res.json(group);
 })
@@ -199,23 +179,65 @@ router.put('/:groupId', requireAuth, validateGroup, async (req,res,next) => {
 // Deletes an existing group.
 // Require Authentication: true
 // Require proper authorization: Group must belong to the current user
-router.delete('/:groupId', requireAuth, async (req,res,next) => {
-    const organizerId = req.user.id;
-    const {groupId} = req.params;
-
-    const group = await Group.findByPk(groupId);
-
-    groupValidate(group, next);
-
-    if (group.toJSON().organizerId !== organizerId) {
-        return next(authorizationError(next))
-    }
-
-    await group.destroy()
+router.delete('/:groupId', requireAuth, checkGroup, isOrganizer, async (req,res,next) => {
+    await req.group.destroy()
 
     return res.json({
         "message": "Successfully deleted"
-      });
+    });
+})
+
+/************************** VENUES ***************** */
+
+/*Returns all venues for a group specified by its id
+Require Authentication: true
+Require Authorization: Current User must be the organizer of the group or a member of the group with a status of "co-host"
+*/
+router.get('/:groupId/venues', requireAuth, checkGroup, isCoHost, async (req,res,next) => {
+    const group = req.group;
+
+    const venues = await group.getVenues();
+
+    res.json({Venues: venues});
+})
+
+router.post('/:groupId/venues', requireAuth, checkGroup, isCoHost, validateVenue, async (req,res,next) => {
+    const group = req.group
+
+    const {address, city, state, lat, lng} = req.body;
+
+    let venue = await group.createVenue({address, city, state, lat, lng});
+
+    venue = venue.toJSON();
+
+    delete venue.createdAt
+    delete venue.updatedAt
+
+    res.json(venue);
+})
+
+/************************** EVENTS ***************** */
+router.get('/:groupId/events', checkGroup, async (req,res,next) => {
+    const events = await Event.findAll({
+        where: {groupId: req.params.groupId},
+    })
+
+    const Events = await addEventDetails(events)
+
+    res.json({Events})
+});
+
+router.post('/:groupId/events', requireAuth, checkGroup, isCoHost, validateEvent, async (req,res,next) => {
+    const {venueId, name, type, capacity, price, description, startDate, endDate} = req.body;
+    const groupId = parseInt(req.params.groupId);
+
+    const newEvent = await Event.create({groupId, venueId, name, type, capacity, price, description, startDate, endDate})
+
+    const cleanEvent = newEvent.toJSON()
+    delete cleanEvent.createdAt;
+    delete cleanEvent.updatedAt;
+
+    res.json(cleanEvent);
 })
 
 module.exports = router;

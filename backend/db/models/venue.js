@@ -47,10 +47,17 @@ module.exports = (sequelize, DataTypes) => {
         min: -180,
         max: 180,
       }
-      }
+    },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Venue',
+    defaultScope: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt']
+      }
+    },
   });
   return Venue;
 };

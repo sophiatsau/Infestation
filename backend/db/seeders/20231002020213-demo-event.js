@@ -23,7 +23,7 @@ const eventInfo = [
     endDate: "2024-11-20 20:00:00",
   },
   {
-    venueId: 1,
+    venueId: 2,
     groupId: 2,
     name: "Venue 1",
     description: "Description",

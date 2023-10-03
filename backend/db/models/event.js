@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,},
     price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
       allowNull: false,
       validate: {
         min: 0,
@@ -58,23 +58,30 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
       validate: {
-        isAfter: new Date().toJSON().slice(0,10),
+        isAfter: new Date().toLocaleDateString(),
       }
     },
     endDate: {
       type: DataTypes.DATE,
       allowNull: false,
       validate: {
-        afterDate(value) {
+        afterStartDate(value) {
           if (this.startDate > value) {
             throw new Error("End date must be after start date")
           }
         },
       }
     },
+    createdAt: DataTypes.DATE,
+    updatedAt: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Event',
+    defaultScope: {
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', "description", "capacity", "price"],
+      }
+    }
   });
   return Event;
 };

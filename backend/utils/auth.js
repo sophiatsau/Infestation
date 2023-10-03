@@ -4,7 +4,7 @@
 
 const jwt = require('jsonwebtoken');
 const {jwtConfig} = require('../config');
-const {User} = require('../db/models');
+const {Group, Membership, GroupImage, User, Venue, Event, sequelize} = require('../db/models');
 
 const {secret, expiresIn} = jwtConfig;
 
@@ -72,12 +72,101 @@ const requireAuth = function (req, _res, next) {
     return next(err);
 }
 
-const authorizationError = function (next) {
+const authorizationError = function () {
   const err = new Error('Forbidden');
   err.title = 'Authorization required';
   err.errors = { message: 'Forbidden' };
   err.status = 403;
-  return next(err);
+  return err;
 }
 
-module.exports = {setTokenCookie, restoreUser, requireAuth, authorizationError};
+/*************** GROUP **************** */
+
+async function checkGroup(req,res,next) {
+  const group = await Group.findByPk(req.params.groupId);
+
+  if (!group) {
+      const err = new Error("Group couldn't be found")
+      err.status = 404;
+      return next(err)
+  }
+
+  req.group = group;
+
+  return next();
+}
+
+function isOrganizer(req,res,next) {
+  if (req.group.toJSON().organizerId !== req.user.id) {
+      return next(authorizationError())
+  }
+
+  next();
+}
+
+/*************** VENUE **************** */
+
+async function checkVenue(req, res, next) {
+  req.venue = await Venue.findByPk(req.params.venueId)
+
+  if (!req.venue) {
+      const err = new Error("Venue couldn't be found")
+      err.status = 404;
+      return next(err)
+  }
+
+  return next();
+}
+
+//optional? remove? not optimal?
+function addGroupToVenue(req, res, next) {
+  req.params.groupId = req.venue.toJSON().groupId;
+
+  return next();
+}
+
+async function isCoHost(req, res, next) {
+  //check is user is co-host of groupId
+  const group = await Group.findByPk(req.params.groupId);
+
+  const isCoHost = await Membership.findOne({
+      where: {
+          userId: req.user.id,
+          groupId: group.toJSON().id,
+          status: "co-host"
+      }
+  })
+
+  if (!isCoHost) return next(authorizationError());
+
+  return next()
+}
+
+/********************* EVENTS ******************* */
+async function checkEvent(req, res, next) {
+  req.event = await Event.findByPk(req.params.eventId)
+
+  if (!req.event) {
+      const err = new Error("Event couldn't be found")
+      err.status = 404;
+      return next(err)
+  }
+
+  return next();
+}
+
+module.exports = {
+  setTokenCookie,
+  restoreUser,
+  requireAuth,
+  authorizationError,
+
+  checkGroup,
+  isOrganizer,
+
+  checkVenue,
+  addGroupToVenue,
+  isCoHost,
+
+  checkEvent,
+};
