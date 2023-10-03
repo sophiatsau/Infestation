@@ -199,6 +199,23 @@ router.put('/:groupId', requireAuth, validateGroup, async (req,res,next) => {
 // Deletes an existing group.
 // Require Authentication: true
 // Require proper authorization: Group must belong to the current user
+router.delete('/:groupId', requireAuth, async (req,res,next) => {
+    const organizerId = req.user.id;
+    const {groupId} = req.params;
 
+    const group = await Group.findByPk(groupId);
+
+    groupValidate(group, next);
+
+    if (group.toJSON().organizerId !== organizerId) {
+        return next(authorizationError(next))
+    }
+
+    await group.destroy()
+
+    return res.json({
+        "message": "Successfully deleted"
+      });
+})
 
 module.exports = router;
