@@ -8,6 +8,8 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
+options.tableName = "Users";
+
 const userInfo = [
   {
     email: 'demo@user.io',
@@ -41,8 +43,10 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete('Users', {
-      email: userInfo.map(user => user.email),
-    });
+    await queryInterface.bulkDelete(options)
+
+    // await queryInterface.bulkDelete('Users', {
+    //   email: userInfo.map(user => user.email),
+    // });
   }
 };

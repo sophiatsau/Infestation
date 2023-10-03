@@ -1,30 +1,41 @@
 'use strict';
 const {
-  Model
+  Model, Op
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+
+  // const {Membership, GroupImage} = require('../models')
+
   class Group extends Model {
+
+    // addNumMembers() {
+    //   const group = this.toJSON();
+    //   group.numMembers = group.Memberships.length;
+    //   delete group.Memberships;
+    //   return group;
+    // }
 
     static associate(models) {
       Group.belongsTo(models.User, {
         foreignKey: 'organizerId',
+        as: "Organizer"
       })
 
       Group.hasMany(models.Event, {
         foreignKey: "groupId",
-      }, {onDelete: "CASCADE"})
+        onDelete: "CASCADE", hooks: true})
 
       Group.hasMany(models.Venue, {
         foreignKey: "groupId",
-      }, {onDelete: "CASCADE"})
+        onDelete: "CASCADE", hooks: true})
 
       Group.hasMany(models.GroupImage, {
         foreignKey: "groupId",
-      }, {onDelete: "CASCADE"})
+        onDelete: "CASCADE", hooks: true})
 
       Group.hasMany(models.Membership, {
         foreignKey: "groupId",
-      }, {onDelete: "CASCADE"})
+        onDelete: "CASCADE", hooks: true})
     }
   }
   Group.init({

@@ -8,6 +8,8 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;
 }
 
+options.tableName = "Events"
+
 const eventInfo = [
   {
     venueId: 1,
@@ -42,8 +44,10 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete('Events', {
-      name: eventInfo.map(event => event.name),
-    });
+    await queryInterface.bulkDelete(options)
+
+    // await queryInterface.bulkDelete('Events', {
+    //   name: eventInfo.map(event => event.name),
+    // });
   }
 };

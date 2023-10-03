@@ -40,7 +40,8 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete(options, {url: GroupImagesData.map(data => data.url)})
+    await queryInterface.bulkDelete(options,)
+    // {url: GroupImagesData.map(data => data.url)}
 
   }
 };

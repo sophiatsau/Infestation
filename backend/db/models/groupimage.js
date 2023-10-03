@@ -18,6 +18,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'GroupImage',
+    defaultScope: {
+      attributes: ['id','url','preview']
+    }
   });
   return GroupImage;
 };
