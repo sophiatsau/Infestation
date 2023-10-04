@@ -235,4 +235,71 @@ router.post('/:groupId/events', requireAuth, checkGroup, isCoHost, validateEvent
     res.json(cleanEvent);
 })
 
+/************************* MEMBERSHIPS ***************** */
+
+//Get all Members of a Group specified by its id
+router.get('/:groupId/members', checkGroup, async (req,res,next) => {
+    const {groupId} = req.params;
+
+    const isCoHost = await Membership.findOne({
+        where: {
+            userId: req.user.id,
+            groupId,
+            status: "co-host"
+        }
+    })
+
+    const status = ['co-host', 'member']
+    //if is co-host, include pending
+    if (isCoHost) status.push('pending')
+
+    const members = await User.findAll({
+        attributes: ['id','firstName','lastName'],
+        include: {
+            model: Membership,
+            where: {
+                status,
+                groupId,
+            },
+            attributes: ["status"]
+        }
+    });
+
+    const Members = members.map(member => {
+        member = member.toJSON();
+        member.Membership = member.Memberships[0];
+        delete member.Memberships;
+        return member;
+    })
+
+    res.json({Members});
+})
+
+//Request a Membership for a Group based on the Group's id
+router.post('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
+    //if already has pending membership, 400 error
+    res.status(400)
+    return next(new Error("Membership has already been re  quested"))
+
+    //if already member,
+    res.status(400)
+    return next(new Error("User is already a member of the group"))
+
+    const {memberId, status} = {};
+    res.json({memberId, status});
+})
+
+//Change the status of a membership for a group specified by id
+router.put('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
+    const {memberId, status} = req.body
+    //authorization depends on organizer or co-host
+    res.json()
+})
+
+router.delete('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
+    //authorize: group host or user whose membership being deleted
+    res.json()
+})
+
+
 module.exports = router;
