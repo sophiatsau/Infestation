@@ -277,6 +277,7 @@ router.get('/:groupId/members', checkGroup, async (req,res,next) => {
 
 //Request a Membership for a Group based on the Group's id
 router.post('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
+    return res.json('in progress')
     //if already has pending membership, 400 error
     res.status(400)
     return next(new Error("Membership has already been re  quested"))
@@ -291,6 +292,8 @@ router.post('/:groupId/membership', requireAuth, checkGroup, async (req,res,next
 
 //Change the status of a membership for a group specified by id
 router.put('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
+    return res.json('in progress')
+
     const {memberId, status} = req.body
     //authorization depends on organizer or co-host
     res.json()
