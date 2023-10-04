@@ -72,8 +72,9 @@ const requireAuth = function (req, _res, next) {
     return next(err);
 }
 
-const authorizationError = function () {
-  const err = new Error('Forbidden');
+const authorizationError = function (message) {
+  const err = new Error();
+  err.message = message || "Forbidden"
   err.title = 'Authorization required';
   err.errors = { message: 'Forbidden' };
   err.status = 403;

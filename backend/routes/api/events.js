@@ -105,6 +105,25 @@ const validateAttendeeStatus = [
     handleValidationErrors
 ];
 
+async function isHostOrAttendeeDelete(req,res,next) {
+    const eventId = req.params.eventId;
+    const userId = req.user.id;
+    const groupId = req.event.groupId;
+
+    req.attendee = await Attendance.findOne({
+        where: {
+            eventId, userId,
+        }
+    })
+
+    const group = await Group.findByPk(groupId)
+    const isOrganizer = checkOrganizer(group.organizerId,userId)
+
+    if (!req.attendee && !isOrganizer) return next(authorizationError("Only the User or organizer may delete an Attendance"));
+
+    return next();
+}
+
 /***************** ROUTE HANDLERS *********** */
 
 const router = express.Router();
@@ -283,7 +302,28 @@ router.put('/:eventId/attendance', requireAuth, checkEvent, isEventOrganizerOrCo
 })
 
 //Delete attendance to an event specified by id
+router.delete('/:eventId/attendance', requireAuth, checkEvent, isHostOrAttendeeDelete, async (req,res,next) => {
+    const {userId} = req.body;
+    const eventId = req.params.eventId;
 
+    const attendance = await Attendance.findOne({
+        where: {
+            userId,
+            eventId,
+        }
+    })
 
+    if (!attendance) {
+        const err = new Error("Attendance does not exist for this User");
+        err.status = 404;
+        return next(err)
+    } else {
+        await attendance.destroy();
+
+        return res.json({
+            message: "Successfully deleted attendance from event"
+        });
+    }
+})
 
 module.exports = router;
