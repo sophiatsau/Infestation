@@ -5,7 +5,7 @@ const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
 const { requireAuth, checkEvent, authorizationError, isCoHost} = require('../../utils/auth');
-const { Event, Attendance, Group, Membership, Venue, sequelize, } = require('../../db/models');
+const { Event, Attendance, Group, Membership, Venue, User, sequelize, } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
@@ -62,6 +62,22 @@ async function isAttending(req,res,next) {
 async function addGroupIdToEvent(req,res,next) {
     req.params.groupId = req.event.toJSON().groupId
     next();
+}
+
+async function checkCohost(userId, groupId) {
+    const isCoHost = await Membership.findOne({
+        where: {
+            userId,
+            groupId,
+            status: "co-host"
+        }
+    })
+
+    return !!isCoHost
+}
+
+function checkOrganizer(organizerId, userId) {
+    return organizerId === userId;
 }
 
 /***************** ROUTE HANDLERS *********** */
@@ -142,5 +158,54 @@ router.delete('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isCoHost,
 
     res.json({"message": "Successfully deleted"})
 })
+
+/**************************** ATTENDEES ************** */
+//Get all Attendees of an Event specified by its id
+router.get('/:eventId/attendees', checkEvent, async (req,res,next) => {
+    const eventId = req.params.eventId;
+    const event = await Event.findByPk(eventId);
+    const userId = req.user.id
+    const group = await event.getGroup();
+    const groupId = group.id;
+
+    const status = ["attending", "waitlist"]
+
+    if (await checkCohost(userId,groupId) || checkOrganizer(group.organizerId, userId)) {
+        status.push('pending')
+    }
+
+    console.log("event", eventId, "group", groupId)
+
+    const attendees = await User.findAll({
+        attributes: ['id','firstName','lastName'],
+        include: {
+            model: Attendance,
+            where: {
+                status,
+                eventId,
+            },
+            attributes: ["status"]
+        }
+    });
+
+    return res.json({Attendees: attendees})
+
+    const Members = members.map(member => {
+        member = member.toJSON();
+        member.Membership = member.Memberships[0];
+        delete member.Memberships;
+        return member;
+    })
+
+    res.json({Members});
+})
+
+//Request to Attend an Event based on the Event's id
+
+//Change the status of an attendance for an event specified by id
+
+//Delete attendance to an event specified by id
+
+
 
 module.exports = router;
