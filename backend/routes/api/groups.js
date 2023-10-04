@@ -61,7 +61,44 @@ function addNumMembers(group) {
 }
 
 /******************* MIDDLEWARE *************** */
+const validateUpdateMembership = [
+    check("status")
+        .not().isIn(["pending"])
+        .withMessage("Cannot change a membership status to pending"),
+    check("memberId")
+        .custom( async(memberId) => {
+            const memberExists = await User.findByPk(memberId)
 
+            if (!memberExists) throw new Error()
+            return true;
+        })
+        .withMessage("User couldn't be found"),
+    handleValidationErrors,
+]
+
+async function isHostOrCurrentUser(req,res,next) {
+    const status = req.body.status;
+    if (status==="member") {
+        const isCoHost = await Membership.findOne({
+            where: {
+                userId: req.user.id,
+                groupId: req.params.groupId,
+                status: "co-host"
+            }
+        })
+
+        if (!isCoHost) {
+            next(authorizationError())
+        }
+    } else if (status==="co-host") {
+        const isOrganizer = req.group.organizerId === req.user.id;
+
+        if (!isOrganizer) {
+            next(authorizationError())
+        }
+    }
+    next();
+}
 
 /***************** ROUTE HANDLERS *********** */
 
@@ -312,12 +349,32 @@ router.post('/:groupId/membership', requireAuth, checkGroup, async (req,res,next
 })
 
 //Change the status of a membership for a group specified by id
-router.put('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
-    return res.json('in progress')
+router.put('/:groupId/membership', requireAuth, checkGroup,isHostOrCurrentUser, validateUpdateMembership, async (req,res,next) => {
+    const {memberId, status} = req.body;
 
-    const {memberId, status} = req.body
-    //authorization depends on organizer or co-host
-    res.json()
+    const updateMembership = await Membership.findOne({
+        where: {
+            userId: memberId,
+            groupId: req.params.groupId,
+        }
+    })
+
+    if (!updateMembership) {
+        const err = new Error("Membership between the user and the group does not exist");
+        err.status = 404;
+        return next(err)
+    }
+
+    await updateMembership.update({status})
+
+    const membership = {
+        id: updateMembership.id,
+        groupId: parseInt(req.params.groupId),
+        memberId,
+        status
+    }
+
+    res.json(membership)
 })
 
 router.delete('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
