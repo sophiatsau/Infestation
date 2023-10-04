@@ -80,6 +80,23 @@ function checkOrganizer(organizerId, userId) {
     return organizerId === userId;
 }
 
+async function isGroupMember(req,res,next) {
+    //find event => groupId => membership
+    const groupId = req.event.groupId;
+    const membership = await Membership.findOne({
+        where: {
+            groupId,
+            userId: req.user.id,
+        }
+    })
+
+    if (!membership) {
+        return next(authorizationError());
+    }
+
+    next()
+}
+
 /***************** ROUTE HANDLERS *********** */
 
 const router = express.Router();
@@ -174,8 +191,6 @@ router.get('/:eventId/attendees', checkEvent, async (req,res,next) => {
         status.push('pending')
     }
 
-    console.log("event", eventId, "group", groupId)
-
     const attendees = await User.findAll({
         attributes: ['id','firstName','lastName'],
         include: {
@@ -189,18 +204,47 @@ router.get('/:eventId/attendees', checkEvent, async (req,res,next) => {
     });
 
     return res.json({Attendees: attendees})
-
-    const Members = members.map(member => {
-        member = member.toJSON();
-        member.Membership = member.Memberships[0];
-        delete member.Memberships;
-        return member;
-    })
-
-    res.json({Members});
 })
 
 //Request to Attend an Event based on the Event's id
+router.post('/:eventId/attendance', requireAuth, checkEvent, isGroupMember, async (req,res,next) => {
+    const userId = req.user.id;
+    const eventId = req.event.id;
+
+    const attendance = await Attendance.findOne({
+        where: {
+            userId,
+            eventId,
+        }
+    })
+
+    if (!attendance) {
+        await Attendance.create({
+            userId,
+            eventId,
+            status: "pending",
+        });
+        return res.json({userId, status:"pending"});
+
+    } else if (attendance.status === "pending") {
+        //if already pending attendance, error
+        const err = new Error("Attendance has already been requested");
+        err.status = 400;
+        return next(err);
+
+    } else if (attendance.status === "attending") {
+        //if already attending, error
+        const err = new Error("User is already an attendee of the event");
+        err.status = 400;
+        return next(err);
+
+    } else if (attendance.status === "waitlist") {
+        //if waitList, error, but this ain't on the docs
+        const err = new Error("User is already on the waitlist for the event");
+        err.status = 400;
+        return next(err);
+    }
+})
 
 //Change the status of an attendance for an event specified by id
 
