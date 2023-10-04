@@ -18,10 +18,10 @@ const handleValidationErrors = (req, _res, next) => {
         errors[path] = error.msg
       });
 
-    const err = Error("Bad request.");
+    const err = Error("Validation Error");
     err.errors = errors; //formatted errors passed on here
     err.status = 400;
-    err.title = "Bad request.";
+    err.title = "Validation Error";
     next(err);
   }
   next();

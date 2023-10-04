@@ -61,7 +61,62 @@ function addNumMembers(group) {
 }
 
 /******************* MIDDLEWARE *************** */
+const validateMemberStatus = [
+    check("status")
+        .not().isIn(["pending"])
+        .withMessage("Cannot change a membership status to pending"),
+    handleValidationErrors,
+]
+const validateUser = [
+    check("memberId")
+        .custom( async(memberId) => {
+            const userExists = await User.findByPk(memberId)
 
+            if (!userExists) throw new Error()
+            return true;
+        })
+        .withMessage("User couldn't be found"),
+    handleValidationErrors,
+]
+
+async function isHostOrCurrentUser(req,res,next) {
+    const status = req.body.status;
+    if (status==="member") {
+        const isCoHost = await Membership.findOne({
+            where: {
+                userId: req.user.id,
+                groupId: req.params.groupId,
+                status: "co-host"
+            }
+        })
+
+        if (!isCoHost) {
+            next(authorizationError())
+        }
+    } else if (status==="co-host") {
+        const isOrganizer = req.group.organizerId === req.user.id;
+
+        if (!isOrganizer) {
+            next(authorizationError())
+        }
+    }
+    next();
+}
+
+async function isHostOrMemberDelete(req,res,next) {
+    const isCoHost = await Membership.findOne({
+        where: {
+            userId: req.user.id,
+            groupId: req.params.groupId,
+            status: "co-host"
+        }
+    })
+
+    const isOrganizer = req.group.organizerId === req.user.id;
+
+    if (isCoHost || isOrganizer) return next();
+    else return next(authorizationError());
+}
 
 /***************** ROUTE HANDLERS *********** */
 
@@ -161,17 +216,12 @@ router.post('/:groupId/images', requireAuth, checkGroup, async (req,res,next) =>
     return res.json({id, url, preview});
 })
 
-// Updates and returns an existing group.
-// Require Authentication: true
-// Require proper authorization: Group must belong to the current user
+// Updates/edits and returns an existing group.
 router.put('/:groupId', requireAuth, checkGroup, isOrganizer, validateGroup, async (req,res,next) => {
     let group = req.group;
     const {name, about, type, private, city, state} = req.body
 
     await group.update({name, about, type, private, city, state})
-
-    group = group.toJSON();
-    delete group.updatedAt;
 
     return res.json(group);
 })
@@ -239,5 +289,134 @@ router.post('/:groupId/events', requireAuth, checkGroup, isCoHost, validateEvent
 
     res.json(cleanEvent);
 })
+
+/************************* MEMBERSHIPS ***************** */
+
+//Get all Members of a Group specified by its id
+router.get('/:groupId/members', checkGroup, async (req,res,next) => {
+    const {groupId} = req.params;
+
+    const isCoHost = await Membership.findOne({
+        where: {
+            userId: req.user.id,
+            groupId,
+            status: "co-host"
+        }
+    })
+
+    const status = ['co-host', 'member']
+    //if is co-host, include pending
+    if (isCoHost) status.push('pending')
+
+    const members = await User.findAll({
+        attributes: ['id','firstName','lastName'],
+        include: {
+            model: Membership,
+            where: {
+                status,
+                groupId,
+            },
+            attributes: ["status"]
+        }
+    });
+
+    const Members = members.map(member => {
+        member = member.toJSON();
+        member.Membership = member.Memberships[0];
+        delete member.Memberships;
+        return member;
+    })
+
+    res.json({Members});
+})
+
+//Request a Membership for a Group based on the Group's id
+router.post('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
+    const userId = req.user.id;
+    const groupId = req.params.groupId;
+
+    const existingMembership = await Membership.findOne({
+        where: {
+            userId,
+            groupId,
+        }
+    })
+
+    if (!existingMembership) {
+        await Membership.create({
+            userId,
+            groupId,
+            status: "pending",
+        })
+
+        return res.json({
+            memberId: userId,
+            status: "pending",
+        })
+    } else if (existingMembership.status==="pending") {
+        //if membership already requested
+        const err = new Error("Membership has already been requested");
+        err.status = 400;
+        return next(err);
+    } else {
+        //if already member
+        const err = new Error("User is already a member of the group");
+        err.status = 400;
+        return next(err);
+    }
+})
+
+//Change the status of a membership for a group specified by id
+router.put('/:groupId/membership', requireAuth, checkGroup,isHostOrCurrentUser, validateMemberStatus, validateUser, async (req,res,next) => {
+    const {memberId, status} = req.body;
+
+    const updateMembership = await Membership.findOne({
+        where: {
+            userId: memberId,
+            groupId: req.params.groupId,
+        }
+    })
+
+    if (!updateMembership) {
+        const err = new Error("Membership between the user and the group does not exist");
+        err.status = 404;
+        return next(err)
+    }
+
+    await updateMembership.update({status})
+
+    const membership = {
+        id: updateMembership.id,
+        groupId: parseInt(req.params.groupId),
+        memberId,
+        status
+    }
+
+    res.json(membership)
+})
+
+router.delete('/:groupId/membership', requireAuth, checkGroup, isHostOrMemberDelete, validateUser, async (req,res,next) => {
+    const {memberId} = req.body;
+
+    const membership = await Membership.findOne({
+        where: {
+            userId: memberId,
+            groupId: req.params.groupId,
+        }
+    })
+
+    if (!membership) {
+        const err = new Error("Membership does not exist for this User");
+        err.status = 404;
+        return next(err)
+    }
+
+    await membership.destroy();
+
+    res.json({
+        message: "Successfully deleted membership from group"
+    })
+})
+
 
 module.exports = router;
