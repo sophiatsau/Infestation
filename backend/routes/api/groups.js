@@ -277,17 +277,38 @@ router.get('/:groupId/members', checkGroup, async (req,res,next) => {
 
 //Request a Membership for a Group based on the Group's id
 router.post('/:groupId/membership', requireAuth, checkGroup, async (req,res,next) => {
-    return res.json('in progress')
-    //if already has pending membership, 400 error
-    res.status(400)
-    return next(new Error("Membership has already been re  quested"))
+    const userId = req.user.id;
+    const groupId = req.params.groupId;
 
-    //if already member,
-    res.status(400)
-    return next(new Error("User is already a member of the group"))
+    const existingMembership = await Membership.findOne({
+        where: {
+            userId,
+            groupId,
+        }
+    })
 
-    const {memberId, status} = {};
-    res.json({memberId, status});
+    if (!existingMembership) {
+        await Membership.create({
+            userId,
+            groupId,
+            status: "pending",
+        })
+
+        return res.json({
+            memberId: userId,
+            status: "pending",
+        })
+    } else if (existingMembership.status==="pending") {
+        //if membership already requested
+        const err = new Error("Membership has already been requested");
+        err.status = 400;
+        return next(err);
+    } else {
+        //if already member
+        const err = new Error("User is already a member of the group");
+        err.status = 400;
+        return next(err);
+    }
 })
 
 //Change the status of a membership for a group specified by id
