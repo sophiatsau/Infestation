@@ -155,6 +155,30 @@ async function checkEvent(req, res, next) {
   return next();
 }
 
+async function isEventOrganizerOrCohost(req,res,next) {
+  const isCohost = await Membership.findOne({
+      where: {
+          userId: req.user.id,
+          groupId: req.event.groupId,
+          status: "co-host"
+      }
+  })
+
+  req.group = await Group.findByPk(req.event.groupId);
+
+  let isOrganizer;
+
+  if (req.group) {
+    isOrganizer = req.group.organizerId === req.user.id;
+  }
+
+  if (isOrganizer || isCohost) {
+    return next();
+  } else {
+    return next(authorizationError());
+  }
+}
+
 module.exports = {
   setTokenCookie,
   restoreUser,
@@ -169,4 +193,5 @@ module.exports = {
   isCoHost,
 
   checkEvent,
+  isEventOrganizerOrCohost,
 };

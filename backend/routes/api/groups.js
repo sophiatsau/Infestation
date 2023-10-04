@@ -65,6 +65,10 @@ const validateMemberStatus = [
     check("status")
         .not().isIn(["pending"])
         .withMessage("Cannot change a membership status to pending"),
+    check('status')
+      .exists({ checkFalsy: true })
+      .isIn(["co-host", "member"])
+      .withMessage('Allowed status values: "co-host", "member", "pending"'),
     handleValidationErrors,
 ]
 const validateUser = [

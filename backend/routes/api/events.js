@@ -4,7 +4,7 @@ const {Op} = require('sequelize');
 const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
-const { requireAuth, checkEvent, authorizationError, isCoHost} = require('../../utils/auth');
+const { requireAuth, checkEvent, authorizationError, isCoHost, isEventOrganizerOrCohost} = require('../../utils/auth');
 const { Event, Attendance, Group, Membership, Venue, User, sequelize, } = require('../../db/models');
 
 //used to validate request bodies
@@ -96,6 +96,14 @@ async function isGroupMember(req,res,next) {
 
     next()
 }
+
+const validateAttendeeStatus = [
+    check('status')
+      .exists({ checkFalsy: true })
+      .isIn(["attending", "waitlist", "pending"])
+      .withMessage('Allowed status values: "attending", "waitlist", "pending"'),
+    handleValidationErrors
+];
 
 /***************** ROUTE HANDLERS *********** */
 
@@ -247,6 +255,32 @@ router.post('/:eventId/attendance', requireAuth, checkEvent, isGroupMember, asyn
 })
 
 //Change the status of an attendance for an event specified by id
+router.put('/:eventId/attendance', requireAuth, checkEvent, isEventOrganizerOrCohost, validateAttendeeStatus, async (req,res,next) => {
+    const {userId, status} = req.body;
+    const eventId = req.event.id;
+
+    if (status==="pending") {
+        const err = new Error("Cannot change an attendance status to pending")
+        err.status = 400;
+        return next(err);
+    }
+
+    const attendance = await Attendance.findOne({
+        where: {
+            userId,
+            eventId,
+        }
+    })
+
+    if (!attendance) {
+        const err = new Error("Attendance between the user and the event does not exist");
+        err.status = 404;
+        return next(err);
+    } else {
+        attendance.update(status);
+        return res.json({id: attendance.id, eventId, userId, status});
+    }
+})
 
 //Delete attendance to an event specified by id
 
