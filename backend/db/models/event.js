@@ -73,7 +73,10 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE,
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: new Date(),
+    }
   }, {
     sequelize,
     modelName: 'Event',

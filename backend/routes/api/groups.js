@@ -161,17 +161,12 @@ router.post('/:groupId/images', requireAuth, checkGroup, async (req,res,next) =>
     return res.json({id, url, preview});
 })
 
-// Updates and returns an existing group.
-// Require Authentication: true
-// Require proper authorization: Group must belong to the current user
+// Updates/edits and returns an existing group.
 router.put('/:groupId', requireAuth, checkGroup, isOrganizer, validateGroup, async (req,res,next) => {
     let group = req.group;
     const {name, about, type, private, city, state} = req.body
 
     await group.update({name, about, type, private, city, state})
-
-    group = group.toJSON();
-    delete group.updatedAt;
 
     return res.json(group);
 })

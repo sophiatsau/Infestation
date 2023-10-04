@@ -89,9 +89,6 @@ router.get('/:eventId', checkEvent, async(req,res,next) => {
         where: {status: "attending"}
     })).length;
 
-    const previewImage = (await event.getEventImages({where: {preview: true}}))[0];
-    jsonEvent.previewImage = previewImage ? previewImage.url : null
-
     jsonEvent.Group = await event.getGroup({
         attributes: ["id","name","private","city","state"]
     });

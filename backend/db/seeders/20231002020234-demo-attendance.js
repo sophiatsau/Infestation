@@ -13,7 +13,7 @@ options.tableName = 'Attendances';
 const AttendanceInfo = [
   {
     eventId: 1,
-    userId: 1,
+    userId: 2,
     status: "attending",
   },
   {
