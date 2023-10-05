@@ -127,15 +127,61 @@ async function isHostOrAttendeeDelete(req,res,next) {
     return next();
 }
 
+const validateQuery = [
+    check('page')
+      .optional()
+      .isInt({min:1})
+      .withMessage("Page must be greater than or equal to 1"),
+    check('size')
+      .optional()
+      .isInt({min:1})
+      .withMessage("Size must be greater than or equal to 1"),
+    check('name')
+      .optional()
+      .isString()
+      .withMessage("Name must be a string"),
+    check('type')
+      .optional()
+      .isIn(['Online', 'In person', 'In Person'])
+      .withMessage("Type must be 'Online' or 'In Person'"),
+    check('startDate')
+      .optional()
+      .custom(startDate => {    //!UPDATE THIS!!
+        return true;
+      })
+      .withMessage("Start date must be a valid datetime"),
+    handleValidationErrors
+];
+
 /***************** ROUTE HANDLERS *********** */
 
 const router = express.Router();
 
 //get all events
-router.get('/', async(req,res,next) => {
-    const events = await Event.findAll()
+router.get('/', validateQuery, async(req,res,next) => {
+    let {page,size,name,type,startDate} = req.body;
+    const where = {};
 
-    res.json({Events: await addEventDetails(events)})
+    if (name) where.name = name;
+    if (type) where.type = type;
+    if (startDate) where.startDate = startDate;
+
+    page = !page ?  1 : page > 10 ? 10 : page;
+    size = !size || size > 20 ? 20 : size;
+
+    const pagination = {
+        limit: size,
+        offset: size * (page-1),
+    };
+
+    const events = await Event.findAll({
+        ...where,
+        ...pagination
+    })
+
+    const Events = await addEventDetails(events)
+
+    res.json({Events})
 })
 
 //get details of events by id
