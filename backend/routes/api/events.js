@@ -57,9 +57,19 @@ async function isAttending(req,res,next) {
         }
     })
 
-    if (!isCoHost && !isAttending) return next(authorizationError());
+    req.group = await Group.findByPk(req.event.groupId);
 
-    next();
+    let isOrganizer;
+
+    if (req.group) {
+      isOrganizer = req.group.organizerId === req.user.id;
+    }
+
+    if (isCoHost || isAttending || isOrganizer) {
+        return next();
+    } else {
+        return next(authorizationError());
+    }
 }
 
 async function addGroupIdToEvent(req,res,next) {
@@ -217,7 +227,7 @@ router.post("/:eventId/images", requireAuth, checkEvent, isAttending, async (req
 })
 
 //do we really need to check venue...
-router.put('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isCoHost, validateEvent, async (req,res,next) => {
+router.put('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isEventOrganizerOrCohost, validateEvent, async (req,res,next) => {
     const {venueId, name, type, capacity, price, description, startDate, endDate} = req.body;
     const {id, groupId} = req.event
 

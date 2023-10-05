@@ -17,7 +17,7 @@ const AttendanceInfo = [
     status: "attending",
   },
   {
-    eventId: 1,
+    eventId: 2,
     userId: 2,
     status: "waitlist",
   },
