@@ -8,7 +8,9 @@ const { requireAuth,
     authorizationError,
     checkGroup,
     isOrganizer,
-    isCoHost, } = require('../../utils/auth');
+    isCoHost,
+    isGroupOrganizerOrCohost
+ } = require('../../utils/auth');
 const { Group, Membership, GroupImage, User, Venue, Event, sequelize } = require('../../db/models');
 
 //used to validate request bodies. check, handleValidationErrors are now unnecessary.
@@ -127,7 +129,6 @@ async function isHostOrMemberDelete(req,res,next) {
 const router = express.Router();
 
 //Returns all the groups.
-//authenticate: false
 router.get('/', async (req,res,next) => {
 
     const groups = await Group.findAll();
@@ -138,7 +139,6 @@ router.get('/', async (req,res,next) => {
 })
 
 //Get all Groups joined or organized by the Current User
-//authentication: true
 router.get('/current', requireAuth, async (req,res,next) => {
     const userId = req.user.id;
 
@@ -160,7 +160,6 @@ router.get('/current', requireAuth, async (req,res,next) => {
 })
 
 //Get details of a Group from an id
-//authenticate: false
 router.get('/:groupId', checkGroup, async (req,res,next) => {
     const include = [
         {
@@ -189,8 +188,6 @@ router.get('/:groupId', checkGroup, async (req,res,next) => {
 })
 
 //Creates and returns a new group.
-//authentication: true
-//validate body
 router.post('/', requireAuth, validateGroup, async (req,res,next) => {
     req.body.organizerId = req.user.id
     const newGroup = await Group.create(req.body);
@@ -202,8 +199,6 @@ router.post('/', requireAuth, validateGroup, async (req,res,next) => {
 })
 
 // Create and return a new image for a group specified by id.
-// Require Authentication: true
-// Require proper authorization: Current User must be the organizer for the group
 router.post('/:groupId/images', requireAuth, checkGroup, async (req,res,next) => {
     const organizerId = req.user.id;
     const group = req.group
@@ -231,8 +226,6 @@ router.put('/:groupId', requireAuth, checkGroup, isOrganizer, validateGroup, asy
 })
 
 // Deletes an existing group.
-// Require Authentication: true
-// Require proper authorization: Group must belong to the current user
 router.delete('/:groupId', requireAuth, checkGroup, isOrganizer, async (req,res,next) => {
     await req.group.destroy()
 
@@ -243,11 +236,8 @@ router.delete('/:groupId', requireAuth, checkGroup, isOrganizer, async (req,res,
 
 /************************** VENUES ***************** */
 
-/*Returns all venues for a group specified by its id
-Require Authentication: true
-Require Authorization: Current User must be the organizer of the group or a member of the group with a status of "co-host"
-*/
-router.get('/:groupId/venues', requireAuth, checkGroup, isCoHost, async (req,res,next) => {
+/*Returns all venues for a group specified by its id*/
+router.get('/:groupId/venues', requireAuth, checkGroup, isGroupOrganizerOrCohost, async (req,res,next) => {
     const group = req.group;
 
     const venues = await group.getVenues();
