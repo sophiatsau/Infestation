@@ -32,10 +32,9 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete(options)
-
-    // await queryInterface.bulkDelete('EventImages', {
-    //   url: eventImageInfo.map(data => data.url),
-    // });
+    const Op = Sequelize.Op;
+await queryInterface.bulkDelete('EventImages', {
+      url: {[Op.in]: eventImageInfo.map(data => data.url)},
+    }, {});
   }
 };

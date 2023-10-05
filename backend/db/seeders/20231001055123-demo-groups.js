@@ -36,7 +36,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete(options)
-    // await queryInterface.bulkDelete(options, {name: groupsData.map(data => data.name)});
+    const Op = Sequelize.Op;
+    await queryInterface.bulkDelete(options, {name: {[Op.in]: groupsData.map(data => data.name)}}, {});
   }
 };

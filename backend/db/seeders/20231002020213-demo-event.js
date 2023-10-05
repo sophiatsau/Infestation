@@ -44,10 +44,9 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete(options)
-
-    // await queryInterface.bulkDelete('Events', {
-    //   name: eventInfo.map(event => event.name),
-    // });
+    const Op = Sequelize.Op;
+await queryInterface.bulkDelete('Events', {
+      name: {[Op.in]: eventInfo.map(event => event.name)},
+    }, {});
   }
 };
