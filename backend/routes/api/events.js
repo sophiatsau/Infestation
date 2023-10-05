@@ -247,7 +247,7 @@ router.put('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isEventOrgan
     res.json(eventObj);
 });
 
-router.delete('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isCoHost, async (req,res,next) => {
+router.delete('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isEventOrganizerOrCohost, async (req,res,next) => {
     await req.event.destroy();
 
     res.json({"message": "Successfully deleted"})

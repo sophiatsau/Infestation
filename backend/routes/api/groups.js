@@ -8,7 +8,7 @@ const { requireAuth,
     authorizationError,
     checkGroup,
     isOrganizer,
-    isCoHost,
+    checkOrganizer,
     isGroupOrganizerOrCohost
  } = require('../../utils/auth');
 const { Group, Membership, GroupImage, User, Venue, Event, sequelize } = require('../../db/models');
@@ -110,17 +110,11 @@ async function authChangeMembershipStatus(req,res,next) {
 }
 
 async function isHostOrMemberDelete(req,res,next) {
-    const isCoHost = await Membership.findOne({
-        where: {
-            userId: req.user.id,
-            groupId: req.params.groupId,
-            status: "co-host"
-        }
-    })
+    const isOrganizer = checkOrganizer(req.group.organizerId,req.user.id)
 
     const isMember = req.body.memberId === req.user.id;
 
-    if (isCoHost || isMember) return next();
+    if (isOrganizer || isMember) return next();
     else return next(authorizationError());
 }
 
