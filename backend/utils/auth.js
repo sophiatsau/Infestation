@@ -4,7 +4,7 @@
 
 const jwt = require('jsonwebtoken');
 const {jwtConfig} = require('../config');
-const {Group, Membership, GroupImage, User, Venue, Event, sequelize} = require('../db/models');
+const {Group, Membership, GroupImage, User, Venue, Event, EventImage, sequelize} = require('../db/models');
 
 const {secret, expiresIn} = jwtConfig;
 
@@ -81,6 +81,23 @@ const authorizationError = function (message) {
   return err;
 }
 
+/*************** HELPERS *************************** */
+async function checkCohost(userId, groupId) {
+  const isCoHost = await Membership.findOne({
+      where: {
+          userId,
+          groupId,
+          status: "co-host"
+      }
+  })
+
+  return !!isCoHost
+}
+
+function checkOrganizer(organizerId, userId) {
+  return organizerId === userId;
+}
+
 /*************** GROUP **************** */
 
 async function checkGroup(req,res,next) {
@@ -103,6 +120,21 @@ function isOrganizer(req,res,next) {
   }
 
   next();
+}
+
+async function isGroupOrganizerOrCohost(req,res,next) {
+  const groupId = req.group.id;
+  const organizerId = req.group.organizerId;
+  const userId = req.user.id
+
+  const isCohost = await checkCohost(userId, groupId);
+  const isOrganizer = checkOrganizer(organizerId, userId);
+
+  if (isOrganizer || isCohost) {
+    return next();
+  } else {
+    return next(authorizationError());
+  }
 }
 
 /*************** VENUE **************** */
@@ -180,14 +212,45 @@ async function isEventOrganizerOrCohost(req,res,next) {
   }
 }
 
+/********************* IMAGES *********************** */
+async function addGroupToGroupImage(req,res,next) {
+  req.image = await GroupImage.unscoped().findByPk(req.params.imageId);
+  if (!req.image) {
+    const err = new Error("Group Image couldn't be found");
+    err.status = 404;
+    return next(err);
+  }
+
+  req.group = await Group.findByPk(req.image.groupId);
+
+  return next();
+}
+
+async function addGroupToEventImage(req,res,next) {
+  req.image = await EventImage.unscoped().findByPk(req.params.imageId);
+  if (!req.image) {
+    const err = new Error("Event Image couldn't be found");
+    err.status = 404;
+    return next(err);
+  }
+
+  const event = await Event.findByPk(req.image.eventId);
+  req.group = await event.getGroup();
+  return next();
+}
+
 module.exports = {
   setTokenCookie,
   restoreUser,
   requireAuth,
   authorizationError,
 
+  checkCohost,
+  checkOrganizer,
+
   checkGroup,
   isOrganizer,
+  isGroupOrganizerOrCohost,
 
   checkVenue,
   addGroupToVenue,
@@ -195,4 +258,7 @@ module.exports = {
 
   checkEvent,
   isEventOrganizerOrCohost,
+
+  addGroupToGroupImage,
+  addGroupToEventImage
 };

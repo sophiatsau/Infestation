@@ -4,7 +4,10 @@ const {Op} = require('sequelize');
 const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
-const { requireAuth, checkEvent, authorizationError, isCoHost, isEventOrganizerOrCohost} = require('../../utils/auth');
+const { requireAuth, checkEvent, authorizationError, isCoHost, isEventOrganizerOrCohost,
+    checkCohost,
+    checkOrganizer,
+} = require('../../utils/auth');
 const { Event, Attendance, Group, Membership, Venue, User, sequelize, } = require('../../db/models');
 
 //used to validate request bodies
@@ -64,21 +67,21 @@ async function addGroupIdToEvent(req,res,next) {
     next();
 }
 
-async function checkCohost(userId, groupId) {
-    const isCoHost = await Membership.findOne({
-        where: {
-            userId,
-            groupId,
-            status: "co-host"
-        }
-    })
+// async function checkCohost(userId, groupId) {
+//     const isCoHost = await Membership.findOne({
+//         where: {
+//             userId,
+//             groupId,
+//             status: "co-host"
+//         }
+//     })
 
-    return !!isCoHost
-}
+//     return !!isCoHost
+// }
 
-function checkOrganizer(organizerId, userId) {
-    return organizerId === userId;
-}
+// function checkOrganizer(organizerId, userId) {
+//     return organizerId === userId;
+// }
 
 async function isGroupMember(req,res,next) {
     //find event => groupId => membership
