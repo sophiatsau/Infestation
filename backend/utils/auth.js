@@ -153,7 +153,7 @@ async function checkVenue(req, res, next) {
 
 //optional? remove? not optimal?
 async function addGroupToVenue(req, res, next) {
-  req.params.group = await Group.findByPk(req.venue.groupId);
+  req.group = await Group.findByPk(req.venue.groupId);
 
   return next();
 }
