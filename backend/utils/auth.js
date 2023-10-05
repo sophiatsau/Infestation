@@ -4,7 +4,7 @@
 
 const jwt = require('jsonwebtoken');
 const {jwtConfig} = require('../config');
-const {Group, Membership, GroupImage, User, Venue, Event, sequelize} = require('../db/models');
+const {Group, Membership, GroupImage, User, Venue, Event, EventImage, sequelize} = require('../db/models');
 
 const {secret, expiresIn} = jwtConfig;
 
@@ -72,12 +72,30 @@ const requireAuth = function (req, _res, next) {
     return next(err);
 }
 
-const authorizationError = function () {
-  const err = new Error('Forbidden');
+const authorizationError = function (message) {
+  const err = new Error();
+  err.message = message || "Forbidden"
   err.title = 'Authorization required';
   err.errors = { message: 'Forbidden' };
   err.status = 403;
   return err;
+}
+
+/*************** HELPERS *************************** */
+async function checkCohost(userId, groupId) {
+  const isCoHost = await Membership.findOne({
+      where: {
+          userId,
+          groupId,
+          status: "co-host"
+      }
+  })
+
+  return !!isCoHost
+}
+
+function checkOrganizer(organizerId, userId) {
+  return organizerId === userId;
 }
 
 /*************** GROUP **************** */
@@ -102,6 +120,21 @@ function isOrganizer(req,res,next) {
   }
 
   next();
+}
+
+async function isGroupOrganizerOrCohost(req,res,next) {
+  const groupId = req.group.id;
+  const organizerId = req.group.organizerId;
+  const userId = req.user.id
+
+  const isCohost = await checkCohost(userId, groupId);
+  const isOrganizer = checkOrganizer(organizerId, userId);
+
+  if (isOrganizer || isCohost) {
+    return next();
+  } else {
+    return next(authorizationError());
+  }
 }
 
 /*************** VENUE **************** */
@@ -155,18 +188,77 @@ async function checkEvent(req, res, next) {
   return next();
 }
 
+async function isEventOrganizerOrCohost(req,res,next) {
+  const isCohost = await Membership.findOne({
+      where: {
+          userId: req.user.id,
+          groupId: req.event.groupId,
+          status: "co-host"
+      }
+  })
+
+  req.group = await Group.findByPk(req.event.groupId);
+
+  let isOrganizer;
+
+  if (req.group) {
+    isOrganizer = req.group.organizerId === req.user.id;
+  }
+
+  if (isOrganizer || isCohost) {
+    return next();
+  } else {
+    return next(authorizationError());
+  }
+}
+
+/********************* IMAGES *********************** */
+async function addGroupToGroupImage(req,res,next) {
+  req.image = await GroupImage.unscoped().findByPk(req.params.imageId);
+  if (!req.image) {
+    const err = new Error("Group Image couldn't be found");
+    err.status = 404;
+    return next(err);
+  }
+
+  req.group = await Group.findByPk(req.image.groupId);
+
+  return next();
+}
+
+async function addGroupToEventImage(req,res,next) {
+  req.image = await EventImage.unscoped().findByPk(req.params.imageId);
+  if (!req.image) {
+    const err = new Error("Event Image couldn't be found");
+    err.status = 404;
+    return next(err);
+  }
+
+  const event = await Event.findByPk(req.image.eventId);
+  req.group = await event.getGroup();
+  return next();
+}
+
 module.exports = {
   setTokenCookie,
   restoreUser,
   requireAuth,
   authorizationError,
 
+  checkCohost,
+  checkOrganizer,
+
   checkGroup,
   isOrganizer,
+  isGroupOrganizerOrCohost,
 
   checkVenue,
   addGroupToVenue,
   isCoHost,
 
   checkEvent,
+  isEventOrganizerOrCohost,
+
+  addGroupToGroupImage,
+  addGroupToEventImage
 };

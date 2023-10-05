@@ -4,8 +4,11 @@ const {Op} = require('sequelize');
 const Sequelize = require('sequelize')
 const bcrypt = require('bcryptjs');
 
-const { requireAuth, checkEvent, authorizationError, isCoHost} = require('../../utils/auth');
-const { Event, Attendance, Group, Membership, Venue, sequelize, } = require('../../db/models');
+const { requireAuth, checkEvent, authorizationError, isCoHost, isEventOrganizerOrCohost,
+    checkCohost,
+    checkOrganizer,
+} = require('../../utils/auth');
+const { Event, Attendance, Group, Membership, Venue, User, sequelize, } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
@@ -64,15 +67,112 @@ async function addGroupIdToEvent(req,res,next) {
     next();
 }
 
+async function isGroupMember(req,res,next) {
+    //find event => groupId => membership
+    const groupId = req.event.groupId;
+    const membership = await Membership.findOne({
+        where: {
+            groupId,
+            userId: req.user.id,
+        }
+    })
+
+    if (!membership) {
+        return next(authorizationError());
+    }
+
+    next()
+}
+
+const validateAttendeeStatus = [
+    check('status')
+      .exists({ checkFalsy: true })
+      .isIn(["attending", "waitlist", "pending"])
+      .withMessage('Allowed status values: "attending", "waitlist", "pending"'),
+    handleValidationErrors
+];
+
+async function isHostOrAttendeeDelete(req,res,next) {
+    const eventId = req.params.eventId;
+    const userId = req.user.id;
+    const groupId = req.event.groupId;
+
+    req.attendee = await Attendance.findOne({
+        where: {
+            eventId, userId,
+        }
+    })
+
+    const group = await Group.findByPk(groupId)
+    const isOrganizer = checkOrganizer(group.organizerId,userId)
+
+    if (!req.attendee && !isOrganizer) return next(authorizationError("Only the User or organizer may delete an Attendance"));
+
+    return next();
+}
+
+const validateQuery = [
+    check('page')
+      .optional({values: 'falsy'})
+      .isInt({min:1})
+      .withMessage("Page must be greater than or equal to 1"),
+    check('size')
+      .optional({values: 'falsy'})
+      .isInt({min:1})
+      .withMessage("Size must be greater than or equal to 1"),
+    check('name')
+      .optional({values: 'falsy'})
+      .isString()
+      .withMessage("Name must be a string"),
+    check('type')
+      .optional({values: 'falsy'})
+      .isIn(['Online', 'In person'])
+      .withMessage("Type must be 'Online' or 'In Person'"),
+    check('startDate')
+      .optional({values: 'falsy'})
+      .custom(startDate => {
+        const dateParts = startDate.split('-');
+        //in the format of x-x-x where x is number
+        if (dateParts.length !==3
+            || dateParts.filter(part => !isNaN(part)).length!==3) {
+            throw new Error()
+        };
+        return true;
+      })
+      .withMessage("Start date must be a valid datetime"),
+    handleValidationErrors
+];
+
 /***************** ROUTE HANDLERS *********** */
 
 const router = express.Router();
 
 //get all events
-router.get('/', async(req,res,next) => {
-    const events = await Event.findAll()
+router.get('/', validateQuery, async(req,res,next) => {
+    let {page,size,name,type,startDate} = req.query;
 
-    res.json({Events: await addEventDetails(events)})
+    const where = {};
+
+    if (name) where.name = name;
+    if (type) where.type = type;
+    if (startDate) where.startDate = startDate;
+
+    page = !page ?  1 : page > 10 ? 10 : page;
+    size = !size || size > 20 ? 20 : size;
+
+    const pagination = {
+        limit: size,
+        offset: size * (page-1),
+    };
+
+    const events = await Event.findAll({
+        where,
+        ...pagination
+    })
+
+    const Events = await addEventDetails(events)
+
+    res.json({Events})
 })
 
 //get details of events by id
@@ -141,6 +241,129 @@ router.delete('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isCoHost,
     await req.event.destroy();
 
     res.json({"message": "Successfully deleted"})
+})
+
+/**************************** ATTENDEES ************** */
+//Get all Attendees of an Event specified by its id
+router.get('/:eventId/attendees', checkEvent, async (req,res,next) => {
+    const eventId = req.params.eventId;
+    const event = await Event.findByPk(eventId);
+    const userId = req.user.id
+    const group = await event.getGroup();
+    const groupId = group.id;
+
+    const status = ["attending", "waitlist"]
+
+    if (await checkCohost(userId,groupId) || checkOrganizer(group.organizerId, userId)) {
+        status.push('pending')
+    }
+
+    const attendees = await User.findAll({
+        attributes: ['id','firstName','lastName'],
+        include: {
+            model: Attendance,
+            where: {
+                status,
+                eventId,
+            },
+            attributes: ["status"]
+        }
+    });
+
+    return res.json({Attendees: attendees})
+})
+
+//Request to Attend an Event based on the Event's id
+router.post('/:eventId/attendance', requireAuth, checkEvent, isGroupMember, async (req,res,next) => {
+    const userId = req.user.id;
+    const eventId = req.event.id;
+
+    const attendance = await Attendance.findOne({
+        where: {
+            userId,
+            eventId,
+        }
+    })
+
+    if (!attendance) {
+        await Attendance.create({
+            userId,
+            eventId,
+            status: "pending",
+        });
+        return res.json({userId, status:"pending"});
+
+    } else if (attendance.status === "pending") {
+        //if already pending attendance, error
+        const err = new Error("Attendance has already been requested");
+        err.status = 400;
+        return next(err);
+
+    } else if (attendance.status === "attending") {
+        //if already attending, error
+        const err = new Error("User is already an attendee of the event");
+        err.status = 400;
+        return next(err);
+
+    } else if (attendance.status === "waitlist") {
+        //if waitList, error, but this ain't on the docs
+        const err = new Error("User is already on the waitlist for the event");
+        err.status = 400;
+        return next(err);
+    }
+})
+
+//Change the status of an attendance for an event specified by id
+router.put('/:eventId/attendance', requireAuth, checkEvent, isEventOrganizerOrCohost, validateAttendeeStatus, async (req,res,next) => {
+    const {userId, status} = req.body;
+    const eventId = req.event.id;
+
+    if (status==="pending") {
+        const err = new Error("Cannot change an attendance status to pending")
+        err.status = 400;
+        return next(err);
+    }
+
+    const attendance = await Attendance.findOne({
+        where: {
+            userId,
+            eventId,
+        }
+    })
+
+    if (!attendance) {
+        const err = new Error("Attendance between the user and the event does not exist");
+        err.status = 404;
+        return next(err);
+    } else {
+        attendance.update(status);
+        return res.json({id: attendance.id, eventId, userId, status});
+    }
+})
+
+//Delete attendance to an event specified by id
+router.delete('/:eventId/attendance', requireAuth, checkEvent, isHostOrAttendeeDelete, async (req,res,next) => {
+    const {userId} = req.body;
+    const eventId = req.params.eventId;
+
+    const attendance = await Attendance.findOne({
+        where: {
+            userId,
+            eventId,
+        }
+    })
+
+    if (!attendance) {
+        const err = new Error("Attendance does not exist for this User");
+        err.status = 404;
+        return next(err)
+    } else {
+        await attendance.destroy();
+
+        return res.json({
+            message: "Successfully deleted attendance from event"
+        });
+    }
 })
 
 module.exports = router;

@@ -37,10 +37,10 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
 
-    await queryInterface.bulkDelete(options, );
-    // {
-    //   eventId: AttendanceInfo.map(data => data.eventId),
-    //   userId: AttendanceInfo.map(data => data.userId),
-    // }
+    const Op = Sequelize.Op;
+    await queryInterface.bulkDelete(options,
+    {
+      id: { [Op.in]: AttendanceInfo.map(data => data.eventId), }
+    }, {});
   }
 };

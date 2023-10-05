@@ -5,9 +5,11 @@ const usersRouter = require('./users');
 const groupsRouter = require('./groups');
 const venueRouter = require('./venues');
 const eventRouter = require('./events');
-const membershipRouter = require('./memberships');
 
-const { restoreUser } = require('../../utils/auth.js');
+const { restoreUser, requireAuth, isGroupOrganizerOrCohost,
+  addGroupToGroupImage,
+  addGroupToEventImage } = require('../../utils/auth.js');
+const { GroupImage, EventImage, } = require('../../db/models');
 
 // Connect restoreUser middleware to the API router
   // If current user session is valid, set req.user to the user in the database
@@ -19,15 +21,31 @@ router.use('/users', usersRouter);
 router.use('/groups', groupsRouter);
 router.use('/venues', venueRouter);
 router.use('/events', eventRouter);
-router.use('/memberships', membershipRouter);
 
 router.post('/test', function(req,res) {
     res.json({requestBody: req.body});
 });
 
+/********************* IMAGES ********************** */
+//organizer or cohost of group
+router.delete('/group-images/:imageId', requireAuth, addGroupToGroupImage, isGroupOrganizerOrCohost, async (req,res,next) => {
+  await req.image.destroy();
+  res.json({
+    "message": "Successfully deleted"
+  });
+})
+
+//organizer or cohost of group of event
+router.delete('/event-images/:imageId', requireAuth, addGroupToEventImage, isGroupOrganizerOrCohost, async (req,res,next) => {
+  await req.image.destroy();
+  res.json({
+    "message": "Successfully deleted"
+  });
+})
+
 module.exports = router;
 
-
+/******************* MIDDLEWARE ***************** */
 
 
 /*************************** TEST ******************** */

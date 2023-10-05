@@ -65,6 +65,10 @@ const validateMemberStatus = [
     check("status")
         .not().isIn(["pending"])
         .withMessage("Cannot change a membership status to pending"),
+    check('status')
+      .exists({ checkFalsy: true })
+      .isIn(["co-host", "member"])
+      .withMessage('Allowed status values: "co-host", "member", "pending"'),
     handleValidationErrors,
 ]
 const validateUser = [
@@ -304,9 +308,11 @@ router.get('/:groupId/members', checkGroup, async (req,res,next) => {
         }
     })
 
+    const isOrganizer = req.group.organizerId === req.user.id;
+
     const status = ['co-host', 'member']
     //if is co-host, include pending
-    if (isCoHost) status.push('pending')
+    if (isCoHost || isOrganizer) status.push('pending')
 
     const members = await User.findAll({
         attributes: ['id','firstName','lastName'],
@@ -395,6 +401,7 @@ router.put('/:groupId/membership', requireAuth, checkGroup,isHostOrCurrentUser, 
     res.json(membership)
 })
 
+//Delete membership to a group specified by id
 router.delete('/:groupId/membership', requireAuth, checkGroup, isHostOrMemberDelete, validateUser, async (req,res,next) => {
     const {memberId} = req.body;
 
