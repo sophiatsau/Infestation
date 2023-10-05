@@ -64,13 +64,13 @@ function addNumMembers(group) {
 
 /******************* MIDDLEWARE *************** */
 const validateMemberStatus = [
+    check('status')
+        .exists({ checkFalsy: true })
+        .isIn(["co-host", "member"])
+        .withMessage('Allowed status values: "co-host", "member", "pending"'),
     check("status")
         .not().isIn(["pending"])
         .withMessage("Cannot change a membership status to pending"),
-    check('status')
-      .exists({ checkFalsy: true })
-      .isIn(["co-host", "member"])
-      .withMessage('Allowed status values: "co-host", "member", "pending"'),
     handleValidationErrors,
 ]
 const validateUser = [
@@ -85,7 +85,7 @@ const validateUser = [
     handleValidationErrors,
 ]
 
-async function isHostOrCurrentUser(req,res,next) {
+async function authChangeMembershipStatus(req,res,next) {
     const status = req.body.status;
     if (status==="member") {
         const isCoHost = await Membership.findOne({
@@ -363,7 +363,7 @@ router.post('/:groupId/membership', requireAuth, checkGroup, async (req,res,next
 })
 
 //Change the status of a membership for a group specified by id
-router.put('/:groupId/membership', requireAuth, checkGroup,isHostOrCurrentUser, validateMemberStatus, validateUser, async (req,res,next) => {
+router.put('/:groupId/membership', requireAuth, checkGroup,authChangeMembershipStatus, validateMemberStatus, validateUser, async (req,res,next) => {
     const {memberId, status} = req.body;
 
     const updateMembership = await Membership.findOne({
