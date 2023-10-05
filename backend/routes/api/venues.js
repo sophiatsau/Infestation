@@ -7,7 +7,9 @@ const bcrypt = require('bcryptjs');
 const { requireAuth,
     checkVenue,
     addGroupToVenue,
-    isCoHost, } = require('../../utils/auth');
+    isCoHost,
+    isGroupOrganizerOrCohost,
+} = require('../../utils/auth');
 const { Group, Membership, GroupImage, User, Venue, sequelize } = require('../../db/models');
 
 //used to validate request bodies
@@ -18,7 +20,7 @@ const { handleValidationErrors, validateVenue } = require('../../utils/validatio
 
 const router = express.Router();
 
-router.put('/:venueId', requireAuth, checkVenue, addGroupToVenue, isCoHost, validateVenue, async (req,res,next) => {
+router.put('/:venueId', requireAuth, checkVenue, addGroupToVenue, isGroupOrganizerOrCohost, validateVenue, async (req,res,next) => {
     const {address, city, state, lat, lng} = req.body;
 
     let venue = await req.venue.update({address, city, state, lat, lng})

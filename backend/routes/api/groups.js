@@ -245,7 +245,7 @@ router.get('/:groupId/venues', requireAuth, checkGroup, isGroupOrganizerOrCohost
     res.json({Venues: venues});
 })
 
-router.post('/:groupId/venues', requireAuth, checkGroup, isCoHost, validateVenue, async (req,res,next) => {
+router.post('/:groupId/venues', requireAuth, checkGroup, isGroupOrganizerOrCohost, validateVenue, async (req,res,next) => {
     const group = req.group
 
     const {address, city, state, lat, lng} = req.body;
