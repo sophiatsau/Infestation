@@ -271,7 +271,7 @@ router.get('/:groupId/events', checkGroup, async (req,res,next) => {
     res.json({Events})
 });
 
-router.post('/:groupId/events', requireAuth, checkGroup, isCoHost, validateEvent, async (req,res,next) => {
+router.post('/:groupId/events', requireAuth, checkGroup, isGroupOrganizerOrCohost, validateEvent, async (req,res,next) => {
     const {venueId, name, type, capacity, price, description, startDate, endDate} = req.body;
     const groupId = parseInt(req.params.groupId);
 
