@@ -67,22 +67,6 @@ async function addGroupIdToEvent(req,res,next) {
     next();
 }
 
-// async function checkCohost(userId, groupId) {
-//     const isCoHost = await Membership.findOne({
-//         where: {
-//             userId,
-//             groupId,
-//             status: "co-host"
-//         }
-//     })
-
-//     return !!isCoHost
-// }
-
-// function checkOrganizer(organizerId, userId) {
-//     return organizerId === userId;
-// }
-
 async function isGroupMember(req,res,next) {
     //find event => groupId => membership
     const groupId = req.event.groupId;
@@ -129,24 +113,30 @@ async function isHostOrAttendeeDelete(req,res,next) {
 
 const validateQuery = [
     check('page')
-      .optional()
+      .optional({values: 'falsy'})
       .isInt({min:1})
       .withMessage("Page must be greater than or equal to 1"),
     check('size')
-      .optional()
+      .optional({values: 'falsy'})
       .isInt({min:1})
       .withMessage("Size must be greater than or equal to 1"),
     check('name')
-      .optional()
+      .optional({values: 'falsy'})
       .isString()
       .withMessage("Name must be a string"),
     check('type')
-      .optional()
-      .isIn(['Online', 'In person', 'In Person'])
+      .optional({values: 'falsy'})
+      .isIn(['Online', 'In person'])
       .withMessage("Type must be 'Online' or 'In Person'"),
     check('startDate')
-      .optional()
-      .custom(startDate => {    //!UPDATE THIS!!
+      .optional({values: 'falsy'})
+      .custom(startDate => {
+        const dateParts = startDate.split('-');
+        //in the format of x-x-x where x is number
+        if (dateParts.length !==3
+            || dateParts.filter(part => !isNaN(part)).length!==3) {
+            throw new Error()
+        };
         return true;
       })
       .withMessage("Start date must be a valid datetime"),
@@ -159,7 +149,8 @@ const router = express.Router();
 
 //get all events
 router.get('/', validateQuery, async(req,res,next) => {
-    let {page,size,name,type,startDate} = req.body;
+    let {page,size,name,type,startDate} = req.query;
+
     const where = {};
 
     if (name) where.name = name;
@@ -175,7 +166,7 @@ router.get('/', validateQuery, async(req,res,next) => {
     };
 
     const events = await Event.findAll({
-        ...where,
+        where,
         ...pagination
     })
 
