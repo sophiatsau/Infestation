@@ -118,9 +118,9 @@ async function isHostOrMemberDelete(req,res,next) {
         }
     })
 
-    const isOrganizer = req.group.organizerId === req.user.id;
+    const isMember = req.body.memberId === req.user.id;
 
-    if (isCoHost || isOrganizer) return next();
+    if (isCoHost || isMember) return next();
     else return next(authorizationError());
 }
 
