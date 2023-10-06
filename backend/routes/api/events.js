@@ -116,10 +116,12 @@ async function isHostOrAttendeeDelete(req,res,next) {
         }
     })
 
+    const isAttendee = req.attendee.id === req.body.userId;
+
     const group = await Group.findByPk(groupId)
     const isOrganizer = checkOrganizer(group.organizerId,userId)
 
-    if (!req.attendee && !isOrganizer) return next(authorizationError("Only the User or organizer may delete an Attendance"));
+    if (!isAttendee && !isOrganizer) return next(authorizationError("Only the User or organizer may delete an Attendance"));
 
     return next();
 }
