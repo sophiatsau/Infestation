@@ -136,7 +136,7 @@ router.get('/', async (req,res,next) => {
 router.get('/current', requireAuth, async (req,res,next) => {
     const userId = req.user.id;
 
-    const groups = await Group.findAll({
+    const memberOf = await Group.findAll({
         include: {
             model: Membership,
             attributes: [],
@@ -147,6 +147,23 @@ router.get('/current', requireAuth, async (req,res,next) => {
             }
         }
     });
+
+    const exclude = new Set();
+
+    if (memberOf) {
+        memberOf.forEach(group => exclude.add(group.toJSON().id))
+    }
+
+    const organizerOf = await Group.findAll({
+        where: {
+            organizerId: userId,
+            id: {
+                [Op.notIn]: [...exclude],
+            }
+        },
+    });
+
+    const groups = [...memberOf, ...organizerOf]
 
     let Groups = await addNumMembersPreviewImage(groups)
 
