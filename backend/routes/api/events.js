@@ -353,7 +353,7 @@ router.put('/:eventId/attendance', requireAuth, checkEvent, isEventOrganizerOrCo
         err.status = 404;
         return next(err);
     } else {
-        attendance.update(status);
+        await attendance.update({status});
         return res.json({id: attendance.id, eventId, userId, status});
     }
 })
