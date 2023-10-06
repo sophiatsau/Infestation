@@ -87,6 +87,7 @@ const validateUser = [
 
 async function authChangeMembershipStatus(req,res,next) {
     const status = req.body.status;
+    const isOrganizer = req.group.organizerId === req.user.id;
     if (status==="member") {
         const isCoHost = await Membership.findOne({
             where: {
@@ -96,11 +97,10 @@ async function authChangeMembershipStatus(req,res,next) {
             }
         })
 
-        if (!isCoHost) {
+        if (!isCoHost && !isOrganizer) {
             next(authorizationError())
         }
     } else if (status==="co-host") {
-        const isOrganizer = req.group.organizerId === req.user.id;
 
         if (!isOrganizer) {
             next(authorizationError())
