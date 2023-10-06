@@ -84,6 +84,9 @@ async function isGroupMember(req,res,next) {
         where: {
             groupId,
             userId: req.user.id,
+            status: {
+                [Op.in]: ["member", "co-host"]
+            }
         }
     })
 
