@@ -106,20 +106,15 @@ const validateAttendeeStatus = [
 ];
 
 async function isHostOrAttendeeDelete(req,res,next) {
-    const eventId = req.params.eventId;
     const userId = req.user.id;
     const groupId = req.event.groupId;
 
-    req.attendee = await Attendance.findOne({
-        where: {
-            eventId, userId,
-        }
-    })
+    const isAttendee = userId == req.body.userId;
 
     const group = await Group.findByPk(groupId)
     const isOrganizer = checkOrganizer(group.organizerId,userId)
 
-    if (!req.attendee && !isOrganizer) return next(authorizationError("Only the User or organizer may delete an Attendance"));
+    if (!isAttendee && !isOrganizer) return next(authorizationError("Only the User or organizer may delete an Attendance"));
 
     return next();
 }
