@@ -36,7 +36,7 @@ async function addEventDetails(events) {
 
         jsonEvents[i].Venue = await events[i].getVenue({
             attributes: ["id","city","state"]
-        });
+        }) || null;
     }
 
     return jsonEvents;

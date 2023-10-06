@@ -77,7 +77,7 @@ const validateVenue = [
 
 const validateEvent = [
   check("venueId")
-    .optional({values: 'falsy'})
+    .optional({values: 'null'})
     .custom( async(venueId) => {
       const {Venue} = require('../db/models');
       const venueExists = await Venue.findByPk(venueId)
