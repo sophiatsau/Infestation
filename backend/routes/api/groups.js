@@ -383,7 +383,7 @@ router.put('/:groupId/membership', requireAuth, checkGroup,authChangeMembershipS
 })
 
 //Delete membership to a group specified by id
-router.delete('/:groupId/membership', requireAuth, checkGroup, isHostOrMemberDelete, validateUser, async (req,res,next) => {
+router.delete('/:groupId/membership', requireAuth, checkGroup, validateUser, isHostOrMemberDelete, async (req,res,next) => {
     const {memberId} = req.body;
 
     const membership = await Membership.findOne({

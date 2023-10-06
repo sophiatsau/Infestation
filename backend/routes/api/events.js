@@ -130,7 +130,9 @@ const validateQuery = [
       .withMessage("Size must be greater than or equal to 1"),
     check('name')
       .optional({values: 'falsy'})
-      .isString()
+      .custom(name => {
+        return isNaN(name);
+      })
       .withMessage("Name must be a string"),
     check('type')
       .optional({values: 'falsy'})
