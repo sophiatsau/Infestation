@@ -186,9 +186,6 @@ router.post('/', requireAuth, validateGroup, async (req,res,next) => {
     req.body.organizerId = req.user.id
     const newGroup = await Group.create(req.body);
 
-    //create new membership, automatically adding user as a co-host
-    await newGroup.createMembership({userId: req.user.id, status: "co-host"})
-
     return res.status(201).json(newGroup);
 })
 
