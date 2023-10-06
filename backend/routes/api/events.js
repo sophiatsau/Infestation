@@ -106,17 +106,10 @@ const validateAttendeeStatus = [
 ];
 
 async function isHostOrAttendeeDelete(req,res,next) {
-    const eventId = req.params.eventId;
     const userId = req.user.id;
     const groupId = req.event.groupId;
 
-    req.attendee = await Attendance.findOne({
-        where: {
-            eventId, userId,
-        }
-    })
-
-    const isAttendee = req.attendee.id === req.body.userId;
+    const isAttendee = userId == req.body.userId;
 
     const group = await Group.findByPk(groupId)
     const isOrganizer = checkOrganizer(group.organizerId,userId)
