@@ -280,7 +280,14 @@ router.get('/:eventId/attendees', checkEvent, async (req,res,next) => {
         }
     });
 
-    return res.json({Attendees: attendees})
+    const Attendees = attendees.map(attendee => {
+        attendee = attendee.toJSON();
+        [attendee.Attendance] = attendee.Attendances;
+        delete attendee.Attendances;
+        return attendee;
+    })
+
+    return res.json({Attendees})
 })
 
 //Request to Attend an Event based on the Event's id
