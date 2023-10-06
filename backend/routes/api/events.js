@@ -141,10 +141,7 @@ const validateQuery = [
     check('startDate')
       .optional({values: 'falsy'})
       .custom(startDate => {
-        const dateParts = startDate.split('-');
-        //in the format of x-x-x where x is number
-        if (dateParts.length !==3
-            || dateParts.filter(part => !isNaN(part)).length!==3) {
+        if (isNaN(new Date(startDate).getTime())) {
             throw new Error()
         };
         return true;
