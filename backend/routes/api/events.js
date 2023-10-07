@@ -164,8 +164,8 @@ router.get('/', validateQuery, async(req,res,next) => {
     if (type) where.type = type;
     if (startDate) where.startDate =
     {
-        [Op.lte]: new Date(`${startDate.toLocaleDateString()} 23:59:59`),
-        [Op.gte]: new Date(`${startDate.toLocaleDateString()} 00:00:00`)
+        [Op.lte]: new Date(`${startDate.slice(0,10)} 23:59:59`),
+        [Op.gte]: new Date(`${startDate.slice(0,10)} 00:00:00`)
     }
 
     page = !page ?  1 : page > 10 ? 10 : page;
