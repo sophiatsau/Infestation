@@ -162,7 +162,11 @@ router.get('/', validateQuery, async(req,res,next) => {
 
     if (name) where.name = name;
     if (type) where.type = type;
-    if (startDate) where.startDate = startDate;
+    if (startDate) where.startDate =
+    {
+        [Op.lte]: new Date(`${startDate} 23:59:59`),
+        [Op.gte]: new Date(`${startDate} 00:00:00`)
+    }
 
     page = !page ?  1 : page > 10 ? 10 : page;
     size = !size || size > 20 ? 20 : size;
