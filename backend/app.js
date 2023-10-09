@@ -81,7 +81,7 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
 
-  const isProduction = true;
+  // const isProduction = true;
 
   const errBody = isProduction && res.statusCode === 400 ? {
       message: err.message,
