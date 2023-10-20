@@ -1,18 +1,18 @@
 import { csrfFetch } from "./csrf";
 
-const LOGIN = 'session/login';
-const LOGOUT = 'session/logout';
+const SET_USER = 'session/setUser';
+const REMOVE_USER = 'session/removeUser';
 
 const setUser = (user) => {
     return {
-        type: LOGIN,
+        type: SET_USER,
         user
     }
 }
 
 const removeUser = () => {
     return {
-        type: LOGOUT
+        type: REMOVE_USER
     }
 }
 
@@ -24,12 +24,9 @@ export const login = (credentials) => async dispatch => {
         body: JSON.stringify(credentials)
     })
 
+    //csrfFetch handles errors
     const data = await res.json();
-
-    if (res.ok) {
-        await dispatch(setUser(data));
-    }
-
+    dispatch(setUser(data));
     return data;
 }
 
@@ -38,12 +35,16 @@ export const logout = () => async dispatch => {
         method: 'DELETE'
     })
 
+    //csrfFetch handles cases where res.status >= 400
     const data = await res.json();
+    dispatch(removeUser());
+    return data;
+}
 
-    if (res.ok) {
-        await dispatch(removeUser());
-    }
-
+export const restoreUser = () => async dispatch => {
+    const res = await csrfFetch(`/api/session`);
+    const data = await res.json();
+    dispatch(setUser(data))
     return data;
 }
 
@@ -51,10 +52,10 @@ const initialState = {user: null};
 
 const sessionReducer = (state = initialState, action) => {
     switch (action.type) {
-        case LOGIN: {
+        case SET_USER: {
             return Object.assign({}, action.user)
         }
-        case LOGOUT: {
+        case REMOVE_USER: {
             return {user: null};
         }
         default:
