@@ -3,21 +3,21 @@ import { csrfFetch } from "./csrf";
 const LOGIN = 'session/login';
 const LOGOUT = 'session/logout';
 
-const login = (user) => {
+const setUser = (user) => {
     return {
         type: LOGIN,
         user
     }
 }
 
-const logout = () => {
+const removeUser = () => {
     return {
         type: LOGOUT
     }
 }
 
 //{credential: x, password: x}
-export const loginThunk = (credentials) => async dispatch => {
+export const login = (credentials) => async dispatch => {
     //DO NOT change backend to include update/createdAt
     const res = await csrfFetch(`/api/session`, {
         method: 'POST',
@@ -27,12 +27,13 @@ export const loginThunk = (credentials) => async dispatch => {
     const data = await res.json();
 
     if (res.ok) {
-        await dispatch(login(data));
-        return data;
+        await dispatch(setUser(data));
     }
+
+    return data;
 }
 
-export const logoutThunk = () => async dispatch => {
+export const logout = () => async dispatch => {
     const res = await csrfFetch(`/api/session`, {
         method: 'DELETE'
     })
@@ -40,9 +41,10 @@ export const logoutThunk = () => async dispatch => {
     const data = await res.json();
 
     if (res.ok) {
-        await dispatch(logout());
-        return data;
+        await dispatch(removeUser());
     }
+
+    return data;
 }
 
 const initialState = {user: null};
