@@ -3,6 +3,7 @@ import {useDispatch} from 'react-redux';
 import React, {useState, useEffect} from 'react';
 
 import * as sessionActions from "./store/session";
+import Navigation from './components/Navigation';
 import LoginFormPage from './components/LoginFormPage';
 import SignupFormPage from './components/SignupFormPage';
 
@@ -17,7 +18,9 @@ function App() {
   }, [dispatch])
 
   return (
-    isLoaded && (
+    <>
+    <Navigation isLoaded={isLoaded} />
+    {isLoaded && (
       <Switch>
         <Route exact path='/login'>
           <LoginFormPage/>
@@ -29,7 +32,8 @@ function App() {
           <h1>404 PAGE NOT FOUND</h1>
         </Route>
       </Switch>
-    )
+    )}
+    </>
   );
 }
 
