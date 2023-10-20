@@ -2,8 +2,9 @@ import {Switch, Route} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import React, {useState, useEffect} from 'react';
 
-import LoginFormPage from './components/LoginFormPage';
 import * as sessionActions from "./store/session";
+import LoginFormPage from './components/LoginFormPage';
+import SignupFormPage from './components/SignupFormPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -20,6 +21,9 @@ function App() {
       <Switch>
         <Route exact path='/login'>
           <LoginFormPage/>
+        </Route>
+        <Route exact path='/signup'>
+          <SignupFormPage/>
         </Route>
         <Route>
           <h1>404 PAGE NOT FOUND</h1>
