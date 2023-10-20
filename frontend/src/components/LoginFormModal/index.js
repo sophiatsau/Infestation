@@ -4,8 +4,11 @@ import {Redirect} from "react-router-dom";
 import "./LoginForm.css";
 
 import * as sessionActions from "../../store/session";
+import { useModal } from '../../context/Modal';
 
-export default function LoginFormPage() {
+export default function LoginFormModal() {
+    const {closeModal} = useModal();
+
     const dispatch = useDispatch();
     const sessionUser = useSelector((state) => state.session.user);
     const [credential, setCredential] = useState("");
@@ -20,6 +23,7 @@ export default function LoginFormPage() {
 
         return dispatch(
             sessionActions.login({ credential, password }))
+            .then(closeModal)
             //return error
             .catch(
                 async (res) => {

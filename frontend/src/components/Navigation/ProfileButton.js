@@ -1,11 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
 import * as sessionActions from '../../store/session';
 
 //only shows if current user present
 function ProfileButton({ user }) {
-  console.log("🚀 ~ file: ProfileButton.js:7 ~ ProfileButton ~ user:", user)
+  const [showMenu, setShowMenu] = useState(false);
   const dispatch = useDispatch();
+  //holds mutable ref object with .current initialized to undefined. .current is mutable, is set to corresponding DOM node
+  //mutating .current doesn't cause re-render
+  const ulRef = useRef();
+
+  useEffect(() => {
+    if (!showMenu) return;
+
+    const closeMenu = (e) => {
+        //ulRef.current points to dropdown menu element
+        //contains - boolean, is e.target in element?
+        if (ulRef.current.contains(e.target)) return;
+
+        setShowMenu(false);
+    }
+
+    document.addEventListener("click", closeMenu);
+
+    return () => document.removeEventListener("click", closeMenu)
+  }, [showMenu])
 
 
   const logout = (e) => {
@@ -13,14 +32,19 @@ function ProfileButton({ user }) {
     dispatch(sessionActions.logout());
   };
 
-//   const ulClassName = "profile-dropdown";
+  function openMenu() {
+    if (showMenu) return;
+    setShowMenu(true)
+  }
+
+  const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
   return (
     <>
-      <button>
+      <button onClick={openMenu}>
         <i className="fas fa-bug" />
       </button>
-      <ul className="profile-dropdown">
+      <ul className={ulClassName} ref={ulRef}>
         <li>{user.username}</li>
         <li>{user.firstName} {user.lastName}</li>
         <li>{user.email}</li>

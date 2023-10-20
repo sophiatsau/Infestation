@@ -1,3 +1,7 @@
-.profile-dropdown {
-    background-color: red;
+/* .profile-dropdown {
+    background-color: pink;
+} */
+
+.hidden {
+    display: none;
 }
