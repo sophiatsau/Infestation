@@ -4,8 +4,6 @@ import React, {useState, useEffect} from 'react';
 
 import * as sessionActions from "./store/session";
 import Navigation from './components/Navigation';
-// import LoginFormPage from './components/LoginFormPage';
-import SignupFormPage from './components/SignupFormPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -22,12 +20,6 @@ function App() {
     <Navigation isLoaded={isLoaded} />
     {isLoaded && (
       <Switch>
-        {/* <Route exact path='/login'>
-          <LoginFormPage/>
-        </Route> */}
-        <Route exact path='/signup'>
-          <SignupFormPage/>
-        </Route>
         <Route>
           <h1>404 PAGE NOT FOUND</h1>
         </Route>
