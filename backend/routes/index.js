@@ -8,7 +8,7 @@ router.use('/api', apiRouter);
 //attach XSRF-TOKEN in production
 if (process.env.NODE_ENV === 'production') {
     const path = require('path');
-    // Serve frontend/build/index.html at root of /api
+    // Serve frontend/build/index.html at root
     router.get('/', (req, res) => {
       res.cookie('XSRF-TOKEN', req.csrfToken());
       return res.sendFile(
