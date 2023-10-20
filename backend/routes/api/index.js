@@ -22,9 +22,9 @@ router.use('/groups', groupsRouter);
 router.use('/venues', venueRouter);
 router.use('/events', eventRouter);
 
-router.post('/test', function(req,res) {
-    res.json({requestBody: req.body});
-});
+// router.post('/test', function(req,res) {
+//     res.json({requestBody: req.body});
+// });
 
 /********************* IMAGES ********************** */
 //organizer or cohost of group
