@@ -23,7 +23,6 @@ export default function LoginFormModal() {
             .catch(
                 async (res) => {
                     const data = await res.json();
-                    console.log("🚀 ~ file: index.js:26 ~ data:", data)
                     if (data && data.errors) setErrors(data.errors);
                 }
             );
