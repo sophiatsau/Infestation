@@ -20,10 +20,10 @@ export default function LoginFormModal() {
         return dispatch(
             sessionActions.login({ credential, password }))
             .then(closeModal)
-            //return error
             .catch(
                 async (res) => {
                     const data = await res.json();
+                    console.log("🚀 ~ file: index.js:26 ~ data:", data)
                     if (data && data.errors) setErrors(data.errors);
                 }
             );
