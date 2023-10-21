@@ -42,7 +42,7 @@ function ProfileButton({ user }) {
   return (
     <>
       <button onClick={openMenu}>
-        <i className="fas fa-bug" />
+        <i className="fas fa-bug" style={{color:"white"}}/>
       </button>
       <ul className={ulClassName} ref={ulRef}>
         <li>{user.username}</li>
