@@ -92,8 +92,8 @@ app.use((err, _req, res, _next) => {
       message: err.message,
       errors: err.errors,
     }
-    : isProduction ?
-      {message: err.message}
+    // : isProduction ?
+    //   {message: err.message}
     : {
       title: err.title || 'Server Error',
       message: err.message,
