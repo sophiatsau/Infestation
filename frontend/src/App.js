@@ -4,7 +4,8 @@ import React, {useState, useEffect} from 'react';
 
 import * as sessionActions from "./store/session";
 import Navigation from './components/Navigation';
-import Landing from './components/Landing'
+import Landing from './components/Landing';
+import GroupsList from './components/GroupsList'
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +26,9 @@ function App() {
       <Switch>
         <Route exact path='/'>
           <Landing />
+        </Route>
+        <Route exact path='/groups'>
+          <GroupsList />
         </Route>
         <Route>
           <h1>404 PAGE NOT FOUND</h1>

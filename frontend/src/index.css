@@ -77,3 +77,12 @@ input:focus {
 ul {
     list-style-type: none;
 }
+
+.active {
+    color: teal;
+    text-decoration: underline;
+}
+
+a {
+    text-decoration: none;
+}
