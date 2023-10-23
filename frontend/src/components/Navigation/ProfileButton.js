@@ -49,7 +49,7 @@ function ProfileButton({ user }) {
 
 return (
   <>
-    <button onClick={openMenu}>
+    <button onClick={openMenu} className="profile-button">
       <i className="fas fa-bug" style={{color:"white"}}/>
     </button>
     <ul className={ulClassName} ref={ulRef}>
@@ -62,7 +62,7 @@ return (
           </li>
         </>
       ) : (
-        <div className="profile-button">
+        <div>
           <li>
             <OpenModalButton
               buttonText="Log In"
