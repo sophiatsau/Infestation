@@ -1,1 +1,53 @@
 /* TODO Add site wide styles */
+* {
+    font-family: cursive;
+    font-weight: bold;
+    color: black;
+    border-color: black;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    column-gap: 5px;
+    justify-content: center;
+}
+
+button {
+    background-color: rgb(255,100,100);
+    color: white;
+    border-radius: 3px;
+    box-shadow: 2px 2px rgb(50,50,50);
+    border-style: solid;
+}
+
+button:hover {
+    background-color: rgb(220,70,70);
+    cursor: pointer;
+}
+
+input {
+    background-color: rgb(230,255,255);
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    width: 200px;
+    border-style: solid;
+}
+
+input:focus {
+    background-color: rgb(200,255,255);
+    border-radius: 3px;
+}
+
+.light-button {
+    background-color: white;
+    border-style: none;
+    color: black;
+    box-shadow: none;
+}
+
+.light-button:hover {
+    background-color: rgb(255,220,220);
+}

@@ -11,6 +11,7 @@ function App() {
 
   useEffect(() => {
     //chain .then on dispatch bc returning promise
+    //don't load until confirm session status
     dispatch(sessionActions.restoreUser())
       .then(() => setIsLoaded(true));
   }, [dispatch])

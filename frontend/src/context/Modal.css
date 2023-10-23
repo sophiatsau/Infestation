@@ -21,4 +21,11 @@
 #modal-content {
     position: absolute;
     background-color: white;
+    border-radius: 1em;
+    padding: 50px;
+}
+
+#modal-content button {
+    padding: 5px;
+    margin: 10px 0;
 }

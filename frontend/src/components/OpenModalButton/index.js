@@ -1,5 +1,6 @@
 import React from 'react';
 import { useModal } from "../../context/Modal";
+import './OpenModalButton.css'
 
 export default function OpenModalButton({
     modalComponent, //render this inside modal
@@ -16,6 +17,6 @@ export default function OpenModalButton({
   };
 
   return (
-    <button onClick={onClick}>{buttonText}</button>
+    <button className="light-button" onClick={onClick}>{buttonText}</button>
   )
 }
