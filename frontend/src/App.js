@@ -4,6 +4,7 @@ import React, {useState, useEffect} from 'react';
 
 import * as sessionActions from "./store/session";
 import Navigation from './components/Navigation';
+import Landing from './components/Landing'
 
 function App() {
   const dispatch = useDispatch();
@@ -20,14 +21,16 @@ function App() {
     <>
     <Navigation isLoaded={isLoaded} />
     {isLoaded && (
+      <div className='body-container'>
       <Switch>
         <Route exact path='/'>
-          HOME PAGE
+          <Landing />
         </Route>
         <Route>
           <h1>404 PAGE NOT FOUND</h1>
         </Route>
       </Switch>
+      </div>
     )}
     </>
   );

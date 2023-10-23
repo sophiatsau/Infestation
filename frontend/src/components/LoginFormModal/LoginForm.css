@@ -1,0 +1,10 @@
+#demo-login {
+    border: none;
+    box-shadow: none;
+    background-color: white;
+    color: teal;
+    width: auto;
+    margin: 0 auto;
+    font-size: small;
+    text-decoration: underline;
+}

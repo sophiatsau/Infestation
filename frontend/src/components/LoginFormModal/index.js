@@ -67,7 +67,7 @@ export default function LoginFormModal() {
             </label>
             {errors.credential && <p>{errors.credential}</p>}
             <button type="submit" disabled={disabled}>Log In</button>
-            <button onClick={demoLogIn}>Log In As Demo User</button>
+            <a href='#' id="demo-login" onClick={demoLogIn}>Log In As Demo User</a>
         </form>
         </>
     )

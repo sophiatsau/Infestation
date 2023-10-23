@@ -10,6 +10,10 @@ body {
     margin: 0px;
 }
 
+.body-container {
+    padding: 20px;
+}
+
 form {
     display: flex;
     flex-direction: column;
@@ -32,8 +36,16 @@ button:hover {
 }
 
 button:disabled {
-    background-color: rgb(220,200,200);
-    cursor: auto;
+    background-color: white;
+    color: grey;
+    border-color: grey;
+    box-shadow: 2px 2px grey;
+    cursor: default;
+}
+
+label {
+    width: auto;
+    margin: 0 auto;
 }
 
 input {
@@ -41,7 +53,8 @@ input {
     border-radius: 3px;
     display: flex;
     justify-content: space-between;
-    width: 200px;
+    width: auto;
+    margin: 0 auto;
     border-style: solid;
 }
 
