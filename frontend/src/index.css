@@ -6,6 +6,10 @@
     border-color: black;
 }
 
+body {
+    margin: 0px;
+}
+
 form {
     display: flex;
     flex-direction: column;
