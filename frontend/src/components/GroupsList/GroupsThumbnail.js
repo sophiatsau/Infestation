@@ -10,6 +10,7 @@ export default function GroupsThumbnail({group}) {
       <h3>{city}, {state}</h3>
       <p>{about}</p>
       <span>{numberEvents}</span>
+      <span>·</span>
       <span>{isPrivate}</span>
     </div>
   )

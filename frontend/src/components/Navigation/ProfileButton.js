@@ -53,9 +53,10 @@ return (
       <i className="fas fa-bug" style={{color:"white"}}/>
     </button>
     <ul className={ulClassName} ref={ulRef}>
+      <button className="light-button" onClick={() => history.push('/groups')}>View groups</button>
       {user ? (
         <>
-          <li>Hello, {user.firstName}</li>
+          <li className="dropdown-profile-top">Hello, {user.firstName}</li>
           <li>{user.email}</li>
           <li>
             <button onClick={logout}>Log Out</button>

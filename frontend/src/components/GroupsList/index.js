@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import GroupsThumbnail from './GroupsThumbnail'
 import { fetchGroups, consumeAllGroups } from '../../store/groups';
 
+import './GroupsList.css';
+
 export default function GroupsList() {
     //get all groups
     //iterate over all groups
