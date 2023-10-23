@@ -23,7 +23,15 @@ export default function LoginFormModal() {
     const handleSubmit = (e) => {
         e.preventDefault();
         setErrors({});
+        return dispatchLogin(credential, password);
+    };
 
+    const demoLogIn = (e) => {
+        e.preventDefault();
+        dispatchLogin("Demo-lition", "password")
+    }
+
+    function dispatchLogin(credential, password) {
         return dispatch(
             sessionActions.login({ credential, password }))
             .then(closeModal)
@@ -33,7 +41,7 @@ export default function LoginFormModal() {
                     if (data && data.errors) setErrors(data.errors);
                 }
             );
-    };
+    }
 
     return (
         <>
@@ -59,6 +67,7 @@ export default function LoginFormModal() {
             </label>
             {errors.credential && <p>{errors.credential}</p>}
             <button type="submit" disabled={disabled}>Log In</button>
+            <button onClick={demoLogIn}>Log In As Demo User</button>
         </form>
         </>
     )
