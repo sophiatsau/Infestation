@@ -1,5 +1,5 @@
 import {useDispatch} from 'react-redux';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import "./LoginForm.css";
 
 import * as sessionActions from "../../store/session";
@@ -12,6 +12,13 @@ export default function LoginFormModal() {
     const [credential, setCredential] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
+    const [disabled, setDisabled] = useState(true);
+
+    useEffect(() => {
+        if (credential.length>=4 && password.length>=6) {
+            setDisabled(false);
+        } else setDisabled(true);
+    }, [credential, password])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -51,7 +58,7 @@ export default function LoginFormModal() {
             />
             </label>
             {errors.credential && <p>{errors.credential}</p>}
-            <button type="submit">Log In</button>
+            <button type="submit" disabled={disabled}>Log In</button>
         </form>
         </>
     )

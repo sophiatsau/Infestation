@@ -27,6 +27,11 @@ button:hover {
     cursor: pointer;
 }
 
+button:disabled {
+    background-color: rgb(220,200,200);
+    cursor: auto;
+}
+
 input {
     background-color: rgb(230,255,255);
     border-radius: 3px;
