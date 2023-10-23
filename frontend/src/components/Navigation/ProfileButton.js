@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
+import { useHistory } from "react-router-dom";
 import * as sessionActions from '../../store/session';
 
 import LoginFormModal from "../LoginFormModal";
@@ -13,6 +14,7 @@ function ProfileButton({ user }) {
   //holds mutable ref object with .current initialized to undefined. .current is mutable, is set to corresponding DOM node
   //mutating .current doesn't cause re-render
   const ulRef = useRef();
+  const history = useHistory();
 
   useEffect(() => {
     if (!showMenu) return;
@@ -34,6 +36,8 @@ function ProfileButton({ user }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
+    setShowMenu(false);
+    history.push('/');
   };
 
   function openMenu() {

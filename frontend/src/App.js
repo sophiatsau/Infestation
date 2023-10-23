@@ -21,6 +21,9 @@ function App() {
     <Navigation isLoaded={isLoaded} />
     {isLoaded && (
       <Switch>
+        <Route exact path='/'>
+          HOME PAGE
+        </Route>
         <Route>
           <h1>404 PAGE NOT FOUND</h1>
         </Route>
