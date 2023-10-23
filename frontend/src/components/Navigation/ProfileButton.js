@@ -59,7 +59,7 @@ return (
           </li>
         </>
       ) : (
-        <>
+        <div className="profile-button">
           <li>
             <OpenModalButton
               buttonText="Log In"
@@ -72,7 +72,7 @@ return (
               modalComponent={<SignupFormModal />}
             />
           </li>
-        </>
+        </div>
         )}
       </ul>
     </>

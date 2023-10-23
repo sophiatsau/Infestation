@@ -9,10 +9,10 @@ export default function Navigation({isLoaded}) {
     const sessionUser = useSelector(state => state.session.user);
 
     return (
-        <ul>
+        <ul className='nav'>
             <li>
                 <NavLink exact to='/'>
-                    Home
+                    <img src="./images/logo.png" alt="infestation logo"/>
                 </NavLink>
             </li>
             {isLoaded && (
