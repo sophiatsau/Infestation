@@ -15,7 +15,7 @@ export default function GroupDetails() {
   const group = useSelector(consumeOneGroup(groupId))
   const sessionUserId = useSelector(state => state.session.user?.id);
 
-  let {GroupImages, name, city, state, about, numberEvents, isPrivate, eventType, Organizer, organizerId, description, listEvents} = group || {};
+  let {GroupImages, name, city, state, about, numberEvents, isPrivate, Organizer, organizerId} = group || {};
 
   const [previewImage, setPreviewImage] = useState();
   const [isOrganizer, setIsOrganizer] = useState(true);
@@ -75,7 +75,7 @@ export default function GroupDetails() {
         <button>Update</button>
         <button>Delete</button>
     </div>
-    <GroupEvents {...numberEvents}/>
+    <GroupEvents numberEvents={numberEvents}/>
     </>
   )
 }

@@ -51,6 +51,8 @@ async function addNumMembersPreviewImage(groups) {
         const previewImage = (await groups[i].getGroupImages({where: {preview: true}}))[0];
 
         jsonGroups[i].previewImage = previewImage ? previewImage.url : null
+
+        jsonGroups[i].numberEvents = await countNumEvents(groups[i])
     }
 
     return jsonGroups;
@@ -60,6 +62,13 @@ function addNumMembers(group) {
     group.numMembers = group.Memberships.length;
     delete group.Memberships;
     return group;
+}
+
+async function countNumEvents(group) {
+    const events = await Event.findAll({
+        where: {groupId: group.id},
+    });
+    return events.length
 }
 
 /******************* MIDDLEWARE *************** */
@@ -193,7 +202,10 @@ router.get('/:groupId', checkGroup, async (req,res,next) => {
 
     let group = await Group.findByPk(req.params.groupId, {include});
 
+
+    const numEvents = await countNumEvents(group);
     group = addNumMembers(group.toJSON());
+    group.numberEvents = numEvents;
 
     res.json({Groups: group});
 })
