@@ -6,6 +6,7 @@ import * as sessionActions from "./store/session";
 import Navigation from './components/Navigation';
 import Landing from './components/Landing';
 import GroupsList from './components/GroupsList'
+import GroupDetails from './components/GroupDetails';
 
 function App() {
   const dispatch = useDispatch();
@@ -29,6 +30,9 @@ function App() {
         </Route>
         <Route exact path='/groups'>
           <GroupsList />
+        </Route>
+        <Route exact path='/groups/:groupId'>
+          <GroupDetails />
         </Route>
         <Route>
           <h1>404 PAGE NOT FOUND</h1>

@@ -1,0 +1,26 @@
+.feature-header {
+    font-size: x-large;
+    padding-right: 15px;
+}
+
+.feature-caption {
+    color: grey;
+    font-weight: normal;
+}
+
+.group-item {
+    display: flex;
+    border-top: solid 1px rgb(200,200,200);
+    margin: 10px 0;
+    column-gap: 10px;
+    cursor: pointer;
+}
+
+.groups-list {
+    padding: 0;
+}
+
+.groups-thumbnail-grey {
+    color: grey;
+    font-size: large;
+}

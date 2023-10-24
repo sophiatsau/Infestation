@@ -33,11 +33,11 @@
     text-decoration: none;
 }
 
-.features-div *:not(caption) {
+.features-div .feature-link {
     color: teal;
 }
 
-.features-div :hover:not(caption, i) {
+.features-div .feature-link:hover {
     cursor: pointer;
     text-decoration: underline;
 }
@@ -48,8 +48,7 @@
     color: rgb(255,100,100);
 }
 
-.features-div caption {
-    /* width: 100px; */
+.features-div .features-caption {
     font-size: small;
     margin: auto;
 }

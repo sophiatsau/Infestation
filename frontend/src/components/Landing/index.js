@@ -34,20 +34,20 @@ export default function Landing() {
         </p>
     </section>
     <section id="features-container">
-        <div class='features-div'>
-            <i class="fa-solid fa-trash-can"></i>
-            <Link to='/groups'>See all groups</Link>
-            <caption>Find roaches with similar taste in trash!</caption>
+        <div className='features-div'>
+            <i className="fa-solid fa-trash-can"></i>
+            <Link to='/groups' className="feature-link">See all groups</Link>
+            <p className="features-caption">Find roaches with similar taste in trash!</p>
         </div>
-        <div class='features-div'>
-            <i class="fa-solid fa-house-fire"></i>
-            <Link to='/events'>Find an event</Link>
-            <caption>Don't miss out on the latest house parties!</caption>
+        <div className='features-div'>
+            <i className="fa-solid fa-house-fire"></i>
+            <Link to='/events' className="feature-link">Find an event</Link>
+            <p className="features-caption">Don't miss out on the latest house parties!</p>
         </div>
-        <div class='features-div'>
-            <i class="fa-regular fa-lightbulb"></i>
-            <Link to='/groups/new' className={sessionUser ? "" : 'disabled-link'}>Start a group</Link>
-            <caption>Got a proposal for a 2am pantry raid? We'd love to hear!</caption>
+        <div className='features-div'>
+            <i className="fa-regular fa-lightbulb"></i>
+            <Link to='/groups/new' className={sessionUser ? "feature-link" : 'disabled-link'}>Start a group</Link>
+            <p className="features-caption">Got a proposal for a 2am pantry raid? We'd love to hear!</p>
         </div>
     </section>
     <section id="join-site-container" className={sessionUser ? "hidden" : ""}>
