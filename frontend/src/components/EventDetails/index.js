@@ -9,6 +9,8 @@ import { consumeOneGroup, fetchGroupById } from '../../store/groups';
 import GroupInfoBox from './GroupInfoBox'
 import EventInfoBox from './EventInfoBox'
 
+import './EventDetails.css'
+
 export default function EventDetails() {
   const {eventId} = useParams();
   const dispatch = useDispatch();
@@ -51,7 +53,7 @@ export default function EventDetails() {
           <h1>{name}</h1>
           <p>Hosted by {organizer}</p>
         </div>
-        <div>
+        <div className="event-details-top-section">
           <img src={previewImage?.url} alt="Preview not available"/>
           <div>
             <GroupInfoBox group={group}/>
@@ -59,7 +61,7 @@ export default function EventDetails() {
           </div>
         </div>
         <div>
-          <h2>Details</h2>
+          <h2>Description</h2>
           <p>{description}</p>
         </div>
     </div>

@@ -1,0 +1,26 @@
+.event-info-box {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    border: dashed red 1px;
+}
+
+.event-info-icons, .event-info-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.event-details-top-section {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+}
+
+.event-details-top-section img {
+    width: 100%;
+}
+
+.group-info-box {
+    border: dashed red 1px;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
