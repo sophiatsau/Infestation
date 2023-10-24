@@ -1,7 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 
-import EventCard from './EventCard';
+import EventCard from '../EventCard';
 
 export default function GroupEvents({type, events}) {
 
@@ -11,9 +10,7 @@ export default function GroupEvents({type, events}) {
     <ul>
       {events.map(event => {
         return (
-          <Link to={`/events/${event.id}`} key={event.id}>
-            <EventCard event={event}/>
-          </Link>
+          <EventCard event={event} key={event.id}/>
         )
       })}
     </ul>

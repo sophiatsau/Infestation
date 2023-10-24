@@ -3,6 +3,7 @@ import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
 import {fetchGroupById, consumeOneGroup, fetchEventsByGroup } from '../../store/groups';
+import { sortEvents } from '../../store/events';
 
 import GroupEvents from './GroupEvents';
 import BreadcrumbLink from '../BreadcrumbLink';
@@ -48,22 +49,4 @@ export default function GroupDetails() {
     <GroupEvents type="Past" events={pastEvents} />
     </>
   )
-}
-
-function sortEvents(events) {
-  events.forEach(event => event.startDate = new Date(event.startDate).getTime());
-
-  //test past events
-  // events.push({name: "old event", previewImage: null, startDate: new Date('10/20/23'), Group: {id: 1, name: 'Evening Tennis on the Water', city: 'New York', state: 'NY'}})
-
-  events = events.sort((a,b) => {
-    return a.startDate > b.startDate ? 1 : -1;
-  });
-
-  const index = events.findIndex(event => event.startDate > new Date().getTime());
-
-  const pastEvents = events.slice(0,index)
-  const upcomingEvents = events.slice(index)
-
-  return [upcomingEvents, pastEvents];
 }

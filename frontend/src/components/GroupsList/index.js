@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
-import { NavLink } from 'react-router-dom/cjs/react-router-dom.min'
 import { useDispatch, useSelector } from 'react-redux'
 
 import GroupsThumbnail from './GroupsThumbnail'
 import { fetchGroups, consumeAllGroups } from '../../store/groups';
 
 import './GroupsList.css';
+import FeaturesNav from '../FeaturesNav';
 
 export default function GroupsList() {
     //get all groups
@@ -24,10 +24,7 @@ export default function GroupsList() {
 
   return (
     <>
-    <div className="feature-nav-container">
-        <NavLink className="feature-header" to='/events'>Events</NavLink>
-        <NavLink className="feature-header" to='/groups'>Groups</NavLink>
-    </div>
+    <FeaturesNav />
     <p className="feature-caption">Groups in Infestation</p>
     <ul className="groups-list">
         {groups.map((group) => {

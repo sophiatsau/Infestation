@@ -54,6 +54,7 @@ return (
     </button>
     <ul className={ulClassName} ref={ulRef}>
       <button className="light-button" onClick={() => history.push('/groups')}>View groups</button>
+      <button className="light-button" onClick={() => history.push('/events')}>View events</button>
       {user ? (
         <>
           <li className="dropdown-profile-top">Hello, {user.firstName}</li>
