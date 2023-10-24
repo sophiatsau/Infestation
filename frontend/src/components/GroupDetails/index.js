@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {useParams, Link} from 'react-router-dom'
+import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
 import {fetchGroupById, consumeOneGroup, fetchEventsByGroup } from '../../store/groups';
@@ -13,6 +13,7 @@ import './GroupDetails.css';
 export default function GroupDetails() {
   const {groupId} = useParams();
   const dispatch = useDispatch();
+  const history = useHistory()
 
   const group = useSelector(consumeOneGroup(groupId))
 
@@ -26,10 +27,11 @@ export default function GroupDetails() {
             .catch(async (res) => {
                 const data = await res.json();
                 console.log(data.title, '-', data.message)
-                // history.push('/not-found')
+                history.push('/not-found')
             })
     }
     getGroup()
+
   }, [groupId, dispatch])
 
   useEffect(() => {

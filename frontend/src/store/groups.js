@@ -28,7 +28,7 @@ const getGroupEvents = (events) => {
 export const fetchGroups = () => async dispatch => {
     const res = await csrfFetch('/api/groups');
     const data = await res.json();
-    dispatch(getAllGroups(data.Groups));
+    if (res.ok) dispatch(getAllGroups(data.Groups));
     return data;
 }
 
@@ -36,7 +36,7 @@ export const fetchGroupById = (groupId) => async dispatch => {
     const res = await csrfFetch(`/api/groups/${groupId}`);
     const data = await res.json();
     const group = data.Groups;
-    dispatch(getOneGroup(group));
+    if (res.ok) dispatch(getOneGroup(group));
     return group;
 }
 
@@ -44,7 +44,7 @@ export const fetchEventsByGroup = (groupId) => async dispatch => {
     const res = await fetch(`/api/groups/${groupId}/events`);
     const data = await res.json();
 
-    dispatch(getGroupEvents(data.Events));
+    if (res.ok) dispatch(getGroupEvents(data.Events));
 
     return data.Events;
 }
