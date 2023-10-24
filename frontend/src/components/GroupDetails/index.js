@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import {useParams, Link} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
-import {fetchGroupById, consumeOneGroup} from '../../store/groups';
+import {fetchGroupById, consumeOneGroup, fetchEventsByGroup } from '../../store/groups';
 
 import GroupEvents from './GroupEvents';
 import BreadcrumbLink from '../BreadcrumbLink';
+import GroupDetailsInfo from './GroupDetailsInfo';
 
 import './GroupDetails.css';
 
@@ -14,21 +15,10 @@ export default function GroupDetails() {
   const dispatch = useDispatch();
 
   const group = useSelector(consumeOneGroup(groupId))
-  const sessionUserId = useSelector(state => state.session.user?.id);
 
-  let {GroupImages, name, city, state, about, numberEvents, isPrivate, Organizer, organizerId} = group || {};
+  let events = useSelector((state) => Object.values(state.groups.events));
 
-  const [previewImage, setPreviewImage] = useState();
-  const [isOrganizer, setIsOrganizer] = useState(true);
-
-  useEffect(() => {
-    const imgUrl = GroupImages ? GroupImages.find(img => img.preview===true).url : ""
-    setPreviewImage(imgUrl);
-  }, [GroupImages]);
-
-  useEffect(() => {
-    setIsOrganizer(organizerId===sessionUserId)
-  }, [organizerId, sessionUserId])
+  const [upcomingEvents, pastEvents] = events ? sortEvents(events) : [[],[]];
 
   useEffect(() => {
     async function getGroup() {
@@ -39,41 +29,39 @@ export default function GroupDetails() {
                 // history.push('/not-found')
             })
     }
-
     getGroup()
   }, [groupId, dispatch])
 
-  function joinGroupButton(e) {
-    alert("Feature coming soon");
-  }
+  useEffect(() => {
+    (async () => {
+      await dispatch(fetchEventsByGroup(groupId));
+    })()
+  }, [dispatch])
 
   return (
     <>
     <BreadcrumbLink to="/groups" text="Groups"/>
-    <div className='group-details'>
-        <img src={previewImage} alt="No preview image available"/>
-        <div className='group-information'>
-            <h2>{name}</h2>
-            <h3 className="groups-thumbnail-grey">{city}, {state}</h3>
-            <p>{about}</p>
-            <div>
-                <span className="groups-thumbnail-grey">{numberEvents} events</span>
-                <span className="groups-thumbnail-grey"> · </span>
-                <span className="groups-thumbnail-grey">{isPrivate}</span>
-            </div>
-            <button className={isOrganizer || !sessionUserId ? "hidden" : ""} onClick={joinGroupButton}>Join this group</button>
-        </div>
-    </div>
-    <div>
-        <h2>Organized by:</h2>
-        <p>{Organizer?.firstName + ' ' + Organizer?.lastName}</p>
-    </div>
-    <div className={isOrganizer ? "" : "hidden"}>
-        <button>Create event</button>
-        <button>Update</button>
-        <button>Delete</button>
-    </div>
-    <GroupEvents numberEvents={numberEvents}/>
+    <GroupDetailsInfo group={group}/>
+    <GroupEvents type="Upcoming" events={upcomingEvents} />
+    <GroupEvents type="Past" events={pastEvents} />
     </>
   )
+}
+
+function sortEvents(events) {
+  events.forEach(event => event.startDate = new Date(event.startDate).getTime());
+
+  //test past events
+  // events.push({name: "old event", previewImage: null, startDate: new Date('10/20/23'), Group: {id: 1, name: 'Evening Tennis on the Water', city: 'New York', state: 'NY'}})
+
+  events = events.sort((a,b) => {
+    return a.startDate > b.startDate ? 1 : -1;
+  });
+
+  const index = events.findIndex(event => event.startDate > new Date().getTime());
+
+  const pastEvents = events.slice(0,index)
+  const upcomingEvents = events.slice(index)
+
+  return [upcomingEvents, pastEvents];
 }

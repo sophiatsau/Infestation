@@ -31,6 +31,7 @@ export default function GroupsList() {
     <p className="feature-caption">Groups in Infestation</p>
     <ul className="groups-list">
         {groups.map((group) => {
+            if (!group.id) return null;
             return (
                 <li key={group.id}>
                     <GroupsThumbnail group={group}/>
