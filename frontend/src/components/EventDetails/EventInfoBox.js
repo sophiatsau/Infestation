@@ -1,9 +1,16 @@
 import React from 'react'
 
-export default function EventInfoBox({event}) {
+export default function EventInfoBox({event, isOrganizer}) {
   const {price, startDate, endDate, type} = event;
   const start = new Date(startDate);
   const end = new Date(endDate);
+
+  const updateDeleteButtons = (
+    <>
+      <button>Update</button>
+      <button>Delete</button>
+    </>
+  )
 
   return (
     <div className="event-info-box">
@@ -28,7 +35,10 @@ export default function EventInfoBox({event}) {
           </p>
         </div>
         <div>{"$"+price || 'FREE'}</div>
-        <div>{type}</div>
+        <div>
+          {type}
+          {isOrganizer ? updateDeleteButtons : null}
+        </div>
       </div>
     </div>
   )

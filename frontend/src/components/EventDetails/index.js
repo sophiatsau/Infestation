@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import BreadcrumbLink from '../BreadcrumbLink';
 import { useDispatch, useSelector } from 'react-redux';
 import {useParams, useHistory} from 'react-router-dom';
@@ -15,11 +15,20 @@ export default function EventDetails() {
   const {eventId} = useParams();
   const dispatch = useDispatch();
   const history = useHistory()
+
   const event = useSelector(consumeOneEvent(eventId)) ?? {}
   const {name, groupId, EventImages, description} = event;
   const group = useSelector(consumeOneGroup(groupId)) ?? {};
+  const currentUser = useSelector(state => state.session.user)
   const organizer = `${group.Organizer?.firstName} ${group.Organizer?.lastName}`
   const previewImage = EventImages && EventImages.find(image => image.preview);
+  const [isOrganizer, setIsOrganizer] = useState(!!group.Organizer)
+
+  useEffect(() => {
+    if (currentUser && group.Organizer?.id==currentUser.id) {
+      setIsOrganizer(true);
+    } else setIsOrganizer(false);
+  }, [currentUser, group])
 
   useEffect(() => {
     async function getGroup() {
@@ -57,7 +66,7 @@ export default function EventDetails() {
           <img src={previewImage?.url} alt="Preview not available"/>
           <div>
             <GroupInfoBox group={group}/>
-            <EventInfoBox event={event}/>
+            <EventInfoBox event={event} isOrganizer={isOrganizer}/>
           </div>
         </div>
         <div>
