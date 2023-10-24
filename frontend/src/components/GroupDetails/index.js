@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {fetchGroupById, consumeOneGroup} from '../../store/groups';
 
 import GroupEvents from './GroupEvents';
+import BreadcrumbLink from '../BreadcrumbLink';
 
 import './GroupDetails.css';
 
@@ -48,10 +49,7 @@ export default function GroupDetails() {
 
   return (
     <>
-    <div className="breadcrumb-link">
-        <i className="fa-solid fa-angle-left"></i>
-        <Link to='/groups'>Groups</Link>
-    </div>
+    <BreadcrumbLink to="/groups" text="Groups"/>
     <div className='group-details'>
         <img src={previewImage} alt="No preview image available"/>
         <div className='group-information'>

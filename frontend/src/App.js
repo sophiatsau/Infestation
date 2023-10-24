@@ -7,6 +7,8 @@ import Navigation from './components/Navigation';
 import Landing from './components/Landing';
 import GroupsList from './components/GroupsList'
 import GroupDetails from './components/GroupDetails';
+import EventsList from './components/EventsList';
+import EventDetails from './components/EventDetails';
 
 function App() {
   const dispatch = useDispatch();
@@ -31,8 +33,17 @@ function App() {
         <Route exact path='/groups'>
           <GroupsList />
         </Route>
+        <Route exact path='/groups/new'>
+          make new grupe ehe
+        </Route>
         <Route exact path='/groups/:groupId'>
           <GroupDetails />
+        </Route>
+        <Route exact path='/events/:eventId'>
+          <EventDetails />
+        </Route>
+        <Route exact path='/events'>
+          <EventsList />
         </Route>
         <Route>
           <h1>404 PAGE NOT FOUND</h1>
