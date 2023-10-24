@@ -282,7 +282,7 @@ router.post('/:groupId/venues', requireAuth, checkGroup, isGroupOrganizerOrCohos
 
 /************************** EVENTS ***************** */
 router.get('/:groupId/events', checkGroup, async (req,res,next) => {
-    const events = await Event.findAll({
+    const events = await Event.unscoped().findAll({
         where: {groupId: req.params.groupId},
     })
 

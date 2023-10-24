@@ -4,10 +4,6 @@ import { Link } from 'react-router-dom';
 export default function GroupsThumbnail({group}) {
   const {id, name, previewImage, isPrivate, city, state, about, numberEvents} = group;
 
-  useEffect(() => {
-    return
-  }, [id])
-
   return (
     <Link to={`/groups/${id}`} className="group-item">
       <img src={previewImage}/>

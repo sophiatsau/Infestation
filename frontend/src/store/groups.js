@@ -2,6 +2,7 @@ import { csrfFetch } from "./csrf";
 
 const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
+const GET_GROUP_EVENTS = 'events/getGroupEvents';
 
 const getAllGroups = (groups) => {
     return {
@@ -14,6 +15,13 @@ const getOneGroup = (group) => {
     return {
         type: GET_ONE_GROUP,
         group
+    }
+}
+
+const getGroupEvents = (events) => {
+    return {
+        type: GET_GROUP_EVENTS,
+        events,
     }
 }
 
@@ -32,16 +40,25 @@ export const fetchGroupById = (groupId) => async dispatch => {
     return group;
 }
 
+export const fetchEventsByGroup = (groupId) => async dispatch => {
+    const res = await fetch(`/api/groups/${groupId}/events`);
+    const data = await res.json();
+
+    dispatch(getGroupEvents(data.Events));
+
+    return data.Events;
+}
+
 export const consumeAllGroups = () => (state) => Object.values(state.groups);
 
 export const consumeOneGroup = (groupId) => (state) => state.groups[groupId];
 
-const initialState = {};
+const initialState = {events: {}};
 
 const groupsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_GROUPS: {
-            const newGroups = {};
+            const newGroups = {...state, events: {...state.events}};
             action.groups.forEach(group=> {
                 group.isPrivate = group.private ? "Private" : "Public";
                 delete group.private;
@@ -50,12 +67,18 @@ const groupsReducer = (state = initialState, action) => {
             return {...newGroups}
         }
         case GET_ONE_GROUP: {
-            const newGroups = {...state};
+            const newGroups = {...state, events: {...state.events}};
             action.group.isPrivate = action.group.private ? "Private" : "Public";
-            // delete action.group.private;
             newGroups[action.group.id] = action.group;
-            console.log("🚀 ~ file: groups.js:57 ~ groupsReducer ~ newGroups:", newGroups)
+            return newGroups;
+        }
+        case GET_GROUP_EVENTS: {
+            const events = {};
 
+            action.events.forEach(event => {
+                events[event.id] = event;
+            })
+            const newGroups = {...state, events};
             return newGroups;
         }
         default:
