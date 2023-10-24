@@ -28,9 +28,8 @@ export const fetchAllEvents = () => async dispatch => {
 export const fetchEventById = (eventId) => async (dispatch) => {
     const res = await csrfFetch(`/api/events/${eventId}`);
     const data = await res.json();
-    console.log("🚀 ~ file: events.js:32 ~ fetchEventById ~ event:", data)
+
     if (res.ok) {
-        console.log(typeof dispatch)
         dispatch(getOneEvent(data));
     }
     return data;
