@@ -9,6 +9,7 @@ import GroupsList from './components/GroupsList'
 import GroupDetails from './components/GroupDetails';
 import EventsList from './components/EventsList';
 import EventDetails from './components/EventDetails';
+import GroupCreationPage from './components/GroupCreationPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ function App() {
           <GroupsList />
         </Route>
         <Route exact path='/groups/new'>
-          make new grupe ehe
+          <GroupCreationPage />
         </Route>
         <Route exact path='/groups/:groupId'>
           <GroupDetails />
