@@ -52,7 +52,6 @@ export const createNewEvent = (payload) => async dispatch => {
     })
 
     const eventData = await eventRes.json();
-    console.log("🚀 ~ file: events.js:55 ~ createNewEvent ~ eventData:", eventData)
 
     const resImage = await csrfFetch(`/api/events/${eventData.id}/images`, {
         method: 'POST',
@@ -60,10 +59,9 @@ export const createNewEvent = (payload) => async dispatch => {
     })
 
     const dataImage = await resImage.json();
-    console.log("🚀 ~ file: events.js:63 ~ createNewEvent ~ dataImage:", dataImage)
 
     if (eventRes.status < 400 && resImage.ok) {
-        eventData.previewImage = resImage
+        eventData.previewImage = dataImage
         dispatch(createEvent(eventData))
     }
 

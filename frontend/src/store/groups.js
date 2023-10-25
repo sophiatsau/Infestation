@@ -5,6 +5,7 @@ const GET_ONE_GROUP = 'groups/getOneGroup';
 const GET_GROUP_EVENTS = 'groups/getGroupEvents';
 const CREATE_GROUP = 'groups/createGroup';
 const EDIT_GROUP = 'groups/editGroup';
+const DELETE_GROUP = 'groups/deleteGroup'
 
 const getAllGroups = (groups) => {
     return {
@@ -38,6 +39,13 @@ const editGroup = (group) => {
     return {
         type: EDIT_GROUP,
         group,
+    }
+}
+
+const deleteGroup = (groupId) => {
+    return {
+        type: DELETE_GROUP,
+        groupId
     }
 }
 
@@ -108,6 +116,19 @@ export const editGroupById = (payload) => async dispatch => {
     return dataGroup
 }
 
+export const deleteOneGroup = (groupId) => async dispatch => {
+    console.log("deleting...")
+    const res = await csrfFetch(`/api/groups/${groupId}`, {
+        method: 'DELETE'
+    })
+
+    console.log("delete complete")
+
+    if (res.ok) dispatch(deleteGroup(groupId));
+
+    return await res.json();
+}
+
 export const consumeAllGroups = () => (state) => Object.values(state.groups);
 
 export const consumeOneGroup = (groupId) => (state) => state.groups[groupId];
@@ -117,7 +138,7 @@ const initialState = {events: {}};
 const groupsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_GROUPS: {
-            const newGroups = {...state, events: {...state.events}};
+            const newGroups = {events: {...state.events}};
             action.groups.forEach(group=> {
                 group.isPrivate = group.private ? "Private" : "Public";
                 delete group.private;
@@ -147,6 +168,11 @@ const groupsReducer = (state = initialState, action) => {
                 [action.group.id]: action.group,
             };
             return newState;
+        }
+        case DELETE_GROUP: {
+            const newGroups = {...state, events: {...state.events}};
+            delete newGroups[action.groupId];
+            return newGroups;
         }
         default:
             return state;

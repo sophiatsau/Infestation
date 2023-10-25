@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { isValidElement, useEffect, useState } from 'react';
 import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -10,6 +10,7 @@ import BreadcrumbLink from '../BreadcrumbLink';
 import GroupDetailsInfo from './GroupDetailsInfo';
 
 import './GroupDetails.css';
+import { Redirect } from 'react-router-dom';
 
 export default function GroupDetails() {
   const {groupId} = useParams();
@@ -24,12 +25,13 @@ export default function GroupDetails() {
 
   useEffect(() => {
     async function getGroup() {
-        return await dispatch(fetchGroupById(groupId))
-            .catch(async (res) => {
-                const data = await res.json();
-                console.log(data.title, '-', data.message)
-                history.push('/not-found')
-            })
+        try {
+          await dispatch(fetchGroupById(groupId))
+        } catch (e) {
+          const data = await e.json();
+          console.log(data.title, '-', data.message)
+          history.push('/not-found')
+        }
     }
     getGroup()
 
@@ -44,7 +46,7 @@ export default function GroupDetails() {
   return (
     <>
     <BreadcrumbLink to="/groups" text="Groups"/>
-    <GroupDetailsInfo group={group}/>
+    <GroupDetailsInfo group={group} />
     <GroupEvents type="Upcoming" events={upcomingEvents} />
     <GroupEvents type="Past" events={pastEvents} />
     {(!upcomingEvents.length&&!pastEvents.length) && <h2>No Upcoming Events</h2>}

@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import {useSelector} from 'react-redux'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-export default function GroupDetailsInfo({group}) {
+import OpenModalButton from '../OpenModalButton';
+import GroupDeleteModal from '../GroupDeleteModal';
+
+export default function GroupDetailsInfo({group, setLoaded}) {
   let history = useHistory();
 
-  let {GroupImages, name, city, state, about, numberEvents, isPrivate, Organizer, organizerId} = group || {};
+  let {GroupImages, name, city, state, about, numberEvents, isPrivate, Organizer, organizerId, id} = group || {};
 
   const sessionUserId = useSelector(state => state.session.user?.id);
 
@@ -48,7 +51,12 @@ export default function GroupDetailsInfo({group}) {
         <div className={isOrganizer ? "" : "hidden"}>
             <button onClick={()=>history.push(`/groups/${group.id}/events/new`)}>Create event</button>
             <button onClick={()=>history.push(`/groups/${group.id}/edit`)}>Update</button>
-            <button>Delete</button>
+            <button>
+              <OpenModalButton
+                buttonText="Delete"
+                modalComponent={<GroupDeleteModal groupId={id}/>}
+              />
+            </button>
         </div>
     </div>
   )
