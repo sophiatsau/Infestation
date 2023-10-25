@@ -25,20 +25,34 @@ export default function GroupCreationPage() {
     setState(newState);
   }, [location])
 
+  useEffect(() => {
+    const err = {};
+    if (!city) err.city="Location is required"
+    if (!state) err.state="Location is required"
+    if (!name || name.length > 60) err.name="Name is required"
+    if (about.length < 50) err.about="Description must be at least 50 characters long"
+    if (!type) err.type="Group Type is required"
+    if (!isPrivate) err.private="Visibility Type is required"
+    if (!['.png', `.jpg`, `.jpeg`].find(end => url.endsWith(end))) err.url="Image URL must end in .png, .jpg, or .jpeg"
+
+    setErrors(err)
+  }, [city, state, name, about, type, isPrivate, url])
+
   async function handleSubmit(e) {
     e.preventDefault();
+    setUserSubmit(true);
 
     const payload = {city, state, name, about, type, private: isPrivate, url};
 
+    if (Object.values(errors).length) return;
+
     try {
       const [newGroup,] = await dispatch(createNewGroup(payload))
-      console.log("🚀 ~ file: index.js:35 ~ handleSubmit ~ newGroup:", newGroup)
       history.push(`/groups/${newGroup.id}`)
     } catch(e) {
       const newErrors = await e.json()
       setErrors(newErrors.errors);
     }
-    // history.push('/')
   }
 
   return (
@@ -55,7 +69,7 @@ export default function GroupCreationPage() {
         />
         <div className='form-error'>
           <p>
-            {(errors.city||errors.state) && "City and state are required"}
+            {(errors.city||errors.state) && userSubmit && "Location is required"}
           </p>
         </div>
       </section>
@@ -69,7 +83,7 @@ export default function GroupCreationPage() {
           onChange={(e) => setName(e.target.value)}
         />
         <div className='form-error'>
-          <p>{errors.name && "Name is required and must be 60 characters or less"}</p>
+          <p>{errors.name && userSubmit && "Name is required and must be 60 characters or less"}</p>
         </div>
       </section>
       <section>
@@ -86,7 +100,7 @@ export default function GroupCreationPage() {
           onChange={(e) => setAbout(e.target.value)}
         />
         <div className='form-error'>
-          <p>{errors?.about}</p>
+          <p>{userSubmit && errors?.about}</p>
         </div>
       </section>
       <section>
@@ -99,7 +113,7 @@ export default function GroupCreationPage() {
             <option value="Online">Online</option>
           </select>
           <div className='form-error'>
-            <p>{errors.type && "Group must be either in person or online"}</p>
+            <p>{errors.type && userSubmit && "Group Type is required"}</p>
           </div>
         </div>
         <div>
@@ -110,12 +124,15 @@ export default function GroupCreationPage() {
             <option value="false">Public</option>
           </select>
           <div className='form-error'>
-            <p>{errors.private && "Group must be either private or public"}</p>
+            <p>{errors.private && userSubmit && "Visibility Type is required"}</p>
           </div>
         </div>
         <div>
           <label>Please add an image URL for your group below:</label>
           <input type="text" placeholder='Image Url' value={url} onChange={(e) => setUrl(e.target.value)} />
+          <div className='form-error'>
+            <p>{errors.url && userSubmit && "Image URL must end in .png, .jpg, or .jpeg"}</p>
+          </div>
         </div>
       </section>
       <button>Create Group</button>
