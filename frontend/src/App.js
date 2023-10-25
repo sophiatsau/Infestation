@@ -50,6 +50,9 @@ function App() {
         <Route exact path='/events'>
           <EventsList />
         </Route>
+        <Route exact path='/unauthorized'>
+          You are not authorized to do that.
+        </Route>
         <Route>
           <h1>404 PAGE NOT FOUND</h1>
         </Route>

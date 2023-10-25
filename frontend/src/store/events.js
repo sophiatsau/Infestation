@@ -1,7 +1,8 @@
 import { csrfFetch } from "./csrf";
 
 const GET_ALL_EVENTS = 'events/getAllEvents';
-const GET_ONE_EVENT = 'events/getOneEvent'
+const GET_ONE_EVENT = 'events/getOneEvent';
+const CREATE_EVENT = 'events/createEvent';
 
 const getAllEvents = (events) => {
     return {
@@ -13,6 +14,13 @@ const getAllEvents = (events) => {
 const getOneEvent = (event) => {
     return {
         type: GET_ONE_EVENT,
+        event,
+    }
+}
+
+const createEvent = (event) => {
+    return {
+        type: CREATE_EVENT,
         event,
     }
 }
@@ -33,6 +41,10 @@ export const fetchEventById = (eventId) => async (dispatch) => {
         dispatch(getOneEvent(data));
     }
     return data;
+}
+
+export const createNewEvent = (event) => async dispatch => {
+    console.log("🚀 ~ file: events.js:47 ~ createNewEvent ~ event:", event)
 }
 
 export const consumeAllEvents = () => (state) => Object.values(state.events);
