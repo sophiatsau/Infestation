@@ -47,7 +47,7 @@ export default function GroupDetailsInfo({group}) {
         </div>
         <div className={isOrganizer ? "" : "hidden"}>
             <button onClick={()=>history.push(`/groups/${group.id}/events/new`)}>Create event</button>
-            <button onClick={()=>history.push(`/groups/${group.id}/update`)}>Update</button>
+            <button onClick={()=>history.push(`/groups/${group.id}/edit`)}>Update</button>
             <button>Delete</button>
         </div>
     </div>
