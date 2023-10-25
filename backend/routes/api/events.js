@@ -176,7 +176,7 @@ router.get('/', validateQuery, async(req,res,next) => {
         offset: size * (page-1),
     };
 
-    const events = await Event.findAll({
+    const events = await Event.unscoped().findAll({
         where,
         ...pagination
     })

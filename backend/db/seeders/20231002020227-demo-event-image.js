@@ -13,12 +13,12 @@ options.tableName = "EventImages"
 const eventImageInfo = [
   {
     eventId: 1,
-    url: 'image1.png',
+    url: "https://www.shutterstock.com/image-vector/grunge-blue-rubber-preview-word-260nw-1332132605.jpg",
     preview: true,
   },
   {
     eventId: 1,
-    url: 'image2.png',
+    url: 'https://www.afvalbakdirect.nl/14366-large_default/trash-can-verzinkt.jpg',
     preview: false,
   },
 ]

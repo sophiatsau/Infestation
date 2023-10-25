@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { useDispatch} from "react-redux";
 import * as sessionActions from "../../store/session";
 
@@ -13,8 +13,14 @@ export default function SignupFormModal() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState({});
+    const [disabled, setDisabled] = useState(true);
     const dispatch = useDispatch();
     const { closeModal } = useModal();
+
+    useEffect(() => {
+        if (username.length>=4 && firstName && lastName && email && password.length>=6 && confirmPassword) setDisabled(false);
+        else setDisabled(true)
+    }, [username, firstName, lastName, email, password, confirmPassword])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -108,7 +114,7 @@ export default function SignupFormModal() {
             />
             </label>
             {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-            <button type="submit">Sign Up</button>
+            <button type="submit" disabled={disabled}>Sign Up</button>
         </form>
         </>
     )

@@ -5,3 +5,41 @@
 .hidden {
     display: none;
 }
+
+.nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0;
+    border-bottom: 1px solid rgb(200,200,200);
+}
+
+.profile-button {
+    position: absolute;
+    right: 10px;
+}
+
+.profile-dropdown {
+    position: absolute;
+    right: 10px;
+    top: 40px;
+    border: 1px black solid;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+}
+
+.profile-dropdown li {
+    margin: 0 auto;
+    text-align: center;
+    font-size: small;
+    padding: 2px;
+}
+
+.dropdown-profile-top {
+    border-top: solid 1px rgb(200,200,200);
+}
+
+.profile-dropdown .light-button {
+    width: 100%;
+}

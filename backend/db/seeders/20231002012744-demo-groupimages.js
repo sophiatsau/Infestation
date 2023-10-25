@@ -12,22 +12,22 @@ options.tableName = "GroupImages";
 const GroupImagesData = [
   {
     groupId: 1,
-    url: "group1-1.png",
+    url: "https://www.shutterstock.com/image-vector/grunge-blue-rubber-preview-word-260nw-1332132605.jpg",
     preview: true,
   },
   {
     groupId: 1,
-    url: "group1-2.png",
+    url: "https://www.afvalbakdirect.nl/14366-large_default/trash-can-verzinkt.jpg",
     preview: false,
   },
   {
     groupId: 2,
-    url: "group2-1.png",
+    url: "https://www.shutterstock.com/image-vector/grunge-blue-rubber-preview-word-260nw-1332132605.jpg",
     preview: true,
   },
   {
     groupId: 2,
-    url: "group2-2.png",
+    url: "https://www.afvalbakdirect.nl/14366-large_default/trash-can-verzinkt.jpg",
     preview: false,
   },
 ];

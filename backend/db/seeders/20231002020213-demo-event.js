@@ -44,6 +44,28 @@ const eventInfo = [
     startDate: "2024-11-20 20:00:00",
     endDate: "2024-11-21 20:00:00",
   },
+  {
+    venueId: 1,
+    groupId: 1,
+    name: "Event 4",
+    description: "Description something something",
+    type: "Online",
+    capacity: 20,
+    price: 200,
+    startDate: "2024-11-11 20:00:00",
+    endDate: "2024-11-20 20:00:00",
+  },
+  {
+    venueId: 1,
+    groupId: 1,
+    name: "Event 5",
+    description: "Description",
+    type: "Online",
+    capacity: 20,
+    price: 200,
+    startDate: "2024-11-01 20:00:00",
+    endDate: "2024-11-20 20:00:00",
+  },
 ]
 
 /** @type {import('sequelize-cli').Migration} */

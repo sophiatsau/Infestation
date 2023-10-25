@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from 'react-redux';
+import { useHistory } from "react-router-dom";
 import * as sessionActions from '../../store/session';
 
 import LoginFormModal from "../LoginFormModal";
@@ -13,6 +14,7 @@ function ProfileButton({ user }) {
   //holds mutable ref object with .current initialized to undefined. .current is mutable, is set to corresponding DOM node
   //mutating .current doesn't cause re-render
   const ulRef = useRef();
+  const history = useHistory();
 
   useEffect(() => {
     if (!showMenu) return;
@@ -34,6 +36,8 @@ function ProfileButton({ user }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
+    setShowMenu(false);
+    history.push('/');
   };
 
   function openMenu() {
@@ -45,21 +49,22 @@ function ProfileButton({ user }) {
 
 return (
   <>
-    <button onClick={openMenu}>
+    <button onClick={openMenu} className="profile-button">
       <i className="fas fa-bug" style={{color:"white"}}/>
     </button>
     <ul className={ulClassName} ref={ulRef}>
+      <button className="light-button" onClick={() => history.push('/groups')}>View groups</button>
+      <button className="light-button" onClick={() => history.push('/events')}>View events</button>
       {user ? (
         <>
-          <li>{user.username}</li>
-          <li>{user.firstName} {user.lastName}</li>
+          <li className="dropdown-profile-top">Hello, {user.firstName}</li>
           <li>{user.email}</li>
           <li>
             <button onClick={logout}>Log Out</button>
           </li>
         </>
       ) : (
-        <>
+        <div>
           <li>
             <OpenModalButton
               buttonText="Log In"
@@ -72,7 +77,7 @@ return (
               modalComponent={<SignupFormModal />}
             />
           </li>
-        </>
+        </div>
         )}
       </ul>
     </>
