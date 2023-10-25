@@ -2,7 +2,8 @@ import { csrfFetch } from "./csrf";
 
 const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
-const GET_GROUP_EVENTS = 'events/getGroupEvents';
+const GET_GROUP_EVENTS = 'groups/getGroupEvents';
+const CREATE_GROUP = 'groups/createGroup';
 
 const getAllGroups = (groups) => {
     return {
@@ -25,6 +26,13 @@ const getGroupEvents = (events) => {
     }
 }
 
+const createGroup = (group) => {
+    return {
+        type: CREATE_GROUP,
+        group,
+    }
+}
+
 export const fetchGroups = () => async dispatch => {
     const res = await csrfFetch('/api/groups');
     const data = await res.json();
@@ -41,12 +49,36 @@ export const fetchGroupById = (groupId) => async dispatch => {
 }
 
 export const fetchEventsByGroup = (groupId) => async dispatch => {
-    const res = await fetch(`/api/groups/${groupId}/events`);
+    const res = await csrfFetch(`/api/groups/${groupId}/events`);
     const data = await res.json();
 
     if (res.ok) dispatch(getGroupEvents(data.Events));
 
     return data.Events;
+}
+
+export const createNewGroup = (payload) => async dispatch => {
+    const {url, ...newGroup} = payload;
+
+    const resGroup = await csrfFetch(`/api/groups`, {
+        method: 'POST',
+        body: JSON.stringify(newGroup)
+    })
+
+    const dataGroup = await resGroup.json();
+
+    const resImage = await csrfFetch(`/api/groups/${dataGroup.id}/images`, {
+        method: 'POST',
+        body: JSON.stringify({url, preview: true})
+    })
+
+    const dataImage = await resImage.json;
+
+    if (resGroup.status < 400 && resImage.ok) {
+        dataGroup.image = resImage
+        dispatch(createGroup(dataGroup))
+    }
+    return [dataGroup, dataImage]
 }
 
 export const consumeAllGroups = () => (state) => Object.values(state.groups);

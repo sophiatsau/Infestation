@@ -86,3 +86,11 @@ ul {
 a {
     text-decoration: none;
 }
+
+.form-error * {
+    color: red;
+}
+
+.form-error {
+    height: 40px;
+}
