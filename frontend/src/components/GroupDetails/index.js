@@ -47,6 +47,7 @@ export default function GroupDetails() {
     <GroupDetailsInfo group={group}/>
     <GroupEvents type="Upcoming" events={upcomingEvents} />
     <GroupEvents type="Past" events={pastEvents} />
+    {(!upcomingEvents.length&&!pastEvents.length) && <h2>No Upcoming Events</h2>}
     </>
   )
 }

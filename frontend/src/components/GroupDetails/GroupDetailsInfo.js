@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {useSelector} from 'react-redux'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 export default function GroupDetailsInfo({group}) {
+  let history = useHistory();
+
   let {GroupImages, name, city, state, about, numberEvents, isPrivate, Organizer, organizerId} = group || {};
 
   const sessionUserId = useSelector(state => state.session.user?.id);
@@ -43,8 +46,8 @@ export default function GroupDetailsInfo({group}) {
             <p>{Organizer?.firstName + ' ' + Organizer?.lastName}</p>
         </div>
         <div className={isOrganizer ? "" : "hidden"}>
-            <button>Create event</button>
-            <button>Update</button>
+            <button onClick={()=>history.push(`/groups/${group.id}/events/new`)}>Create event</button>
+            <button onClick={()=>history.push(`/groups/${group.id}/update`)}>Update</button>
             <button>Delete</button>
         </div>
     </div>

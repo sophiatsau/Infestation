@@ -3,6 +3,7 @@ import React from 'react'
 import EventCard from '../EventCard';
 
 export default function GroupEvents({type, events}) {
+  if (!events.length) return null;
 
   return (
     <>
