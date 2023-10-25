@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf";
 const GET_ALL_EVENTS = 'events/getAllEvents';
 const GET_ONE_EVENT = 'events/getOneEvent';
 const CREATE_EVENT = 'events/createEvent';
+const DELETE_EVENT = 'events/deleteEvent'
 
 const getAllEvents = (events) => {
     return {
@@ -22,6 +23,13 @@ const createEvent = (event) => {
     return {
         type: CREATE_EVENT,
         event,
+    }
+}
+
+const deleteEvent = (eventId) => {
+    return {
+        type: DELETE_EVENT,
+        eventId,
     }
 }
 
@@ -68,6 +76,19 @@ export const createNewEvent = (payload) => async dispatch => {
     return [eventData, dataImage]
 }
 
+export const deleteOneEvent = (eventId) => async dispatch => {
+    console.log(eventId)
+    const res = await csrfFetch(`/api/events/${eventId}`, {
+        method: 'DELETE'
+    })
+
+    if (res.ok) {
+        dispatch(deleteEvent(eventId));
+    }
+
+    return res;
+}
+
 export const consumeAllEvents = () => (state) => Object.values(state.events);
 
 export const consumeOneEvent = (eventId) => (state) => state.events[eventId];
@@ -107,8 +128,12 @@ const eventsReducer = (state = initialState, action) => {
             return {...state, [action.event.id]: action.event};
         }
         case CREATE_EVENT: {
-            console.log("🚀 ~ file: events.js:111 ~ eventsReducer ~ action.event:", action.event)
             return {...state, [action.event.id]: action.event};
+        }
+        case DELETE_EVENT: {
+            const newState = {...state};
+            delete newState[action.eventId];
+            return newState;
         }
         default:
             return state;

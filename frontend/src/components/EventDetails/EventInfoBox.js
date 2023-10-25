@@ -1,14 +1,22 @@
 import React from 'react'
 
+import OpenModalButton from '../OpenModalButton';
+import DeleteModal from '../DeleteModal';
+
 export default function EventInfoBox({event, isOrganizer}) {
-  const {price, startDate, endDate, type} = event;
+  const {price, startDate, endDate, type, id, groupId} = event;
   const start = new Date(startDate);
   const end = new Date(endDate);
 
   const updateDeleteButtons = (
     <>
       <button>Update</button>
-      <button>Delete</button>
+      <button>
+        <OpenModalButton
+          buttonText="Delete"
+          modalComponent={<DeleteModal featureId={id} feature="event" groupId={groupId}/>}
+        />
+      </button>
     </>
   )
 

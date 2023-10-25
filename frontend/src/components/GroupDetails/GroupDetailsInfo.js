@@ -3,7 +3,7 @@ import {useSelector} from 'react-redux'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 import OpenModalButton from '../OpenModalButton';
-import GroupDeleteModal from '../GroupDeleteModal';
+import DeleteModal from '../DeleteModal';
 
 export default function GroupDetailsInfo({group, setLoaded}) {
   let history = useHistory();
@@ -54,7 +54,7 @@ export default function GroupDetailsInfo({group, setLoaded}) {
             <button>
               <OpenModalButton
                 buttonText="Delete"
-                modalComponent={<GroupDeleteModal groupId={id}/>}
+                modalComponent={<DeleteModal featureId={id} feature="group"/>}
               />
             </button>
         </div>
