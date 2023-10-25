@@ -31,13 +31,12 @@ export default function GroupCreationPage() {
     const payload = {city, state, name, about, type, private: isPrivate, url};
 
     try {
-      const newGroup = await dispatch(createNewGroup(payload))
+      const [newGroup,] = await dispatch(createNewGroup(payload))
       console.log("🚀 ~ file: index.js:35 ~ handleSubmit ~ newGroup:", newGroup)
+      history.push(`/groups/${newGroup.id}`)
     } catch(e) {
       const newErrors = await e.json()
       setErrors(newErrors.errors);
-      console.log("🚀 ~ file: index.js:39 ~ handleSubmit ~ newErrors.errors:", newErrors.errors)
-
     }
     // history.push('/')
   }
@@ -56,9 +55,7 @@ export default function GroupCreationPage() {
         />
         <div className='form-error'>
           <p>
-            {errors?.city}
-            {(errors.city&&errors.state ? ', ' : '')}
-            {errors?.state}
+            {(errors.city||errors.state) && "City and state are required"}
           </p>
         </div>
       </section>
@@ -72,7 +69,7 @@ export default function GroupCreationPage() {
           onChange={(e) => setName(e.target.value)}
         />
         <div className='form-error'>
-          <p>{errors?.name}</p>
+          <p>{errors.name && "Name is required and must be 60 characters or less"}</p>
         </div>
       </section>
       <section>
@@ -102,7 +99,7 @@ export default function GroupCreationPage() {
             <option value="Online">Online</option>
           </select>
           <div className='form-error'>
-            <p>{errors?.type}</p>
+            <p>{errors.type && "Group must be either in person or online"}</p>
           </div>
         </div>
         <div>
@@ -113,7 +110,7 @@ export default function GroupCreationPage() {
             <option value="false">Public</option>
           </select>
           <div className='form-error'>
-            <p>{errors?.private}</p>
+            <p>{errors.private && "Group must be either private or public"}</p>
           </div>
         </div>
         <div>

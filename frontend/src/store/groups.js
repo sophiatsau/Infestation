@@ -75,9 +75,12 @@ export const createNewGroup = (payload) => async dispatch => {
     const dataImage = await resImage.json;
 
     if (resGroup.status < 400 && resImage.ok) {
-        dataGroup.image = resImage
+        dataGroup.previewImage = resImage
+        console.log("🚀 ~ file: groups.js:79 ~ createNewGroup ~ dataGroup:", dataGroup)
+        dataGroup.isPrivate = dataGroup.private ? "Private" : "Public";
         dispatch(createGroup(dataGroup))
     }
+
     return [dataGroup, dataImage]
 }
 
@@ -112,6 +115,15 @@ const groupsReducer = (state = initialState, action) => {
             })
             const newGroups = {...state, events};
             return newGroups;
+        }
+        case CREATE_GROUP: {
+            console.log("🚀 ~ file: groups.js:121 ~ groupsReducer ~ action.group:", action.group)
+            const newState = {
+                ...state,
+                events: {...state.events},
+                [action.group.id]: action.group,
+            };
+            return newState;
         }
         default:
             return state;

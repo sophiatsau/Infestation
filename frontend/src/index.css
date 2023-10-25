@@ -94,3 +94,7 @@ a {
 .form-error {
     height: 40px;
 }
+
+img {
+    width: 100%;
+}
