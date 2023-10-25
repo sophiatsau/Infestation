@@ -43,8 +43,31 @@ export const fetchEventById = (eventId) => async (dispatch) => {
     return data;
 }
 
-export const createNewEvent = (event) => async dispatch => {
-    console.log("🚀 ~ file: events.js:47 ~ createNewEvent ~ event:", event)
+export const createNewEvent = (payload) => async dispatch => {
+    const {url, groupId, ...newEvent} = payload;
+
+    const eventRes = await csrfFetch(`/api/groups/${groupId}/events`, {
+        method: 'POST',
+        body: JSON.stringify(newEvent)
+    })
+
+    const eventData = await eventRes.json();
+    console.log("🚀 ~ file: events.js:55 ~ createNewEvent ~ eventData:", eventData)
+
+    const resImage = await csrfFetch(`/api/events/${eventData.id}/images`, {
+        method: 'POST',
+        body: JSON.stringify({url, preview: true})
+    })
+
+    const dataImage = await resImage.json();
+    console.log("🚀 ~ file: events.js:63 ~ createNewEvent ~ dataImage:", dataImage)
+
+    if (eventRes.status < 400 && resImage.ok) {
+        eventData.previewImage = resImage
+        dispatch(createEvent(eventData))
+    }
+
+    return [eventData, dataImage]
 }
 
 export const consumeAllEvents = () => (state) => Object.values(state.events);
@@ -83,6 +106,10 @@ const eventsReducer = (state = initialState, action) => {
             return newState;
         }
         case GET_ONE_EVENT: {
+            return {...state, [action.event.id]: action.event};
+        }
+        case CREATE_EVENT: {
+            console.log("🚀 ~ file: events.js:111 ~ eventsReducer ~ action.event:", action.event)
             return {...state, [action.event.id]: action.event};
         }
         default:

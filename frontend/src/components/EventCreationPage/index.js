@@ -58,17 +58,17 @@ export default function GroupCreationPage() {
     e.preventDefault();
     setUserSubmit(true);
 
-    // const payload = {city, state, name, about, type, private: isPrivate, url};
+    const payload = {name, type, price, startDate, endDate, description, capacity: 5, url, groupId};
 
     if (Object.values(errors).length) return;
 
-    // try {
-    //   const [newGroup,] = await dispatch(createNewEvent(payload))
-    //   history.push(`/groups/${newGroup.id}`)
-    // } catch(e) {
-    //   const newErrors = await e.json()
-    //   setErrors(newErrors.errors);
-    // }
+    try {
+      const [newEvent,] = await dispatch(createNewEvent(payload))
+      history.push(`/events/${newEvent.id}`)
+    } catch(e) {
+      const newErrors = await e.json()
+      setErrors(newErrors.errors);
+    }
   }
 
   if (!isOrganizer) return null;

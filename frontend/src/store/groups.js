@@ -72,11 +72,10 @@ export const createNewGroup = (payload) => async dispatch => {
         body: JSON.stringify({url, preview: true})
     })
 
-    const dataImage = await resImage.json;
+    const dataImage = await resImage.json();
 
     if (resGroup.status < 400 && resImage.ok) {
         dataGroup.previewImage = resImage
-        console.log("🚀 ~ file: groups.js:79 ~ createNewGroup ~ dataGroup:", dataGroup)
         dataGroup.isPrivate = dataGroup.private ? "Private" : "Public";
         dispatch(createGroup(dataGroup))
     }
