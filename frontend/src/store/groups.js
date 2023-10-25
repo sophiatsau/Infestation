@@ -4,6 +4,7 @@ const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
 const GET_GROUP_EVENTS = 'groups/getGroupEvents';
 const CREATE_GROUP = 'groups/createGroup';
+const EDIT_GROUP = 'groups/editGroup';
 
 const getAllGroups = (groups) => {
     return {
@@ -29,6 +30,13 @@ const getGroupEvents = (events) => {
 const createGroup = (group) => {
     return {
         type: CREATE_GROUP,
+        group,
+    }
+}
+
+const editGroup = (group) => {
+    return {
+        type: EDIT_GROUP,
         group,
     }
 }
@@ -72,15 +80,32 @@ export const createNewGroup = (payload) => async dispatch => {
         body: JSON.stringify({url, preview: true})
     })
 
-    const dataImage = await resImage.json();
+    // const dataImage = await resImage.json();
 
-    if (resGroup.status < 400 && resImage.ok) {
-        dataGroup.previewImage = resImage
-        dataGroup.isPrivate = dataGroup.private ? "Private" : "Public";
-        dispatch(createGroup(dataGroup))
-    }
+    // if (resGroup.status < 400 && resImage.ok) {
+    //     dataGroup.previewImage = dataImage
+    //     dataGroup.isPrivate = dataGroup.private ? "Private" : "Public";
+    //     dispatch(createGroup(dataGroup))
+    // }
 
-    return [dataGroup, dataImage]
+    return dataGroup
+}
+
+export const editGroupById = (payload) => async dispatch => {
+    const {groupId, ...newGroup} = payload;
+
+    const resGroup = await csrfFetch(`/api/groups/${groupId}`, {
+        method: 'PUT',
+        body: JSON.stringify(newGroup)
+    })
+
+    const dataGroup = await resGroup.json();
+
+    // if (resGroup.status < 400) {
+    //     dispatch(createGroup(dataGroup.id))
+    // }
+
+    return dataGroup
 }
 
 export const consumeAllGroups = () => (state) => Object.values(state.groups);
@@ -116,7 +141,6 @@ const groupsReducer = (state = initialState, action) => {
             return newGroups;
         }
         case CREATE_GROUP: {
-            console.log("🚀 ~ file: groups.js:121 ~ groupsReducer ~ action.group:", action.group)
             const newState = {
                 ...state,
                 events: {...state.events},
