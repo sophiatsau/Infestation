@@ -4,6 +4,9 @@
     font-weight: bold;
     color: black;
     border-color: black;
+
+    --margin-left: 5%;
+    --reddish-color: rgb(255,100,100);
 }
 
 body {
@@ -98,4 +101,12 @@ a {
 
 img {
     width: 100%;
+}
+
+.teal {
+    color: teal;
+}
+
+.grey {
+    color: grey;
 }

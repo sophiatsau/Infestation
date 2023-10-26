@@ -1,0 +1,50 @@
+/* .event-card-link>* {
+    /* width:auto; */
+    /* padding: 20px;
+} */
+
+.event-card {
+    background-color: white;
+    margin-top: 20px;
+    border-radius: 30px;
+    width: 500px;
+    transition: box-shadow 0.5s
+}
+
+.event-card-top {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    column-gap: 5%;
+    padding: 30px 30px 0 30px;
+}
+
+.event-card-top img {
+    height: auto;
+    width: 100%;
+    /* object-fit: contain; */
+    /* margin-bottom: 15px; */
+}
+
+.event-card-text p {
+    font-weight: normal;
+}
+
+.event-card-text h3 {
+    padding-bottom: 5px;
+}
+
+.event-card-text p,
+.event-card-text h3 {
+    /* border: blue dashed 1px; */
+    margin: 3px 0;
+}
+
+.event-card-description {
+    padding: 0 30px 30px 30px;
+}
+
+.event-card:hover {
+    /* border: 2px solid var(--reddish-color); */
+    box-shadow: 0 0 5px var(--reddish-color);
+
+}

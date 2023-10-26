@@ -8,7 +8,7 @@ export default function GroupEvents({type, events}) {
   return (
     <div className='grey-bg'>
     <h2>{type} Events ({events.length})</h2>
-    <ul>
+    <ul style={{padding:0, margin:0}}>
       {events.map(event => {
         return (
           <EventCard event={event} key={event.id}/>
