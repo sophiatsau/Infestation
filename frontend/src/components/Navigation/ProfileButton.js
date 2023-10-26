@@ -68,12 +68,14 @@ return (
           <li>
             <OpenModalButton
               buttonText="Log In"
+              className="light-button"
               modalComponent={<LoginFormModal />}
             />
           </li>
           <li>
             <OpenModalButton
               buttonText="Sign Up"
+              className="light-button"
               modalComponent={<SignupFormModal />}
             />
           </li>
