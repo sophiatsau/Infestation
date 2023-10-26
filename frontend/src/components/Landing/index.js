@@ -10,10 +10,6 @@ import './Landing.css';
 export default function Landing() {
   const sessionUser = useSelector(state => state.session.user);
 
-  const joinMeetup = () => {
-    console.log('button clicked')
-  }
-
   return (
     <>
     <section id="welcome-container">
