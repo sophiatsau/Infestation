@@ -26,16 +26,12 @@ export default function Navigation({isLoaded}) {
                 </NavLink>
             </li>
             {isLoaded && (
-            <>
-            {sessionUser && (
-                <li>
-                    <Link to='/groups/new'>Start a new group</Link>
-                </li>
-            )}
             <li>
+                {sessionUser && (
+                    <Link to='/groups/new' className="new-group-link">Start a new group</Link>
+                )}
               <ProfileButton user={sessionUser} />
             </li>
-            </>
             )}
         </ul>
     )
