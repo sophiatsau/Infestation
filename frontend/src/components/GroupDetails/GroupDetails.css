@@ -16,20 +16,46 @@
     display: grid;
     grid-template-columns: 3fr 2fr;
     column-gap: 5%;
-    margin: 0 var(--margin-left)
+    margin: 10px var(--margin-left) 20px;
+    height: 300px;
+}
+
+.group-details img {
+    height: 300px;
+    object-fit: contain;
 }
 
 .groups-details-grey {
     color: grey;
     font-size: medium;
     margin: 0;
-    padding: 3px 0;
+    padding: 10px 0;
 }
 
-/* .group-information {
-    align-self: center;
-    justify-self: center;
-} */
+.group-information h2 {
+    margin-bottom: 0;
+}
+
+.group-information {
+    display: grid;
+    grid-template-rows: 4fr 1fr;
+    height: 300px;
+}
+
+.button-options {
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}
+
+.button-options button {
+    width: 200px;
+}
+
+.join-group-button {
+    height: 40px;
+}
 
 .grey-bg {
     background-color: rgb(240,240,240);

@@ -19,8 +19,8 @@ const groupsData = [
   },
   {
     "organizerId": 2,
-    "name": "Roach Bolshevik Party",
-    "about": "The Roach Bolshevik Party: Advocating crumbs for all, one scuttle at a time.",
+    "name": "Roach Labour Party",
+    "about": "The Roach Labour Party: Advocating crumbs for all, one scuttle at a time.",
     "type": "In person",
     "private": false,
     "city": "Saint Pantriesburg",

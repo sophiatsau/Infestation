@@ -28,11 +28,27 @@ export default function GroupDetailsInfo({group, setLoaded}) {
     alert("Feature coming soon");
   }
 
+  const buttonOptions = (
+    isOrganizer ? (
+      <>
+        <button onClick={()=>history.push(`/groups/${group.id}/events/new`)}>Create event</button>
+        <button onClick={()=>history.push(`/groups/${group.id}/edit`)}>Update</button>
+        <OpenModalButton
+          buttonText="Delete"
+          modalComponent={<DeleteModal featureId={id} feature="group"/>}
+        />
+      </>
+    ) : sessionUserId ? (
+      <button className="join-group-button" onClick={joinGroupButton}>Join this group</button>
+    ) : null
+  )
+
   return (
     <div>
         <div className='group-details'>
             <img src={previewImage} alt="No preview image available"/>
             <div className='group-information'>
+              <div>
                 <h2>{name}</h2>
                 <p className="groups-details-grey">{city}, {state}</p>
                 <div>
@@ -41,7 +57,8 @@ export default function GroupDetailsInfo({group, setLoaded}) {
                     <span className="groups-details-grey">{isPrivate}</span>
                 </div>
                 <p className="groups-details-grey">Organized by: {Organizer?.firstName + ' ' + Organizer?.lastName}</p>
-                <button className={isOrganizer || !sessionUserId ? "hidden" : ""} onClick={joinGroupButton}>Join this group</button>
+              </div>
+              <div className='button-options'>{buttonOptions}</div>
             </div>
         </div>
         <div className='grey-bg'>
@@ -49,16 +66,6 @@ export default function GroupDetailsInfo({group, setLoaded}) {
             <p className="groups-details-grey">{Organizer?.firstName + ' ' + Organizer?.lastName}</p>
             <h2>What we're about</h2>
             <p>{about}</p>
-        </div>
-        <div className={isOrganizer ? 'grey-bg' : "hidden"}>
-            <button onClick={()=>history.push(`/groups/${group.id}/events/new`)}>Create event</button>
-            <button onClick={()=>history.push(`/groups/${group.id}/edit`)}>Update</button>
-            <button>
-              <OpenModalButton
-                buttonText="Delete"
-                modalComponent={<DeleteModal featureId={id} feature="group"/>}
-              />
-            </button>
         </div>
     </div>
   )

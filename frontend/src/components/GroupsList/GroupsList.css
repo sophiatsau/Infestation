@@ -9,6 +9,11 @@
     column-gap: 20px;
     cursor: pointer;
     height: 300px;
+    transition: background-color 0.5s;
+}
+
+.group-item:hover {
+    background-color: rgb(240,240,240);
 }
 
 /* .group-item * {
