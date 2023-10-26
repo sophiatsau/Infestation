@@ -16,7 +16,7 @@ export default function Landing() {
     <section id="welcome-container">
         <div id="welcome-text">
             <h1>
-                The pest platform— Where their house becomes <em>our</em> house
+                The pest platform— Where their house becomes <em>OUR</em> house
             </h1>
             <p>
                 Whatever food you crave, from rotting banana to sink strainer spinach, there are thousands of cockroaches with the same cravings on Infestation! Events are happening every day— sign up to join the feast!

@@ -2,6 +2,12 @@
     background-color: pink;
 } */
 
+.infestation-logo {
+    width: 200px;
+    margin-left: 25px;
+    margin-bottom: 10px;
+}
+
 .hidden {
     display: none;
 }
