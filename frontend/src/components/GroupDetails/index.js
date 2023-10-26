@@ -38,9 +38,7 @@ export default function GroupDetails() {
   }, [groupId, dispatch])
 
   useEffect(() => {
-    (async () => {
-      await dispatch(fetchEventsByGroup(groupId));
-    })()
+    dispatch(fetchEventsByGroup(groupId));
   }, [dispatch])
 
   return (

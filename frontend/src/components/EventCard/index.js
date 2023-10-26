@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 
+import './EventCard.css'
+
 export default function EventCard({event}) {
   const {previewImage, startDate, name, Venue, description} = event;
   const dateTime = new Date(startDate);

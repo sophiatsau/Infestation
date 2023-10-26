@@ -6,7 +6,7 @@ export default function GroupEvents({type, events}) {
   if (!events.length) return null;
 
   return (
-    <>
+    <div className='grey-bg'>
     <h2>{type} Events ({events.length})</h2>
     <ul>
       {events.map(event => {
@@ -15,6 +15,6 @@ export default function GroupEvents({type, events}) {
         )
       })}
     </ul>
-    </>
+    </div>
   )
 }

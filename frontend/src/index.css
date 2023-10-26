@@ -11,7 +11,7 @@ body {
 }
 
 .body-container {
-    padding: 20px;
+    /* padding: 20px; */
 }
 
 form {
@@ -81,6 +81,7 @@ ul {
 .active {
     color: teal;
     text-decoration: underline;
+    pointer-events: none;
 }
 
 a {
