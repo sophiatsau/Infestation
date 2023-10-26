@@ -2,6 +2,9 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 
+import OpenModalButton from '../OpenModalButton';
+import SignupFormModal from '../SignupFormModal';
+
 import './Landing.css';
 
 export default function Landing() {
@@ -25,7 +28,7 @@ export default function Landing() {
         <img className="welcome-image" src='./images/dancing-roach-rainbow.gif' alt="image of happy roach - could be you!"/>
     </section>
     <section id="intro-container">
-        <h2>How Infestation Works</h2>
+        <h3>How Infestation Works</h3>
         <p>
             Discover new cupboards and drawers!
         </p>
@@ -51,7 +54,10 @@ export default function Landing() {
         </div>
     </section>
     <section id="join-site-container" className={sessionUser ? "hidden" : ""}>
-        <button id="join-site-button" onClick={joinMeetup}>Join Infestation!</button>
+        <OpenModalButton
+          buttonText="Join Infestation!"
+          modalComponent={<SignupFormModal />}
+        />
     </section>
     </>
   )
