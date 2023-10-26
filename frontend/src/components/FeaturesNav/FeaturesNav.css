@@ -1,0 +1,12 @@
+.feature-nav-container {
+    font-size: x-large;
+    margin: 0 0 0 5%;
+    display: flex;
+    column-gap: 15px;
+}
+
+.feature-caption {
+    color: grey;
+    font-weight: normal;
+    margin: 10px 0 0 5%;
+}

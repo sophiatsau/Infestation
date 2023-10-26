@@ -6,8 +6,8 @@ export default function GroupsThumbnail({group}) {
 
   return (
     <Link to={`/groups/${id}`} className="group-item">
-      <img src={previewImage}/>
-      <div>
+      <img src={previewImage} alt="Preview image not available"/>
+      <div className='group-thumbnail-text'>
         <h2>{name}</h2>
         <h3 className="groups-thumbnail-grey">{city}, {state}</h3>
         <p>{about}</p>

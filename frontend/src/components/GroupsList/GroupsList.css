@@ -1,19 +1,28 @@
-.feature-header {
-    font-size: x-large;
-    padding-right: 15px;
-}
-
-.feature-caption {
-    color: grey;
-    font-weight: normal;
-}
 
 .group-item {
     display: flex;
+    justify-content: center;
+    align-items: center;
     border-top: solid 1px rgb(200,200,200);
-    margin: 10px 0;
-    column-gap: 10px;
+    margin: 0 5%;
+    padding: 10px 0;
+    column-gap: 20px;
     cursor: pointer;
+    height: 300px;
+}
+
+/* .group-item * {
+    border: blue dashed 1px;
+} */
+
+.group-item img {
+    width: 45%;
+    height: 100%;
+    object-fit: scale-down;
+}
+
+.group-thumbnail-text {
+    width: 45%;
 }
 
 .groups-list {
