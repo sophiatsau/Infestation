@@ -40,12 +40,13 @@
     padding: 2px;
 }
 
-.dropdown-profile-top {
+.top-grey-line {
     border-top: solid 1px rgb(200,200,200);
 }
 
 .profile-dropdown .light-button {
     width: 100%;
+    padding: 5px;
 }
 
 .new-group-link {
