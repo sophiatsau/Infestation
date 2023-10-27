@@ -11,7 +11,7 @@ export default function EventCard({event}) {
   return (
     <div className="event-card">
     <Link to={`/events/${event.id}`} className="event-card-link">
-      <img src={previewImage} alt="No preview image available"/>
+      <img src={previewImage} alt="No preview available"/>
       <div className='event-card-text'>
           <p className="teal">{`${dateTime.toLocaleDateString()} · ${dateTime.toLocaleTimeString()}`}</p>
           <h3>{name}</h3>

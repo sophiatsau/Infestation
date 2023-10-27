@@ -38,7 +38,7 @@ export default function GroupCreationPage() {
 
   useEffect(() => {
     dispatch(fetchGroupById(groupId));
-  }, [dispatch])
+  }, [dispatch, groupId])
 
   useEffect(() => {
     const err = {};

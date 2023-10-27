@@ -7,7 +7,7 @@ export default function GroupInfoBox({group}) {
 
   return (
     <Link to={`/groups/${id}`} className="group-info-box">
-      <img src={previewImage?.url}/>
+      <img src={previewImage?.url} alt="Preview not available"/>
       <div>
         <h3 className='no-margin'>{name}</h3>
         <p className='no-margin grey'>{isPrivate}</p>

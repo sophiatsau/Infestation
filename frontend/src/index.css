@@ -47,16 +47,16 @@ button:disabled {
 }
 
 label {
-    width: auto;
+    width: 100%;
     margin: 0 auto;
 }
 
 input {
     background-color: rgb(230,255,255);
     border-radius: 3px;
-    display: flex;
-    justify-content: space-between;
-    width: auto;
+    /* display: flex;
+    justify-content: space-between; */
+    width: 100%;
     margin: 0 auto;
     border-style: solid;
 }
