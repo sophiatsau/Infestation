@@ -58,7 +58,7 @@ export default function GroupDetailsInfo({group, setLoaded}) {
                 </div>
                 <p className="groups-details-grey">Organized by: {Organizer?.firstName + ' ' + Organizer?.lastName}</p>
               </div>
-              <div className='button-options'>{buttonOptions}</div>
+              <div id='button-options'>{buttonOptions}</div>
             </div>
         </div>
         <div className='grey-bg'>
