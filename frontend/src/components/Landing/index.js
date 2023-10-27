@@ -21,7 +21,7 @@ export default function Landing() {
                 Whatever food you crave, from rotting banana to sink strainer spinach, there are thousands of cockroaches with the same cravings on Infestation! Events are happening every day— sign up to join the feast!
             </p>
         </div>
-        <img className="welcome-image" src='./images/dancing-roach-rainbow.gif' alt="image of happy roach - could be you!"/>
+        <img className="welcome-image" src='./images/dancing-roach-rainbow.gif' alt="a happy roach - could be you!"/>
     </section>
     <section id="intro-container">
         <h3>How Infestation Works</h3>

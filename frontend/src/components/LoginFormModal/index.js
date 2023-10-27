@@ -69,7 +69,7 @@ export default function LoginFormModal() {
             />
             </label>
             <button type="submit" disabled={disabled}>Log In</button>
-            <a href='#' id="demo-login" onClick={demoLogIn}>Log In As Demo User</a>
+            <button id="demo-login" onClick={demoLogIn}>Log In As Demo User</button>
         </form>
         </>
     )

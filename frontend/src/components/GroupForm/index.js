@@ -44,7 +44,7 @@ export default function GroupForm({formType, group={}}) {
     }
 
     setErrors(err)
-  }, [city, state, name, about, type, isPrivate, url])
+  }, [city, state, name, about, type, isPrivate, url, formType])
 
   async function handleSubmit(e) {
     e.preventDefault();
