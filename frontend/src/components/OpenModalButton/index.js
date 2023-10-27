@@ -6,7 +6,8 @@ export default function OpenModalButton({
     modalComponent, //render this inside modal
     buttonText, //button text to open modal
     onButtonClick, //optional fcn, call when button to open modal clicked
-    onModalClose //optional fcn, call when modal is closed
+    onModalClose, //optional fcn, call when modal is closed
+    className
 }) {
   const {setModalContent, setOnModalClose} = useModal();
 
@@ -17,6 +18,6 @@ export default function OpenModalButton({
   };
 
   return (
-    <button className="light-button" onClick={onClick}>{buttonText}</button>
+    <button className={className || ""} onClick={onClick}>{buttonText}</button>
   )
 }

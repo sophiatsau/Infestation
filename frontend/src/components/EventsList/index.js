@@ -5,6 +5,7 @@ import EventCard from '../EventCard';
 import { fetchAllEvents, consumeAllEvents, sortEvents } from '../../store/events';
 
 import FeaturesNav from '../FeaturesNav';
+import './EventsList.css';
 
 export default function EventsList() {
     const dispatch = useDispatch();
@@ -22,7 +23,7 @@ export default function EventsList() {
     <>
     <FeaturesNav />
     <p className="feature-caption">Events in Infestation</p>
-    <ul className="">
+    <ul className="events-list">
         {upcomingEvents.map((event) => {
             return (
                 <li key={event.id}>

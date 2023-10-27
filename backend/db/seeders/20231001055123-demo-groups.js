@@ -10,21 +10,30 @@ options.tableName = "Groups"
 const groupsData = [
   {
     "organizerId": 1,
-    "name": "Evening Tennis on the Water",
-    "about": "Enjoy rounds of tennis with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
-    "type": "In person",
-    "private": true,
-    "city": "New York",
-    "state": "NY",
-  },
-  {
-    "organizerId": 1,
-    "name": "Evening Swimming on the Water",
-    "about": "Enjoy rounds of swimming with a tight-nit group of people on the water facing the Brooklyn Bridge. Singles or doubles.",
+    "name": "30 Minute Meals",
+    "about": "Learn how to prepare delicious and healthy meals out of rancid leftovers!",
     "type": "In person",
     "private": false,
-    "city": "New York",
-    "state": "NY",
+    "city": "Garbageside",
+    "state": "Kitchen",
+  },
+  {
+    "organizerId": 2,
+    "name": "Roach Labour Party",
+    "about": "The Roach Labour Party: Advocating crumbs for all, one scuttle at a time.",
+    "type": "In person",
+    "private": false,
+    "city": "Saint Pantriesburg",
+    "state": "Kitchen",
+  },
+  {
+    "organizerId": 2,
+    "name": "Cockroach Comrades",
+    "about": "Revolutionaries by day, pro-gamers by night. All roaches welcome to our gamer group!",
+    "type": "Online",
+    "private": true,
+    "city": "Matt's PC",
+    "state": "Office",
   }
 ]
 

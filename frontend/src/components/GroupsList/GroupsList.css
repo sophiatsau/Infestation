@@ -1,19 +1,45 @@
-.feature-header {
-    font-size: x-large;
-    padding-right: 15px;
-}
-
-.feature-caption {
-    color: grey;
-    font-weight: normal;
-}
 
 .group-item {
-    display: flex;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-areas: 'a a b b b';
     border-top: solid 1px rgb(200,200,200);
-    margin: 10px 0;
-    column-gap: 10px;
+    margin: 0 5%;
+    padding: 30px;
+    column-gap: 20px;
     cursor: pointer;
+    /* height: 300px; */
+    transition: background-color 0.5s;
+}
+
+.group-item:hover {
+    background-color: rgb(240,240,240);
+}
+
+/* .group-item * {
+    border: blue dashed 1px;
+} */
+
+.group-item img {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: scale-down;
+    grid-area: a;
+}
+
+.group-thumbnail-text {
+    /* border: blue 1px dashed; */
+    align-self: start;
+    width: 100%;
+    height: 100%;
+    grid-area: b;
+}
+
+.group-thumbnail-text h2 {
+    margin: 0;
 }
 
 .groups-list {

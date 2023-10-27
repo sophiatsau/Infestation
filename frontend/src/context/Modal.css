@@ -22,10 +22,11 @@
     position: absolute;
     background-color: white;
     border-radius: 1em;
-    padding: 50px;
+    padding: 30px;
 }
 
 #modal-content button {
-    padding: 5px;
+    padding: 10px;
     margin: 10px 0;
+    /* width: 100%; */
 }

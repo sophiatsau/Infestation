@@ -16,16 +16,16 @@ export default function EventDetails() {
   const dispatch = useDispatch();
   const history = useHistory()
 
-  const event = useSelector(consumeOneEvent(eventId)) ?? {}
+  const event = useSelector(consumeOneEvent(eventId)) ?? {};
   const {name, groupId, EventImages, description} = event;
-  const group = useSelector(consumeOneGroup(groupId)) ?? {};
+  const group = useSelector(consumeOneGroup(groupId));
   const currentUser = useSelector(state => state.session.user)
-  const organizer = `${group.Organizer?.firstName} ${group.Organizer?.lastName}`
+  const organizer = `${group?.Organizer?.firstName} ${group?.Organizer?.lastName}`
   const previewImage = EventImages && EventImages.find(image => image.preview);
-  const [isOrganizer, setIsOrganizer] = useState(!!group.Organizer)
+  const [isOrganizer, setIsOrganizer] = useState(!!group?.Organizer)
 
   useEffect(() => {
-    if (currentUser && group.Organizer?.id==currentUser.id) {
+    if (currentUser && parseInt(group?.Organizer?.id)===parseInt(currentUser.id)) {
       setIsOrganizer(true);
     } else setIsOrganizer(false);
   }, [currentUser, group])
@@ -41,7 +41,7 @@ export default function EventDetails() {
     }
     if (groupId) getGroup()
 
-  }, [dispatch, groupId])
+  }, [dispatch, groupId, history])
 
   useEffect(() => {
     (async() => {
@@ -51,27 +51,27 @@ export default function EventDetails() {
         history.push('/not-found')
       }
     })()
-  }, [dispatch])
+  }, [dispatch, eventId, history])
 
   if (!group || !event) return null;
 
   return (
     <div>
         <BreadcrumbLink to='/events' text='Events'/>
-        <div>
-          <h1>{name}</h1>
-          <p>Hosted by {organizer}</p>
+        <div className="event-details-header">
+          <h2 style={{marginBottom: 0}}>{name}</h2>
+          <p className="grey">Hosted by {organizer ?? null}</p>
         </div>
-        <div className="event-details-top-section">
-          <img src={previewImage?.url} alt="Preview not available"/>
-          <div>
+        <div className='grey-background'>
+          <div className="event-details-top-section">
+            <img src={previewImage?.url} alt="Preview not available"/>
             <GroupInfoBox group={group}/>
             <EventInfoBox event={event} isOrganizer={isOrganizer}/>
           </div>
-        </div>
-        <div>
-          <h2>Description</h2>
-          <p>{description}</p>
+          <div>
+            <h2>Description</h2>
+            <p>{description}</p>
+          </div>
         </div>
     </div>
   )

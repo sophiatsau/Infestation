@@ -52,8 +52,36 @@ export default function SignupFormModal() {
 
     return (
         <>
-        <h1>Sign Up</h1>
-        <form onSubmit={handleSubmit}>
+        <h2 id="sign-up-header">Sign Up</h2>
+        <div className='form-error'>
+            {errors.email && <p>{errors.email}</p>}
+            {errors.username && <p>{errors.username}</p>}
+            {errors.firstName && <p>{errors.firstName}</p>}
+            {errors.lastName && <p>{errors.lastName}</p>}
+            {errors.password && <p>{errors.password}</p>}
+            {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        </div>
+        <form id='sign-up-form' onSubmit={handleSubmit}>
+        <label for='first-name'>
+                First Name
+                <input
+                    type="text"
+                    id='first-name'
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                />
+                </label>
+                <label for='last-name'>
+                Last Name
+                <input
+                    type="text"
+                    id='last-name'
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                />
+                </label>
             <label>
             Email
             <input
@@ -63,7 +91,6 @@ export default function SignupFormModal() {
                 required
             />
             </label>
-            {errors.email && <p>{errors.email}</p>}
             <label>
             Username
             <input
@@ -73,47 +100,25 @@ export default function SignupFormModal() {
                 required
             />
             </label>
-            {errors.username && <p>{errors.username}</p>}
             <label>
-            First Name
-            <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-            />
-            </label>
-            {errors.firstName && <p>{errors.firstName}</p>}
-            <label>
-            Last Name
-            <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-            />
-            </label>
-            {errors.lastName && <p>{errors.lastName}</p>}
-            <label>
-            Password
-            <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            </label>
-            {errors.password && <p>{errors.password}</p>}
-            <label>
-            Confirm Password
-            <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-            />
-            </label>
-            {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+                Password
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                </label>
+                <label>
+                Confirm Password
+                <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                />
+                </label>
+
             <button type="submit" disabled={disabled}>Sign Up</button>
         </form>
         </>

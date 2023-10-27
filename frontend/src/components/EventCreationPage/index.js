@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import { createNewEvent } from '../../store/events';
 import { consumeOneGroup, fetchGroupById } from '../../store/groups';
+import './EventCreationPage.css';
 
 export default function GroupCreationPage() {
   const history = useHistory();
@@ -38,7 +39,7 @@ export default function GroupCreationPage() {
 
   useEffect(() => {
     dispatch(fetchGroupById(groupId));
-  }, [dispatch])
+  }, [dispatch, groupId])
 
   useEffect(() => {
     const err = {};
@@ -74,7 +75,7 @@ export default function GroupCreationPage() {
   if (!isOrganizer) return null;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form id="event-create-form" onSubmit={handleSubmit}>
       <h1>Create a new event for {group.name}</h1>
       <section>
         <label htmlFor='event-name'>What is the name of your event?</label>
@@ -105,17 +106,14 @@ export default function GroupCreationPage() {
         </div>
         <label htmlFor='event-price'>
           What is the price for your event?
-          <div type='fake-input'>
-            <span>$</span>
-          </div>
-          <input
+        </label>
+        <input
           id="event-price"
           type="number"
           placeholder='0'
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          />
-        </label>
+        />
         <div className='form-error'>
           <p>
             {userSubmit && errors.price}
@@ -171,7 +169,7 @@ export default function GroupCreationPage() {
           <p>{userSubmit && errors?.description}</p>
         </div>
       </section>
-      <button>Create Event</button>
+      <button className="feature-create-button">Create Event</button>
     </form>
   )
 }

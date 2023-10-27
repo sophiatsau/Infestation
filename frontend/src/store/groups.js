@@ -4,7 +4,7 @@ const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
 const GET_GROUP_EVENTS = 'groups/getGroupEvents';
 const CREATE_GROUP = 'groups/createGroup';
-const EDIT_GROUP = 'groups/editGroup';
+// const EDIT_GROUP = 'groups/editGroup';
 const DELETE_GROUP = 'groups/deleteGroup'
 
 const getAllGroups = (groups) => {
@@ -28,19 +28,19 @@ const getGroupEvents = (events) => {
     }
 }
 
-const createGroup = (group) => {
-    return {
-        type: CREATE_GROUP,
-        group,
-    }
-}
+// const createGroup = (group) => {
+//     return {
+//         type: CREATE_GROUP,
+//         group,
+//     }
+// }
 
-const editGroup = (group) => {
-    return {
-        type: EDIT_GROUP,
-        group,
-    }
-}
+// const editGroup = (group) => {
+//     return {
+//         type: EDIT_GROUP,
+//         group,
+//     }
+// }
 
 const deleteGroup = (groupId) => {
     return {
@@ -65,12 +65,17 @@ export const fetchGroupById = (groupId) => async dispatch => {
 }
 
 export const fetchEventsByGroup = (groupId) => async dispatch => {
-    const res = await csrfFetch(`/api/groups/${groupId}/events`);
-    const data = await res.json();
+    try {
+        const res = await csrfFetch(`/api/groups/${groupId}/events`);
+        const data = await res.json();
+        if (res.ok) dispatch(getGroupEvents(data.Events));
+        return data.Events;
+    } catch (e) {
+        console.log(e, 'caught')
+        const data = await e.json();
+        return data;
+    }
 
-    if (res.ok) dispatch(getGroupEvents(data.Events));
-
-    return data.Events;
 }
 
 export const createNewGroup = (payload) => async dispatch => {
@@ -83,7 +88,7 @@ export const createNewGroup = (payload) => async dispatch => {
 
     const dataGroup = await resGroup.json();
 
-    const resImage = await csrfFetch(`/api/groups/${dataGroup.id}/images`, {
+    await csrfFetch(`/api/groups/${dataGroup.id}/images`, {
         method: 'POST',
         body: JSON.stringify({url, preview: true})
     })

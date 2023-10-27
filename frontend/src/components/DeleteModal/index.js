@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import { deleteOneGroup } from '../../store/groups';
 import { deleteOneEvent } from '../../store/events';
 
+import './DeleteModal.css'
+
 export default function DeleteModal({featureId, feature, groupId}) {
     const { closeModal } = useModal();
     const history = useHistory();
@@ -33,11 +35,11 @@ export default function DeleteModal({featureId, feature, groupId}) {
     }
 
     return (
-        <div>
-            <h1>Confirm Delete</h1>
+        <div className="delete-feature-confirmation">
+            <h1 id="confirm-delete-header">Confirm Delete</h1>
             <p>Are you sure you want to remove this {feature}?</p>
-            <button onClick={handleDelete}>Yes (Delete {capitalFeature})</button>
-            <button onClick={closeModal}>No (Keep {capitalFeature})</button>
+            <button id='delete-yes' onClick={handleDelete}>Yes (Delete {capitalFeature})</button>
+            <button id='delete-no' onClick={closeModal}>No (Keep {capitalFeature})</button>
         </div>
     )
 }

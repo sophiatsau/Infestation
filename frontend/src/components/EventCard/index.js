@@ -1,22 +1,26 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 
+import './EventCard.css'
+
 export default function EventCard({event}) {
-  const {previewImage, startDate, name, Venue, description} = event;
+  const {previewImage, startDate, name, Group, description} = event;
   const dateTime = new Date(startDate);
-  const location = Venue ? `${Venue.city}, ${Venue.state}` : null;
+  const location = Group ? `${Group.city}, ${Group.state}` : null;
 
   return (
-    <Link to={`/events/${event.id}`} >
-        <img src={previewImage} alt="No preview image available"/>
-        <div>
-            <p>{`${dateTime.toLocaleDateString()} · ${dateTime.toLocaleTimeString()}`}</p>
-            <h3>{name}</h3>
-            <p>{location}</p>
-        </div>
-        <p>
-            {description}
-        </p>
+    <div className="event-card">
+    <Link to={`/events/${event.id}`} className="event-card-link">
+      <img src={previewImage} alt="No preview available"/>
+      <div className='event-card-text'>
+          <p className="teal">{`${dateTime.toLocaleDateString()} · ${dateTime.toLocaleTimeString()}`}</p>
+          <h3>{name}</h3>
+          <p className="grey">{location}</p>
+      </div>
+      <p className='event-card-description'>
+          {description}
+      </p>
     </Link>
+    </div>
   )
 }

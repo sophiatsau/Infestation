@@ -1,0 +1,34 @@
+#sign-up-header {
+    margin: 0 auto 5px auto;
+    padding: 0;
+    text-align: center;
+}
+
+/* #sign-up-form {
+    width: 500px;
+} */
+
+#sign-up-form input {
+    display: block;
+}
+
+.signup-first-last-inputs, .password-matching {
+    display: grid;
+    grid-template-columns: 45% 45%;
+    grid-template-areas: 'a b';
+    /* display: flex; */
+    column-gap: 9%;
+}
+
+#first-name {
+    /* border: blue dashed 1px; */
+    grid-area: a;
+    /* display:inline; */
+}
+
+#last-name {
+    /* border: blue dashed 1px; */
+    grid-area: b;
+    /* display:inline; */
+
+}

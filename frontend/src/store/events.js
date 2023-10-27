@@ -99,6 +99,8 @@ export function sortEvents(events) {
 
     //test past events
     // events.push({name: "old event", previewImage: null, startDate: new Date('10/20/23'), Group: {id: 1, name: 'Evening Tennis on the Water', city: 'New York', state: 'NY'}})
+    // events.push({name: "old event", previewImage: null, startDate: new Date('10/21/23'), Group: {id: 1, name: 'Evening Tennis on the Water', city: 'New York', state: 'NY'}})
+    // events.push({name: "old event", previewImage: null, startDate: new Date('10/19/23'), Group: {id: 1, name: 'Evening Tennis on the Water', city: 'New York', state: 'NY'}})
 
     events = events.sort((a,b) => {
       return a.startDate > b.startDate ? 1 : -1;
@@ -106,7 +108,7 @@ export function sortEvents(events) {
 
     const index = events.findIndex(event => event.startDate > new Date().getTime());
 
-    const pastEvents = events.slice(0,index)
+    const pastEvents = (events.slice(0,index)).reverse();
     const upcomingEvents = events.slice(index)
 
     return [upcomingEvents, pastEvents];

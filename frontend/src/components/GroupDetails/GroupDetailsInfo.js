@@ -28,35 +28,44 @@ export default function GroupDetailsInfo({group, setLoaded}) {
     alert("Feature coming soon");
   }
 
+  const buttonOptions = (
+    isOrganizer ? (
+      <>
+        <button onClick={()=>history.push(`/groups/${group.id}/events/new`)}>Create event</button>
+        <button onClick={()=>history.push(`/groups/${group.id}/edit`)}>Update</button>
+        <OpenModalButton
+          buttonText="Delete"
+          modalComponent={<DeleteModal featureId={id} feature="group"/>}
+        />
+      </>
+    ) : sessionUserId ? (
+      <button className="join-group-button" onClick={joinGroupButton}>Join this group</button>
+    ) : null
+  )
+
   return (
     <div>
         <div className='group-details'>
-            <img src={previewImage} alt="No preview image available"/>
+            <img src={previewImage} alt="No preview available"/>
             <div className='group-information'>
+              <div>
                 <h2>{name}</h2>
-                <h3 className="groups-thumbnail-grey">{city}, {state}</h3>
-                <p>{about}</p>
+                <p className="groups-details-grey">{city}, {state}</p>
                 <div>
-                    <span className="groups-thumbnail-grey">{numberEvents} events</span>
-                    <span className="groups-thumbnail-grey"> · </span>
-                    <span className="groups-thumbnail-grey">{isPrivate}</span>
+                    <span className="groups-details-grey">{numberEvents} events</span>
+                    <span className="groups-details-grey"> · </span>
+                    <span className="groups-details-grey">{isPrivate}</span>
                 </div>
-                <button className={isOrganizer || !sessionUserId ? "hidden" : ""} onClick={joinGroupButton}>Join this group</button>
+                <p className="groups-details-grey">Organized by: {Organizer?.firstName + ' ' + Organizer?.lastName}</p>
+              </div>
+              <div className='button-options'>{buttonOptions}</div>
             </div>
         </div>
-        <div>
-            <h2>Organized by:</h2>
-            <p>{Organizer?.firstName + ' ' + Organizer?.lastName}</p>
-        </div>
-        <div className={isOrganizer ? "" : "hidden"}>
-            <button onClick={()=>history.push(`/groups/${group.id}/events/new`)}>Create event</button>
-            <button onClick={()=>history.push(`/groups/${group.id}/edit`)}>Update</button>
-            <button>
-              <OpenModalButton
-                buttonText="Delete"
-                modalComponent={<DeleteModal featureId={id} feature="group"/>}
-              />
-            </button>
+        <div className='grey-bg'>
+            <h2>Organizer</h2>
+            <p className="groups-details-grey">{Organizer?.firstName + ' ' + Organizer?.lastName}</p>
+            <h2>What we're about</h2>
+            <p>{about}</p>
         </div>
     </div>
   )

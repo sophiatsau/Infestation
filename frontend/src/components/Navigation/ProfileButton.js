@@ -68,13 +68,17 @@ return (
           <li>
             <OpenModalButton
               buttonText="Log In"
+              className="light-button"
               modalComponent={<LoginFormModal />}
+              onButtonClick={()=>setShowMenu(false)}
             />
           </li>
           <li>
             <OpenModalButton
               buttonText="Sign Up"
+              className="light-button"
               modalComponent={<SignupFormModal />}
+              onButtonClick={()=>setShowMenu(false)}
             />
           </li>
         </div>
