@@ -1,11 +1,15 @@
 #sign-up-header {
-    margin: 0;
+    margin: 0 auto 5px auto;
     padding: 0;
     text-align: center;
 }
 
-#sign-up-form {
+/* #sign-up-form {
     width: 500px;
+} */
+
+#sign-up-form input {
+    display: block;
 }
 
 .signup-first-last-inputs, .password-matching {

@@ -46,7 +46,10 @@ export default function LoginFormModal() {
     return (
         <>
         <h2 id="login-title">Log In</h2>
-        <form onSubmit={handleSubmit}>
+        <form id='login-form' onSubmit={handleSubmit}>
+            <div className='form-error'>
+                {errors.credential && <p>{errors.credential}</p>}
+            </div>
             <label>
             Username or Email
             <input
@@ -65,9 +68,6 @@ export default function LoginFormModal() {
                 required
             />
             </label>
-            <div className='form-error'>
-                {errors.credential && <p>{errors.credential}</p>}
-            </div>
             <button type="submit" disabled={disabled}>Log In</button>
             <a href='#' id="demo-login" onClick={demoLogIn}>Log In As Demo User</a>
         </form>

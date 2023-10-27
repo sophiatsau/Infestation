@@ -53,33 +53,16 @@ export default function SignupFormModal() {
     return (
         <>
         <h2 id="sign-up-header">Sign Up</h2>
-        <form id='sign-up-form' onSubmit={handleSubmit}>
-            <label>
-            Email
-            <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-            </label>
-            {/* <div className='form-error'>
+        <div className='form-error'>
             {errors.email && <p>{errors.email}</p>}
-            </div> */}
-            <label>
-            Username
-            <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-            />
-            </label>
-            {/* <div className='form-error'>
             {errors.username && <p>{errors.username}</p>}
-            </div> */}
-            <div className='signup-first-last-inputs'>
-                <label for='first-name'>
+            {errors.firstName && <p>{errors.firstName}</p>}
+            {errors.lastName && <p>{errors.lastName}</p>}
+            {errors.password && <p>{errors.password}</p>}
+            {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        </div>
+        <form id='sign-up-form' onSubmit={handleSubmit}>
+        <label for='first-name'>
                 First Name
                 <input
                     type="text"
@@ -88,9 +71,6 @@ export default function SignupFormModal() {
                     onChange={(e) => setFirstName(e.target.value)}
                     required
                 />
-                {/* <div className='form-error'>
-                {errors.firstName && <p>{errors.firstName}</p>}
-                </div> */}
                 </label>
                 <label for='last-name'>
                 Last Name
@@ -101,13 +81,26 @@ export default function SignupFormModal() {
                     onChange={(e) => setLastName(e.target.value)}
                     required
                 />
-                {/* <div className='form-error'>
-                {errors.lastName && <p>{errors.lastName}</p>}
-                </div> */}
                 </label>
-            </div>
-            <div className='password-matching'>
-                <label>
+            <label>
+            Email
+            <input
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+            />
+            </label>
+            <label>
+            Username
+            <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+            />
+            </label>
+            <label>
                 Password
                 <input
                     type="password"
@@ -125,15 +118,7 @@ export default function SignupFormModal() {
                     required
                 />
                 </label>
-            </div>
-            <div className='form-error'>
-                {errors.email && <p>{errors.email}</p>}
-                {errors.username && <p>{errors.username}</p>}
-                {errors.firstName && <p>{errors.firstName}</p>}
-                {errors.lastName && <p>{errors.lastName}</p>}
-                {errors.password && <p>{errors.password}</p>}
-                {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-            </div>
+
             <button type="submit" disabled={disabled}>Sign Up</button>
         </form>
         </>
