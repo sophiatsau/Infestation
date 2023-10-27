@@ -38,15 +38,27 @@
     height: 300px;
 }
 
-.button-options {
+#button-options {
     align-self: end;
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    row-gap: 5px;
+    row-gap: 5px; */
 }
 
-.button-options button {
-    width: 200px;
+#button-options .join-group-button {
+    font-size: large;
+    width: fit-content;
+    padding: 5px 10px;
+}
+
+#button-options :not(.join-group-button) {
+    /* font-size: large;
+    width: fit-content;
+    padding: 5px 10px; */
+    margin-right: 10px;
+    margin-top: 10px;
+    /* background-color: grey; */
+    /* border: 1px blue solid; */
 }
 
 .join-group-button {

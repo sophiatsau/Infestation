@@ -10,7 +10,6 @@ import BreadcrumbLink from '../BreadcrumbLink';
 import GroupDetailsInfo from './GroupDetailsInfo';
 
 import './GroupDetails.css';
-import { Redirect } from 'react-router-dom';
 
 export default function GroupDetails() {
   const {groupId} = useParams();
