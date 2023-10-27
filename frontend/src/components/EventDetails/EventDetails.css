@@ -37,6 +37,11 @@
     column-gap: 10px;
     grid-template-areas: 'd e';
     align-items: center;
+    transition: box-shadow 0.5s
+}
+
+.group-info-box:hover {
+    box-shadow: 0 0 0 3px var(--reddish-color);
 }
 
 .group-info-box img {
