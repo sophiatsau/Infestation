@@ -60,7 +60,7 @@ return (
           <li className="dropdown-profile-top">Hello, {user.firstName}</li>
           <li>{user.email}</li>
           <li>
-            <button onClick={logout}>Log Out</button>
+            <button className="light-button" style={{borderTop:'solid 1px rgb(200,200,200)'}} onClick={logout}>Log Out</button>
           </li>
         </>
       ) : (
