@@ -6,13 +6,11 @@ export default function GroupInfoBox({group}) {
   const previewImage = GroupImages && GroupImages.find(image => image.preview);
 
   return (
-    <Link to={`/groups/${id}`}>
-      <div className="group-info-box" >
-        <img src={previewImage?.url}/>
-        <div>
-          <h3>{name}</h3>
-          <p>{isPrivate}</p>
-        </div>
+    <Link to={`/groups/${id}`} className="group-info-box">
+      <img src={previewImage?.url}/>
+      <div>
+        <h3 className='no-margin'>{name}</h3>
+        <p className='no-margin grey'>{isPrivate}</p>
       </div>
     </Link>
   )

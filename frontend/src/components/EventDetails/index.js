@@ -58,20 +58,20 @@ export default function EventDetails() {
   return (
     <div>
         <BreadcrumbLink to='/events' text='Events'/>
-        <div>
-          <h1>{name}</h1>
-          <p>Hosted by {organizer}</p>
+        <div className="event-details-header">
+          <h2 style={{marginBottom: 0}}>{name}</h2>
+          <p className="grey">Hosted by {organizer ?? null}</p>
         </div>
-        <div className="event-details-top-section">
-          <img src={previewImage?.url} alt="Preview not available"/>
-          <div>
+        <div className='grey-background'>
+          <div className="event-details-top-section">
+            <img src={previewImage?.url} alt="Preview not available"/>
             <GroupInfoBox group={group}/>
             <EventInfoBox event={event} isOrganizer={isOrganizer}/>
           </div>
-        </div>
-        <div>
-          <h2>Description</h2>
-          <p>{description}</p>
+          <div>
+            <h2>Description</h2>
+            <p>{description}</p>
+          </div>
         </div>
     </div>
   )
