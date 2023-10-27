@@ -45,7 +45,7 @@ export default function LoginFormModal() {
 
     return (
         <>
-        <h1 id="login-title">Log In</h1>
+        <h2 id="login-title">Log In</h2>
         <form onSubmit={handleSubmit}>
             <label>
             Username or Email

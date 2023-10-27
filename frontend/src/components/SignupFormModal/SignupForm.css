@@ -1,0 +1,30 @@
+#sign-up-header {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+#sign-up-form {
+    width: 500px;
+}
+
+.signup-first-last-inputs, .password-matching {
+    display: grid;
+    grid-template-columns: 45% 45%;
+    grid-template-areas: 'a b';
+    /* display: flex; */
+    column-gap: 9%;
+}
+
+#first-name {
+    /* border: blue dashed 1px; */
+    grid-area: a;
+    /* display:inline; */
+}
+
+#last-name {
+    /* border: blue dashed 1px; */
+    grid-area: b;
+    /* display:inline; */
+
+}

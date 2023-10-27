@@ -52,8 +52,8 @@ export default function SignupFormModal() {
 
     return (
         <>
-        <h1>Sign Up</h1>
-        <form onSubmit={handleSubmit}>
+        <h2 id="sign-up-header">Sign Up</h2>
+        <form id='sign-up-form' onSubmit={handleSubmit}>
             <label>
             Email
             <input
@@ -63,7 +63,9 @@ export default function SignupFormModal() {
                 required
             />
             </label>
+            {/* <div className='form-error'>
             {errors.email && <p>{errors.email}</p>}
+            </div> */}
             <label>
             Username
             <input
@@ -73,47 +75,65 @@ export default function SignupFormModal() {
                 required
             />
             </label>
+            {/* <div className='form-error'>
             {errors.username && <p>{errors.username}</p>}
-            <label>
-            First Name
-            <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-            />
-            </label>
-            {errors.firstName && <p>{errors.firstName}</p>}
-            <label>
-            Last Name
-            <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-            />
-            </label>
-            {errors.lastName && <p>{errors.lastName}</p>}
-            <label>
-            Password
-            <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            </label>
-            {errors.password && <p>{errors.password}</p>}
-            <label>
-            Confirm Password
-            <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-            />
-            </label>
-            {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+            </div> */}
+            <div className='signup-first-last-inputs'>
+                <label for='first-name'>
+                First Name
+                <input
+                    type="text"
+                    id='first-name'
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                />
+                {/* <div className='form-error'>
+                {errors.firstName && <p>{errors.firstName}</p>}
+                </div> */}
+                </label>
+                <label for='last-name'>
+                Last Name
+                <input
+                    type="text"
+                    id='last-name'
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                />
+                {/* <div className='form-error'>
+                {errors.lastName && <p>{errors.lastName}</p>}
+                </div> */}
+                </label>
+            </div>
+            <div className='password-matching'>
+                <label>
+                Password
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                </label>
+                <label>
+                Confirm Password
+                <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                />
+                </label>
+            </div>
+            <div className='form-error'>
+                {errors.email && <p>{errors.email}</p>}
+                {errors.username && <p>{errors.username}</p>}
+                {errors.firstName && <p>{errors.firstName}</p>}
+                {errors.lastName && <p>{errors.lastName}</p>}
+                {errors.password && <p>{errors.password}</p>}
+                {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+            </div>
             <button type="submit" disabled={disabled}>Sign Up</button>
         </form>
         </>
