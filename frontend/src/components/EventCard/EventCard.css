@@ -11,18 +11,30 @@
     transition: box-shadow 0.5s
 }
 
-.event-card-top {
+.event-card-link {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: repeat(5,1fr);
+    grid-template-areas:
+        "a a a b b"
+        "a a a b b"
+        "c c c c c"
+    ;
     column-gap: 5%;
     padding: 30px 30px 0 30px;
 }
 
-.event-card-top img {
-    height: auto;
+.event-card-link img {
+    height: 100%;
     width: 100%;
+    grid-area: a;
+    /* background-color: blue; */
+    /* border: blue dashed 1px; */
     /* object-fit: contain; */
     /* margin-bottom: 15px; */
+}
+
+.event-card-text {
+    grid-area: b;
 }
 
 .event-card-text p {
@@ -40,7 +52,8 @@
 }
 
 .event-card-description {
-    padding: 0 30px 30px 30px;
+    padding: 0 0 10px 0;
+    grid-area: c;
 }
 
 .event-card:hover {

@@ -11,13 +11,11 @@ export default function EventCard({event}) {
   return (
     <div className="event-card">
     <Link to={`/events/${event.id}`} className="event-card-link">
-      <div className="event-card-top">
-        <img src={previewImage} alt="No preview image available"/>
-        <div className='event-card-text'>
-            <p className="teal">{`${dateTime.toLocaleDateString()} · ${dateTime.toLocaleTimeString()}`}</p>
-            <h3>{name}</h3>
-            <p className="grey">{location}</p>
-        </div>
+      <img src={previewImage} alt="No preview image available"/>
+      <div className='event-card-text'>
+          <p className="teal">{`${dateTime.toLocaleDateString()} · ${dateTime.toLocaleTimeString()}`}</p>
+          <h3>{name}</h3>
+          <p className="grey">{location}</p>
       </div>
       <p className='event-card-description'>
           {description}
