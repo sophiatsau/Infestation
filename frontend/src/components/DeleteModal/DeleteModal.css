@@ -1,0 +1,16 @@
+.delete-feature-confirmation {
+    text-align: center;
+}
+
+#confirm-delete-header {
+    margin: 0;
+}
+
+.delete-feature-confirmation button {
+    width: 100%;
+}
+
+.delete-feature-confirmation #delete-no {
+    margin: 0;
+    background-color: grey;
+}
