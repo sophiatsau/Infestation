@@ -1,4 +1,4 @@
-import React, { isValidElement, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -34,11 +34,11 @@ export default function GroupDetails() {
     }
     getGroup()
 
-  }, [groupId, dispatch])
+  }, [groupId, dispatch, history])
 
   useEffect(() => {
     dispatch(fetchEventsByGroup(groupId));
-  }, [dispatch])
+  }, [dispatch, groupId])
 
   return (
     <>

@@ -28,7 +28,7 @@ export default function GroupUpdatePage() {
 
     useEffect(() => {
         dispatch(fetchGroupById(groupId))
-    }, [dispatch])
+    }, [dispatch, groupId])
 
     if (!isOrganizer) return null;
 

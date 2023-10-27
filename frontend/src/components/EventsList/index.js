@@ -9,15 +9,14 @@ import './EventsList.css';
 
 export default function EventsList() {
     const dispatch = useDispatch();
-    let events = useSelector(consumeAllEvents()) || [];
+    let events = useSelector(consumeAllEvents());
     const [upcomingEvents, pastEvents] = events ? sortEvents(events) : [[],[]]
 
     useEffect(() => {
-        const getEvents = async () => {
-            events = await dispatch(fetchAllEvents());
-        };
-        getEvents();
+      dispatch(fetchAllEvents());
     }, [dispatch])
+
+  if (!events) return null;
 
   return (
     <>
