@@ -1,0 +1,28 @@
+.group-form {
+    margin: 0 var(--margin-left) var(--margin-left) var(--margin-left);
+}
+
+.group-form section {
+    border-top: solid 1px rgb(200,200,200);
+}
+
+#group-form-header, .group-form h2 {
+    margin: 0;
+    /* border: blue dashed 1px; */
+}
+
+.group-form h2 {
+    padding: 8px 0 0 0;
+}
+
+.group-form-final-steps h2 {
+    margin-bottom: 0.5em;
+}
+
+/* .group-form-final-steps label {
+    margin-top: 1em;
+} */
+
+.group-form-final-steps select, .group-form-final-steps input {
+    margin-top: 1em;
+}

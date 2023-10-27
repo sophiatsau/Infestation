@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { createNewGroup, editGroupById } from '../../store/groups';
+import './GroupForm.css'
 
 export default function GroupForm({formType, group={}}) {
   const history = useHistory();
@@ -76,8 +77,8 @@ export default function GroupForm({formType, group={}}) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>{formType==="create" ? "Start a New Group" : "Update your Group"}</h1>
+    <form className="group-form" onSubmit={handleSubmit}>
+      <h1 id="group-form-header">{formType==="create" ? "Start a New Group" : "Update your Group"}</h1>
       <section>
         <h2>Set your group's location</h2>
         <p>Infestation groups meet locally, in person, and online. We'll connect you with insects in your area.</p>
@@ -123,12 +124,12 @@ export default function GroupForm({formType, group={}}) {
           <p>{userSubmit && errors?.about}</p>
         </div>
       </section>
-      <section>
+      <section className='group-form-final-steps'>
         <h2>Final steps...</h2>
         <div>
           <label htmlFor="type">Is this an in-person or online group?</label>
           <select id="type" value={type} onChange={(e) => setType(e.target.value)}>
-            <option value="" disabled={!!type}>Choose an option</option>
+            <option value="" disabled={true}>Choose an option</option>
             <option value="In person">In Person</option>
             <option value="Online">Online</option>
           </select>
@@ -139,7 +140,7 @@ export default function GroupForm({formType, group={}}) {
         <div>
           <label htmlFor="private">Is this group private or public?</label>
           <select id="private" value={isPrivate} onChange={(e) => setIsPrivate(e.target.value)}>
-            <option value="" disabled={!isPrivate.length}>Choose an option</option>
+            <option value="" disabled={true}>Choose an option</option>
             <option value="true">Private</option>
             <option value="false">Public</option>
           </select>
@@ -147,15 +148,15 @@ export default function GroupForm({formType, group={}}) {
             <p>{errors.private && userSubmit && "Visibility Type is required"}</p>
           </div>
         </div>
-        <div className={formType==="create" ? "" : "hidden"}>
-          <label>Please add an image URL for your group below:</label>
+        <div className={formType==="create" ? "add-group-image" : "hidden"}>
+          <label style={{display: 'block'}}>Please add an image URL for your group below:</label>
           <input type="text" placeholder='Image Url' value={url} onChange={(e) => setUrl(e.target.value)} />
           <div className='form-error'>
             <p>{errors.url && userSubmit && "Image URL must end in .png, .jpg, or .jpeg"}</p>
           </div>
         </div>
       </section>
-      <button>{formType==="create" ? "Create Group" : "Update Group"}</button>
+      <button className="feature-create-button">{formType==="create" ? "Create Group" : "Update Group"}</button>
     </form>
   )
 }
