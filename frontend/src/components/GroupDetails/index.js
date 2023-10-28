@@ -12,6 +12,7 @@ import GroupDetailsInfo from './GroupDetailsInfo';
 import './GroupDetails.css';
 
 export default function GroupDetails() {
+  window.scroll(0,0);
   const {groupId} = useParams();
   const dispatch = useDispatch();
   const history = useHistory()

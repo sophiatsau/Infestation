@@ -7,6 +7,7 @@ import { consumeOneGroup, fetchGroupById } from '../../store/groups';
 import './EventCreationPage.css';
 
 export default function GroupCreationPage() {
+  window.scroll(0,0);
   const history = useHistory();
   const {groupId} = useParams();
   const dispatch = useDispatch();
@@ -110,6 +111,7 @@ export default function GroupCreationPage() {
         <input
           id="event-price"
           type="number"
+          min={0}
           placeholder='0'
           value={price}
           onChange={(e) => setPrice(e.target.value)}

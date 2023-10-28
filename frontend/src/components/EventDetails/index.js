@@ -12,6 +12,7 @@ import EventInfoBox from './EventInfoBox'
 import './EventDetails.css'
 
 export default function EventDetails() {
+  window.scroll(0,0);
   const {eventId} = useParams();
   const dispatch = useDispatch();
   const history = useHistory()

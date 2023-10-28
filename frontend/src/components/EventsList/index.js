@@ -8,6 +8,7 @@ import FeaturesNav from '../FeaturesNav';
 import './EventsList.css';
 
 export default function EventsList() {
+    window.scroll(0,0);
     const dispatch = useDispatch();
     let events = useSelector(consumeAllEvents());
     const [upcomingEvents, pastEvents] = events ? sortEvents(events) : [[],[]]
