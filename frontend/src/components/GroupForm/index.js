@@ -78,6 +78,7 @@ export default function GroupForm({formType, group={}}) {
 
   return (
     <form className="group-form" onSubmit={handleSubmit}>
+      <p className='teal no-margin'>{formType==="create" ? "BECOME AN ORGANIZER" : "UPDATE YOUR GROUP'S INFORMATION"}</p>
       <h1 id="group-form-header">{formType==="create" ? "Start a New Group" : "Update your Group"}</h1>
       <section>
         <h2>Set your group's location</h2>
@@ -156,7 +157,9 @@ export default function GroupForm({formType, group={}}) {
           </div>
         </div>
       </section>
-      <button className="feature-create-button">{formType==="create" ? "Create Group" : "Update Group"}</button>
+      <section className='top-grey-line'>
+        <button className="feature-create-button">{formType==="create" ? "Create Group" : "Update Group"}</button>
+      </section>
     </form>
   )
 }

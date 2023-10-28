@@ -2,16 +2,16 @@
     margin: 0 var(--margin-left) var(--margin-left) var(--margin-left);
 }
 
+#event-create-form>h1 {
+    margin: 0;
+}
+
 #event-create-form label {
     display: block;
     margin: 8px auto;
 }
 
-#event-create-form section {
-    border-top: solid 1px rgb(200,200,200);
-}
-
-#event-price {
+#event-price, #event-capacity {
     text-align: right;
     width: auto;
 }
