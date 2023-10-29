@@ -12,6 +12,7 @@ import EventDetails from './components/EventDetails';
 import GroupCreationPage from './components/GroupCreationPage';
 import GroupUpdatePage from './components/GroupUpdatePage';
 import EventCreationPage from './components/EventCreationPage';
+import PageNotFound from './components/PageNotFound'
 
 function App() {
   const dispatch = useDispatch();
@@ -58,7 +59,7 @@ function App() {
           You are not authorized to do that.
         </Route>
         <Route>
-          <h1>404 PAGE NOT FOUND</h1>
+          <PageNotFound />
         </Route>
       </Switch>
       </div>

@@ -1,0 +1,12 @@
+#page-not-found-container {
+    margin: var(--margin-left);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#page-not-found-container>img{
+    height: 50%;
+    width: 50%;
+}
