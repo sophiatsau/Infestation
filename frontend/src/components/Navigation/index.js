@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {useSelector} from 'react-redux';
 
 import ProfileButton from './ProfileButton';
@@ -21,7 +21,7 @@ export default function Navigation({isLoaded}) {
     return (
         <ul className='nav'>
             <li>
-                <Link exact to='/'>
+                <Link to='/'>
                     <img className="infestation-logo" src={imageUrl} alt="infestation logo"/>
                 </Link>
             </li>

@@ -29,7 +29,10 @@ export default function GroupUpdatePage() {
 
     useEffect(() => {
         dispatch(fetchGroupById(groupId))
-    }, [dispatch, groupId])
+          .catch(() => {
+            history.push('/');
+          })
+    }, [dispatch, groupId, history])
 
     if (!isOrganizer) return null;
 

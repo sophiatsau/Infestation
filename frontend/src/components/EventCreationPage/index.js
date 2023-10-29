@@ -43,8 +43,11 @@ export default function GroupCreationPage() {
   const [userSubmit, setUserSubmit] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchGroupById(groupId));
-  }, [dispatch, groupId])
+    dispatch(fetchGroupById(groupId))
+    .catch(() => {
+      history.push('/');
+    })
+  }, [dispatch, groupId, history])
 
   useEffect(() => {
     const err = {};

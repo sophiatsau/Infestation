@@ -41,7 +41,7 @@ const eventInfo = [
     type: "In person",
     capacity: 20,
     price: 20,
-    startDate: "2023-10-28 18:35:00",
+    startDate: "2023-10-28 19:15:00",
     endDate: "2023-10-28 20:30:00",
   },
   {
@@ -52,7 +52,7 @@ const eventInfo = [
     type: "In person",
     capacity: 100,
     price: 0,
-    startDate: "2023-10-28 18:40:00",
+    startDate: "2023-10-28 19:20:00",
     endDate: "2023-10-28 20:30:00",
   },
   {
