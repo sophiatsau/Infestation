@@ -43,6 +43,10 @@ export default function GroupDetailsInfo({group, setLoaded}) {
     ) : null
   )
 
+  if (!Organizer) {
+    return null;
+  }
+
   return (
     <div>
         <div className='group-details'>
@@ -56,14 +60,14 @@ export default function GroupDetailsInfo({group, setLoaded}) {
                     <span className="groups-details-grey"> · </span>
                     <span className="groups-details-grey">{isPrivate}</span>
                 </div>
-                <p className="groups-details-grey">Organized by: {Organizer?.firstName + ' ' + Organizer?.lastName}</p>
+                <p className="groups-details-grey">Organized by: {Organizer.firstName + ' ' + Organizer.lastName}</p>
               </div>
               <div id='button-options'>{buttonOptions}</div>
             </div>
         </div>
         <div className='grey-bg'>
             <h2>Organizer</h2>
-            <p className="groups-details-grey">{Organizer?.firstName + ' ' + Organizer?.lastName}</p>
+            <p className="groups-details-grey">{Organizer.firstName + ' ' + Organizer.lastName}</p>
             <h2>What we're about</h2>
             <p>{about}</p>
         </div>

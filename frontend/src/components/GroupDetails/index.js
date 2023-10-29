@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
@@ -16,6 +16,7 @@ export default function GroupDetails() {
   const {groupId} = useParams();
   const dispatch = useDispatch();
   const history = useHistory()
+  const [eventsLoaded, setEventsLoaded] = useState(false)
 
   const group = useSelector(consumeOneGroup(groupId))
 
@@ -38,8 +39,11 @@ export default function GroupDetails() {
   }, [groupId, dispatch, history])
 
   useEffect(() => {
-    dispatch(fetchEventsByGroup(groupId));
+    dispatch(fetchEventsByGroup(groupId))
+      .then(()=>setEventsLoaded(true))
   }, [dispatch, groupId])
+
+  if (!eventsLoaded) return null;
 
   return (
     <>
