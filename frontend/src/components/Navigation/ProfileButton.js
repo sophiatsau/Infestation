@@ -57,10 +57,10 @@ return (
       <button className="light-button" onClick={() => history.push('/events')}>View events</button>
       {user ? (
         <>
-          <li className="dropdown-profile-top">Hello, {user.firstName}</li>
+          <li className="top-grey-line">Hello, {user.firstName}</li>
           <li>{user.email}</li>
-          <li>
-            <button onClick={logout}>Log Out</button>
+          <li >
+            <button className="light-button top-grey-line" onClick={logout}>Log Out</button>
           </li>
         </>
       ) : (

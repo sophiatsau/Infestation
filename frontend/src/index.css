@@ -76,6 +76,7 @@ select {
 
 textarea {
     height: 100px;
+    resize: none;
 }
 
 input:focus {
@@ -140,4 +141,8 @@ img {
     padding: 5px 10px;
     width: fit-content;
     font-size: large;
+}
+
+.top-grey-line {
+    border-top: solid 1px rgb(200,200,200);
 }

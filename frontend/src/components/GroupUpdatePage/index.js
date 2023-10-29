@@ -7,6 +7,7 @@ import { consumeOneGroup, fetchGroupById } from '../../store/groups';
 import GroupForm from '../GroupForm'
 
 export default function GroupUpdatePage() {
+    window.scroll(0,0);
     const history = useHistory();
     const {groupId} = useParams();
     const dispatch = useDispatch();

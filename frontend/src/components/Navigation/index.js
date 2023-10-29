@@ -21,9 +21,9 @@ export default function Navigation({isLoaded}) {
     return (
         <ul className='nav'>
             <li>
-                <NavLink exact to='/'>
+                <Link exact to='/'>
                     <img className="infestation-logo" src={imageUrl} alt="infestation logo"/>
-                </NavLink>
+                </Link>
             </li>
             {isLoaded && (
             <li>

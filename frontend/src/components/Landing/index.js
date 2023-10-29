@@ -8,6 +8,7 @@ import SignupFormModal from '../SignupFormModal';
 import './Landing.css';
 
 export default function Landing() {
+  window.scroll(0,0);
   const sessionUser = useSelector(state => state.session.user);
 
   return (

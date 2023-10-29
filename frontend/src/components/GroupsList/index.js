@@ -8,6 +8,7 @@ import './GroupsList.css';
 import FeaturesNav from '../FeaturesNav';
 
 export default function GroupsList() {
+    window.scroll(0,0);
     //get all groups
     //iterate over all groups
     const dispatch = useDispatch();
