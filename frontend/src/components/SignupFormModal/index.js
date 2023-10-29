@@ -53,7 +53,7 @@ export default function SignupFormModal() {
     return (
         <>
         <h2 id="sign-up-header">Sign Up</h2>
-        <div className='form-error'>
+        <div className='form-error' style={{maxWidth:"300px", height: "40px"}}>
             {errors.email && <p>{errors.email}</p>}
             {errors.username && <p>{errors.username}</p>}
             {errors.firstName && <p>{errors.firstName}</p>}
@@ -62,7 +62,7 @@ export default function SignupFormModal() {
             {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
         </div>
         <form id='sign-up-form' onSubmit={handleSubmit}>
-        <label for='first-name'>
+        <label htmlFor='first-name'>
                 First Name
                 <input
                     type="text"
@@ -72,7 +72,7 @@ export default function SignupFormModal() {
                     required
                 />
                 </label>
-                <label for='last-name'>
+                <label htmlFor='last-name'>
                 Last Name
                 <input
                     type="text"
