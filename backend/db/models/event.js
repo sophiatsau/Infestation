@@ -58,20 +58,20 @@ module.exports = (sequelize, DataTypes) => {
     startDate: {
       type: DataTypes.DATE,
       allowNull: false,
-      validate: {
-        isAfter: new Date().toLocaleDateString(),
-      }
+      // validate: {
+      //   isAfter: new Date().toLocaleDateString(),
+      // }
     },
     endDate: {
       type: DataTypes.DATE,
       allowNull: false,
-      validate: {
-        afterStartDate(value) {
-          if (this.startDate > value) {
-            throw new Error("End date must be after start date")
-          }
-        },
-      }
+      // validate: {
+      //   afterStartDate(value) {
+      //     if (this.startDate > value) {
+      //       throw new Error("End date must be after start date")
+      //     }
+      //   },
+      // }
     },
     createdAt: DataTypes.DATE,
     updatedAt: {
