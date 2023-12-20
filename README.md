@@ -1,4 +1,4 @@
-# fs-project-1-meetup
+# infestation
 
 ## Database Schema Design
 
