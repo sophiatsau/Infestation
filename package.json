@@ -1,5 +1,5 @@
 {
-  "name": "fs-project-1-meetup",
+  "name": "infestation",
   "version": "1.0.0",
   "description": "## Database Schema Design",
   "main": "index.js",
@@ -14,13 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sophiatsau/fs-project-1-meetup.git"
+    "url": "git+https://github.com/sophiatsau/infestation.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sophiatsau/fs-project-1-meetup/issues"
+    "url": "https://github.com/sophiatsau/infestation/issues"
   },
-  "homepage": "https://github.com/sophiatsau/fs-project-1-meetup#readme"
+  "homepage": "https://github.com/sophiatsau/infestation#readme"
 }
