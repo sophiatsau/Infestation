@@ -6,6 +6,26 @@ const REQUEST_MEMBERSHIP = 'members/requestMembership'
 const UPDATE_MEMBERSHIP = 'members/updateMembership'
 const DELETE_MEMBERSHIP = 'members/deleteMembership'
 
+const getGroupMembers = (payload) => {
+    type: GET_GROUP_MEMBERS,
+    payload
+}
+
+const requestMembership = (payload) => {
+    type: REQUEST_MEMBERSHIP,
+    payload
+}
+
+const updateMembership = (payload) => {
+    type: UPDATE_MEMBERSHIP,
+    payload
+}
+
+const deleteMembership = (membershipId) => {
+    type: DELETE_MEMBERSHIP,
+    membershipId
+}
+
 const initialState = {}
 
 const membersReducer = (state=initialState, action) => {
