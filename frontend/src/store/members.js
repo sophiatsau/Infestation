@@ -32,6 +32,11 @@ const membersReducer = (state=initialState, action) => {
     switch (action.type) {
         case REMOVE_USER:
             return initialState
+        case GET_GROUP_MEMBERS:
+            return {...action.payload.Members}
+        //TODO: update, request membership should be in session.user
+        case REQUEST_MEMBERSHIP:
+            return state
         default:
             return state
     }
