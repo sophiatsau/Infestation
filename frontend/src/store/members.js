@@ -26,6 +26,26 @@ const deleteMembership = (membershipId) => {
     membershipId
 }
 
+export const thunkGetGroupMembers = (groupId) => async dispatch => {
+    const res = await csrfFetch(`/api/groups/${groupId}/members`)
+    const data = await res.json();
+
+    if (res.ok) dispatch(getGroupMembers(data))
+
+    return data;
+}
+
+export const thunkRequestMembership = () => async dispatch => {
+    const res = await csrfFetch(`/api/groups/${groupId}/members`, {
+        method: "POST"
+    })
+    const data = await res.json();
+
+    if (res.ok) dispatch(requestMembership(data))
+
+    return data;
+}
+
 const initialState = {}
 
 const membersReducer = (state=initialState, action) => {
