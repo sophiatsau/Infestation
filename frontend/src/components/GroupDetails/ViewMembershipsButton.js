@@ -1,23 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import OpenModalButton from '../OpenModalButton'
-import { useDispatch, useSelector } from 'react-redux'
-import { thunkGetGroupMembers } from '../../store/members'
+
+import ViewMembershipsModal from './ViewMembershipsModal'
 
 export default function ViewMembershipsButton({groupId}) {
-  const memberships = useSelector(state => state.members)
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(thunkGetGroupMembers(groupId))
-  }, [memberships, dispatch])
-
-  if (!Object.values(memberships).length) {
-    return null
-  }
 
   return (
     <OpenModalButton
-      modalComponent={"List of Memberships"}
+      modalComponent={<ViewMembershipsModal groupId={groupId}/>}
       buttonText={"View Memberships"}
       // className={}
     />
