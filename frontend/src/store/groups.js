@@ -6,6 +6,8 @@ const GET_GROUP_EVENTS = 'groups/getGroupEvents';
 const CREATE_GROUP = 'groups/createGroup';
 // const EDIT_GROUP = 'groups/editGroup';
 const DELETE_GROUP = 'groups/deleteGroup'
+//TODO:
+const GET_CURRENT_GROUPS = 'groups/getCurrentGroups'
 
 const getAllGroups = (groups) => {
     return {
