@@ -7,24 +7,28 @@ const UPDATE_MEMBERSHIP = 'members/updateMembership'
 const DELETE_MEMBERSHIP = 'members/deleteMembership'
 
 const getGroupMembers = (payload) => {
-    type: GET_GROUP_MEMBERS,
-    payload
-}
+    return {
+        type: GET_GROUP_MEMBERS,
+        payload
+}}
 
 const requestMembership = (payload) => {
-    type: REQUEST_MEMBERSHIP,
-    payload
-}
+    return {
+        type: REQUEST_MEMBERSHIP,
+        payload
+}}
 
 const updateMembership = (payload) => {
-    type: UPDATE_MEMBERSHIP,
-    payload
-}
+    return {
+        type: UPDATE_MEMBERSHIP,
+        payload
+}}
 
 const deleteMembership = (membershipId) => {
-    type: DELETE_MEMBERSHIP,
-    membershipId
-}
+    return {
+        type: DELETE_MEMBERSHIP,
+        membershipId
+}}
 
 export const thunkGetGroupMembers = (groupId) => async dispatch => {
     const res = await csrfFetch(`/api/groups/${groupId}/members`)
@@ -35,7 +39,7 @@ export const thunkGetGroupMembers = (groupId) => async dispatch => {
     return data;
 }
 
-export const thunkRequestMembership = () => async dispatch => {
+export const thunkRequestMembership = (groupId) => async dispatch => {
     const res = await csrfFetch(`/api/groups/${groupId}/members`, {
         method: "POST"
     })

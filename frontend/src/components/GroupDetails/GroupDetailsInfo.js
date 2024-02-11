@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 import OpenModalButton from '../OpenModalButton';
 import DeleteModal from '../DeleteModal';
+import ViewMembershipsButton from './ViewMembershipsButton';
 
 export default function GroupDetailsInfo({group, setLoaded}) {
   let history = useHistory();
@@ -62,6 +63,7 @@ export default function GroupDetailsInfo({group, setLoaded}) {
                 </div>
                 <p className="groups-details-grey">Organized by: {Organizer.firstName + ' ' + Organizer.lastName}</p>
               </div>
+              <ViewMembershipsButton groupId={id}/>
               <div id='button-options'>{buttonOptions}</div>
             </div>
         </div>
