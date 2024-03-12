@@ -12,8 +12,8 @@ export default function ViewMembershipsButton({groupId}) {
   return (
     <OpenModalButton
       modalComponent={<ViewMembershipsModal groupId={groupId}/>}
-      buttonText={"View Members"}
-      // className={}
+      buttonText={`View Members (${"number"})`}
+      className={"view-members-button teal"}
     />
   )
 }
