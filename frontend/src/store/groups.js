@@ -149,20 +149,20 @@ const initialState = {allGroups: {}, singleGroup: {}};
 const groupsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_GROUPS: {
-            const newGroups = {...state};
+            const allGroups = {...state.allGroups};
             action.groups.forEach(group=> {
                 group.isPrivate = group.private ? "Private" : "Public";
                 delete group.private;
-                newGroups[group.id] = group;
+                allGroups[group.id] = group;
             })
-            // return {...newGroups}
-            return {...state, allGroups: newGroups}
+            // return {...allGroups}
+            return {...state, allGroups: allGroups}
         }
         case GET_ONE_GROUP: {
-            const newGroups = {...state};
+            // const allGroups = {...state};
             action.group.isPrivate = action.group.private ? "Private" : "Public";
-            newGroups[action.group.id] = action.group;
-            // return newGroups;
+            // allGroups[action.group.id] = action.group;
+            // return allGroups;
             return {...state, singleGroup: action.group}
         }
         // case GET_GROUP_EVENTS: {
@@ -177,7 +177,7 @@ const groupsReducer = (state = initialState, action) => {
         case CREATE_GROUP: {
             const newState = {
                 allGroups: {
-                    ...state,
+                    ...state.allGroups,
                     [action.group.id]: action.group
                 },
                 singleGroup: action.group

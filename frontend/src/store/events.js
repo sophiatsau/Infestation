@@ -146,33 +146,36 @@ const initialState={allEvents: {}, singleEvent: {}};
 const eventsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_EVENTS: {
-            const newState = {};
+            const allEvents = {};
             action.events.forEach(event => {
-                newState[event.id] = event;
+                allEvents[event.id] = event;
             })
-            return {...state, allEvents: newState};
+            return {...state, allEvents};
         }
         case GET_ONE_EVENT: {
             // return {...state, [action.event.id]: action.event};
             return {...state, singleEvent: action.event}
         }
         case GET_GROUP_EVENTS: {
-            const events = {};
+            const allEvents = {...state.allEvents};
 
             action.events.forEach(event => {
-                events[event.id] = event;
+                allEvents[event.id] = event;
             })
-            return {...state, allEvents: {...state.allEvents, ...events}};
+            return {...state, allEvents};
         }
         case CREATE_EVENT: {
-            return {allEvents: {...state.allEvents, [action.event.id]: action.event}, singleEvent: action.event};
+            return {
+                allEvents: {
+                    ...state.allEvents,
+                    [action.event.id]: action.event
+                },
+                singleEvent: action.event
+            };
         }
         case DELETE_EVENT: {
-            const newState = {...state};
+            const newState = {...state, singleEvent: {}};
             delete newState.allEvents[action.eventId];
-            if (newState.singleEvent.id === action.eventId) {
-                newState.singleEvent = {}
-            }
             return newState;
         }
         default:
