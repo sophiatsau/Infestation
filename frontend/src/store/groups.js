@@ -142,14 +142,14 @@ export const deleteOneGroup = (groupId) => async dispatch => {
 
 export const consumeAllGroups = () => (state) => Object.values(state.groups.allGroups);
 
-export const consumeOneGroup = (groupId) => (state) => state.groups.singleGroup;
+export const consumeOneGroup = () => (state) => state.groups.singleGroup;
 
 const initialState = {allGroups: {}, singleGroup: {}};
 
 const groupsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_GROUPS: {
-            const newGroups = {events: {...state.events}};
+            const newGroups = {...state};
             action.groups.forEach(group=> {
                 group.isPrivate = group.private ? "Private" : "Public";
                 delete group.private;
@@ -159,8 +159,7 @@ const groupsReducer = (state = initialState, action) => {
             return {...state, allGroups: newGroups}
         }
         case GET_ONE_GROUP: {
-            console.log("*******", state.events)
-            const newGroups = {...state, events: {...state.events}};
+            const newGroups = {...state};
             action.group.isPrivate = action.group.private ? "Private" : "Public";
             newGroups[action.group.id] = action.group;
             // return newGroups;
@@ -177,15 +176,17 @@ const groupsReducer = (state = initialState, action) => {
         // }
         case CREATE_GROUP: {
             const newState = {
-                ...state,
-                events: {...state.events},
-                [action.group.id]: action.group,
+                allGroups: {
+                    ...state,
+                    [action.group.id]: action.group
+                },
+                singleGroup: action.group
             };
             return newState;
         }
         case DELETE_GROUP: {
-            const newGroups = {...state, events: {...state.events}};
-            delete newGroups[action.groupId];
+            const newGroups = {...state, singleGroup: {}};
+            delete newGroups.allGroups[action.groupId];
             return newGroups;
         }
         default:

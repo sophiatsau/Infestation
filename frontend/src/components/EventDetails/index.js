@@ -17,7 +17,7 @@ export default function EventDetails() {
   const dispatch = useDispatch();
   const history = useHistory()
 
-  const event = useSelector(consumeOneEvent(eventId)) ?? {};
+  const event = useSelector(consumeOneEvent()) ?? {};
   const {name, groupId, EventImages, description} = event;
   const group = useSelector(consumeOneGroup());
   const currentUser = useSelector(state => state.session.user)
