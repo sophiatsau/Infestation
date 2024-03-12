@@ -140,11 +140,11 @@ export const deleteOneGroup = (groupId) => async dispatch => {
     return await res.json();
 }
 
-export const consumeAllGroups = () => (state) => Object.values(state.groups);
+export const consumeAllGroups = () => (state) => Object.values(state.groups.allGroups);
 
-export const consumeOneGroup = (groupId) => (state) => state.groups[groupId];
+export const consumeOneGroup = (groupId) => (state) => state.groups.singleGroup;
 
-const initialState = {events: {}};
+const initialState = {allGroups: {}, singleGroup: {}};
 
 const groupsReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -155,13 +155,15 @@ const groupsReducer = (state = initialState, action) => {
                 delete group.private;
                 newGroups[group.id] = group;
             })
-            return {...newGroups}
+            // return {...newGroups}
+            return {...state, allGroups: newGroups}
         }
         case GET_ONE_GROUP: {
             const newGroups = {...state, events: {...state.events}};
             action.group.isPrivate = action.group.private ? "Private" : "Public";
             newGroups[action.group.id] = action.group;
-            return newGroups;
+            // return newGroups;
+            return {...state, singleGroup: action.group}
         }
         case GET_GROUP_EVENTS: {
             const events = {};

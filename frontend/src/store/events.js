@@ -89,9 +89,14 @@ export const deleteOneEvent = (eventId) => async dispatch => {
     return res;
 }
 
-export const consumeAllEvents = () => (state) => Object.values(state.events);
+export const consumeAllEvents = () => (state) => Object.values(state.events.allEvents);
 
-export const consumeOneEvent = (eventId) => (state) => state.events[eventId];
+export const consumeGroupEvents = () => (state) => {
+    return Object.values(state.events.allEvents)
+        .filter(event => event.groupId === state.groups.singleGroup.id)
+}
+
+export const consumeOneEvent = () => (state) => state.events.singleEvent;
 
 
 export function sortEvents(events) {
@@ -115,7 +120,7 @@ export function sortEvents(events) {
 }
 
 
-const initialState={};
+const initialState={allEvents: {}, singleEvent: {}};
 
 const eventsReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -124,17 +129,21 @@ const eventsReducer = (state = initialState, action) => {
             action.events.forEach(event => {
                 newState[event.id] = event;
             })
-            return newState;
+            return {...state, allEvents: newState};
         }
         case GET_ONE_EVENT: {
-            return {...state, [action.event.id]: action.event};
+            // return {...state, [action.event.id]: action.event};
+            return {...state, singleEvent: action.event}
         }
         case CREATE_EVENT: {
-            return {...state, [action.event.id]: action.event};
+            return {allEvents: {...state.allEvents, [action.event.id]: action.event}, singleEvent: action.event};
         }
         case DELETE_EVENT: {
             const newState = {...state};
-            delete newState[action.eventId];
+            delete newState.allEvents[action.eventId];
+            if (newState.singleEvent.id === action.eventId) {
+                newState.singleEvent = {}
+            }
             return newState;
         }
         default:

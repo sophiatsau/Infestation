@@ -18,9 +18,10 @@ export default function GroupDetails() {
   const history = useHistory()
   const [eventsLoaded, setEventsLoaded] = useState(false)
 
-  const group = useSelector(consumeOneGroup(groupId))
+  const group = useSelector(consumeOneGroup())
 
-  let events = useSelector((state) => Object.values(state.groups.events));
+  // let events = useSelector((state) => Object.values(state.groups.events));
+  // let events = useSelector(consumeGroupEvents())
 
   const [upcomingEvents, pastEvents] = events ? sortEvents(events) : [[],[]];
 
