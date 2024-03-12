@@ -19,14 +19,15 @@ export default function EventDetails() {
 
   const event = useSelector(consumeOneEvent(eventId)) ?? {};
   const {name, groupId, EventImages, description} = event;
-  const group = useSelector(consumeOneGroup(groupId));
+  const group = useSelector(consumeOneGroup());
   const currentUser = useSelector(state => state.session.user)
-  const organizer = `${group?.Organizer?.firstName} ${group?.Organizer?.lastName}`
+  const organizer = `${group.Organizer.firstName} ${group?.Organizer?.lastName}`
   const previewImage = EventImages && EventImages.find(image => image.preview);
   const [isOrganizer, setIsOrganizer] = useState(!!group?.Organizer)
+  // const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    if (currentUser && parseInt(group?.Organizer?.id)===parseInt(currentUser.id)) {
+    if (currentUser && parseInt(group.Organizer.id)===parseInt(currentUser.id)) {
       setIsOrganizer(true);
     } else setIsOrganizer(false);
   }, [currentUser, group])
@@ -48,13 +49,14 @@ export default function EventDetails() {
     (async() => {
       try {
         await dispatch(fetchEventById(eventId))
+          // .then(setLoaded(true))
       } catch (e) {
         history.push('/not-found')
       }
     })()
   }, [dispatch, eventId, history])
 
-  if (!group || !event) return null;
+  if (event.id !== parseInt(eventId) || group.id !== parseInt(groupId)) return <>Loading...</>
 
   return (
     <div>
