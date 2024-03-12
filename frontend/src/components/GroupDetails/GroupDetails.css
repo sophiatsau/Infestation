@@ -83,3 +83,24 @@
     margin: 0;
     padding: 3px var(--margin-left) 50px var(--margin-left) ;
 }
+
+/****************** MEMBERSHIPS **********************/
+#memberships-modal {
+    margin: 0;
+    padding: 0;
+    max-width: 80vw;
+    min-width: 300px;
+}
+
+#memberships-modal h1 {
+    margin: 0 auto;
+}
+
+#memberships-table {
+    width: 100%;
+}
+
+#memberships-table button {
+    max-width: 90%;
+    padding: 5px;
+}

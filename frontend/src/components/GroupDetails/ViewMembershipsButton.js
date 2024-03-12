@@ -12,7 +12,7 @@ export default function ViewMembershipsButton({groupId}) {
   return (
     <OpenModalButton
       modalComponent={<ViewMembershipsModal groupId={groupId}/>}
-      buttonText={"View Memberships"}
+      buttonText={"View Members"}
       // className={}
     />
   )

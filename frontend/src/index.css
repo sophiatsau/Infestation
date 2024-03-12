@@ -132,6 +132,14 @@ img {
     color: grey;
 }
 
+.lighter {
+    font-weight: lighter;
+}
+
+.small {
+    font-size: small;
+}
+
 .no-margin {
     margin: 0;
     padding: 0;
