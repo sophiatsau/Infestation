@@ -83,3 +83,47 @@
     margin: 0;
     padding: 3px var(--margin-left) 50px var(--margin-left) ;
 }
+
+/****************** MEMBERSHIPS **********************/
+#memberships-modal {
+    margin: 0;
+    padding: 0;
+    max-width: 80vw;
+    min-width: 300px;
+}
+
+#memberships-modal h1 {
+    margin: 0 auto;
+}
+
+#memberships-table {
+    width: 100%;
+}
+
+#memberships-table td:first-of-type {
+    text-align: left;
+}
+
+#memberships-table td:last-of-type {
+    text-align: right;
+}
+
+#memberships-table button {
+    max-width: 90%;
+    padding: 5px;
+}
+
+.view-members-button {
+    /* color: teal; */
+    margin-top: 10px;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    width: fit-content;
+    height: fit-content;
+}
+
+.view-members-button:hover {
+    text-decoration: underline;
+    background-color: transparent;
+}

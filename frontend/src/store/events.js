@@ -2,6 +2,7 @@ import { csrfFetch } from "./csrf";
 
 const GET_ALL_EVENTS = 'events/getAllEvents';
 const GET_ONE_EVENT = 'events/getOneEvent';
+const GET_GROUP_EVENTS = 'groups/getGroupEvents';
 const CREATE_EVENT = 'events/createEvent';
 const DELETE_EVENT = 'events/deleteEvent'
 
@@ -16,6 +17,13 @@ const getOneEvent = (event) => {
     return {
         type: GET_ONE_EVENT,
         event,
+    }
+}
+
+const getGroupEvents = (events) => {
+    return {
+        type: GET_GROUP_EVENTS,
+        events,
     }
 }
 
@@ -49,6 +57,19 @@ export const fetchEventById = (eventId) => async (dispatch) => {
         dispatch(getOneEvent(data));
     }
     return data;
+}
+
+export const fetchEventsByGroup = (groupId) => async dispatch => {
+    try {
+        const res = await csrfFetch(`/api/groups/${groupId}/events`);
+        const data = await res.json();
+        if (res.ok) dispatch(getGroupEvents(data.Events));
+        return data.Events;
+    } catch (e) {
+        console.log(e, 'caught')
+        const data = await e.json();
+        return data;
+    }
 }
 
 export const createNewEvent = (payload) => async dispatch => {
@@ -89,9 +110,14 @@ export const deleteOneEvent = (eventId) => async dispatch => {
     return res;
 }
 
-export const consumeAllEvents = () => (state) => Object.values(state.events);
+export const consumeAllEvents = () => (state) => Object.values(state.events.allEvents);
 
-export const consumeOneEvent = (eventId) => (state) => state.events[eventId];
+export const consumeGroupEvents = () => (state) => {
+    return Object.values(state.events.allEvents)
+        .filter(event => event.groupId === state.groups.singleGroup.id)
+}
+
+export const consumeOneEvent = () => (state) => state.events.singleEvent;
 
 
 export function sortEvents(events) {
@@ -115,26 +141,41 @@ export function sortEvents(events) {
 }
 
 
-const initialState={};
+const initialState={allEvents: {}, singleEvent: {}};
 
 const eventsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_EVENTS: {
-            const newState = {};
+            const allEvents = {};
             action.events.forEach(event => {
-                newState[event.id] = event;
+                allEvents[event.id] = event;
             })
-            return newState;
+            return {...state, allEvents};
         }
         case GET_ONE_EVENT: {
-            return {...state, [action.event.id]: action.event};
+            // return {...state, [action.event.id]: action.event};
+            return {...state, singleEvent: action.event}
+        }
+        case GET_GROUP_EVENTS: {
+            const allEvents = {...state.allEvents};
+
+            action.events.forEach(event => {
+                allEvents[event.id] = event;
+            })
+            return {...state, allEvents};
         }
         case CREATE_EVENT: {
-            return {...state, [action.event.id]: action.event};
+            return {
+                allEvents: {
+                    ...state.allEvents,
+                    [action.event.id]: action.event
+                },
+                singleEvent: action.event
+            };
         }
         case DELETE_EVENT: {
-            const newState = {...state};
-            delete newState[action.eventId];
+            const newState = {...state, singleEvent: {}};
+            delete newState.allEvents[action.eventId];
             return newState;
         }
         default:
