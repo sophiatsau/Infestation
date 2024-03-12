@@ -2,7 +2,7 @@ import { csrfFetch } from "./csrf";
 
 const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
-const GET_GROUP_EVENTS = 'groups/getGroupEvents';
+// const GET_GROUP_EVENTS = 'groups/getGroupEvents';
 const CREATE_GROUP = 'groups/createGroup';
 // const EDIT_GROUP = 'groups/editGroup';
 const DELETE_GROUP = 'groups/deleteGroup'
@@ -23,12 +23,12 @@ const getOneGroup = (group) => {
     }
 }
 
-const getGroupEvents = (events) => {
-    return {
-        type: GET_GROUP_EVENTS,
-        events,
-    }
-}
+// const getGroupEvents = (events) => {
+//     return {
+//         type: GET_GROUP_EVENTS,
+//         events,
+//     }
+// }
 
 // const createGroup = (group) => {
 //     return {
@@ -70,19 +70,19 @@ export const fetchGroupById = (groupId) => async dispatch => {
     // }
 }
 
-export const fetchEventsByGroup = (groupId) => async dispatch => {
-    try {
-        const res = await csrfFetch(`/api/groups/${groupId}/events`);
-        const data = await res.json();
-        if (res.ok) dispatch(getGroupEvents(data.Events));
-        return data.Events;
-    } catch (e) {
-        console.log(e, 'caught')
-        const data = await e.json();
-        return data;
-    }
+// export const fetchEventsByGroup = (groupId) => async dispatch => {
+//     try {
+//         const res = await csrfFetch(`/api/groups/${groupId}/events`);
+//         const data = await res.json();
+//         if (res.ok) dispatch(getGroupEvents(data.Events));
+//         return data.Events;
+//     } catch (e) {
+//         console.log(e, 'caught')
+//         const data = await e.json();
+//         return data;
+//     }
 
-}
+// }
 
 export const createNewGroup = (payload) => async dispatch => {
     const {url, ...newGroup} = payload;
@@ -159,21 +159,22 @@ const groupsReducer = (state = initialState, action) => {
             return {...state, allGroups: newGroups}
         }
         case GET_ONE_GROUP: {
+            console.log("*******", state.events)
             const newGroups = {...state, events: {...state.events}};
             action.group.isPrivate = action.group.private ? "Private" : "Public";
             newGroups[action.group.id] = action.group;
             // return newGroups;
             return {...state, singleGroup: action.group}
         }
-        case GET_GROUP_EVENTS: {
-            const events = {};
+        // case GET_GROUP_EVENTS: {
+        //     const events = {};
 
-            action.events.forEach(event => {
-                events[event.id] = event;
-            })
-            const newGroups = {...state, events};
-            return newGroups;
-        }
+        //     action.events.forEach(event => {
+        //         events[event.id] = event;
+        //     })
+        //     const newGroups = {...state, events};
+        //     return newGroups;
+        // }
         case CREATE_GROUP: {
             const newState = {
                 ...state,
