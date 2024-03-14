@@ -1,4 +1,5 @@
 import { csrfFetch } from "./csrf";
+import membersReducer from "./members";
 
 const GET_ALL_EVENTS = 'events/getAllEvents';
 const GET_ONE_EVENT = 'events/getOneEvent';
@@ -154,7 +155,13 @@ const eventsReducer = (state = initialState, action) => {
         }
         case GET_ONE_EVENT: {
             // return {...state, [action.event.id]: action.event};
-            return {...state, singleEvent: action.event}
+            return {...state,
+                singleEvent: {
+                    ...action.event,
+                    Members: membersReducer(state.singleEvent, action),
+                    // Attendees: attendeesReducer(state.singleEvent, action)
+                }
+            }
         }
         case GET_GROUP_EVENTS: {
             const allEvents = {...state.allEvents};
