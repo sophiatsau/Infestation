@@ -21,23 +21,18 @@ export default function EventDetails() {
   const {name, groupId, EventImages, description} = event;
   const group = useSelector(consumeOneGroup());
   const currentUser = useSelector(state => state.session.user)
-  const organizer = `${group.Organizer.firstName} ${group?.Organizer?.lastName}`
+  console.log("EVENTDETAILS", group, group.id, groupId)
+  const organizer = groupId && group.id === groupId ? `${group.Organizer.firstName} ${group.Organizer.lastName}` : ''
   const previewImage = EventImages && EventImages.find(image => image.preview);
   const [isOrganizer, setIsOrganizer] = useState(!!group?.Organizer)
   // const [loaded, setLoaded] = useState(false)
-
-  useEffect(() => {
-    if (currentUser && parseInt(group.Organizer.id)===parseInt(currentUser.id)) {
-      setIsOrganizer(true);
-    } else setIsOrganizer(false);
-  }, [currentUser, group])
 
   useEffect(() => {
     async function getGroup() {
         return await dispatch(fetchGroupById(groupId))
             .catch(async (res) => {
                 const data = await res.json();
-                console.log(data.title, '-', data.message)
+                // console.log(data.title, '-', data.message)
                 history.push('/not-found')
             })
     }
@@ -55,6 +50,12 @@ export default function EventDetails() {
       }
     })()
   }, [dispatch, eventId, history])
+
+  useEffect(() => {
+    if (currentUser && group.Organizer && parseInt(group.Organizer.id)===parseInt(currentUser.id)) {
+      setIsOrganizer(true);
+    } else setIsOrganizer(false);
+  }, [currentUser, group])
 
   if (event.id !== parseInt(eventId) || group.id !== parseInt(groupId)) return <>Loading...</>
 
