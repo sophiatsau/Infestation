@@ -11,7 +11,7 @@ export default function MembershipCard({membership}) {
             <div className='grey lighter small'>{membership.Membership.status}</div>
         </td>
         <td>
-            {membership.Membership.status == "pending" && <button>Approve</button>}
+            {/* {membership.Membership.status == "pending" && <button>Approve</button>} */}
         </td>
         </>
     )

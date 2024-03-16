@@ -39,8 +39,8 @@ export default function GroupDetailsInfo({group, setLoaded}) {
           modalComponent={<DeleteModal featureId={id} feature="group"/>}
         />
       </>
-    ) : sessionUserId ? (
-      <button className="join-group-button" onClick={joinGroupButton}>Join this group</button>
+    // ) : sessionUserId ? (
+    //   <button className="join-group-button" onClick={joinGroupButton}>Join this group</button>
     ) : null
   )
 
