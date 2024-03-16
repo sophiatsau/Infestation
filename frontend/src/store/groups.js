@@ -1,13 +1,13 @@
 import { csrfFetch } from "./csrf";
+import membersReducer, {GET_GROUP_MEMBERS} from "./members";
 
 const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
-const GET_GROUP_EVENTS = 'groups/getGroupEvents';
+// const GET_GROUP_EVENTS = 'groups/getGroupEvents';
 const CREATE_GROUP = 'groups/createGroup';
 // const EDIT_GROUP = 'groups/editGroup';
 const DELETE_GROUP = 'groups/deleteGroup'
-//TODO:
-const GET_CURRENT_GROUPS = 'groups/getCurrentGroups'
+// const GET_CURRENT_GROUPS = 'groups/getCurrentGroups'
 
 const getAllGroups = (groups) => {
     return {
@@ -23,12 +23,12 @@ const getOneGroup = (group) => {
     }
 }
 
-const getGroupEvents = (events) => {
-    return {
-        type: GET_GROUP_EVENTS,
-        events,
-    }
-}
+// const getGroupEvents = (events) => {
+//     return {
+//         type: GET_GROUP_EVENTS,
+//         events,
+//     }
+// }
 
 // const createGroup = (group) => {
 //     return {
@@ -70,19 +70,19 @@ export const fetchGroupById = (groupId) => async dispatch => {
     // }
 }
 
-export const fetchEventsByGroup = (groupId) => async dispatch => {
-    try {
-        const res = await csrfFetch(`/api/groups/${groupId}/events`);
-        const data = await res.json();
-        if (res.ok) dispatch(getGroupEvents(data.Events));
-        return data.Events;
-    } catch (e) {
-        console.log(e, 'caught')
-        const data = await e.json();
-        return data;
-    }
+// export const fetchEventsByGroup = (groupId) => async dispatch => {
+//     try {
+//         const res = await csrfFetch(`/api/groups/${groupId}/events`);
+//         const data = await res.json();
+//         if (res.ok) dispatch(getGroupEvents(data.Events));
+//         return data.Events;
+//     } catch (e) {
+//         console.log(e, 'caught')
+//         const data = await e.json();
+//         return data;
+//     }
 
-}
+// }
 
 export const createNewGroup = (payload) => async dispatch => {
     const {url, ...newGroup} = payload;
@@ -140,49 +140,66 @@ export const deleteOneGroup = (groupId) => async dispatch => {
     return await res.json();
 }
 
-export const consumeAllGroups = () => (state) => Object.values(state.groups);
+export const consumeAllGroups = () => (state) => Object.values(state.groups.allGroups);
 
-export const consumeOneGroup = (groupId) => (state) => state.groups[groupId];
+export const consumeOneGroup = () => (state) => state.groups.singleGroup;
 
-const initialState = {events: {}};
+const initialState = {allGroups: {}, singleGroup: {}};
 
 const groupsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ALL_GROUPS: {
-            const newGroups = {events: {...state.events}};
+            const allGroups = {...state.allGroups};
             action.groups.forEach(group=> {
                 group.isPrivate = group.private ? "Private" : "Public";
                 delete group.private;
-                newGroups[group.id] = group;
+                allGroups[group.id] = group;
             })
-            return {...newGroups}
+            // return {...allGroups}
+            return {...state, allGroups: allGroups}
         }
         case GET_ONE_GROUP: {
-            const newGroups = {...state, events: {...state.events}};
+            // const allGroups = {...state};
             action.group.isPrivate = action.group.private ? "Private" : "Public";
-            newGroups[action.group.id] = action.group;
-            return newGroups;
+            // allGroups[action.group.id] = action.group;
+            // return allGroups;
+            return {...state,
+                singleGroup: {
+                    ...action.group,
+                    // Members: membersReducer(state.singleGroup.Members, action),
+                }
+            }
         }
-        case GET_GROUP_EVENTS: {
-            const events = {};
+        case GET_GROUP_MEMBERS: {
+            return {...state,
+                singleGroup: {
+                    ...state.singleGroup,
+                    Members: membersReducer(state.singleGroup.Members, action),
+                }
+            }
+        }
+        // case GET_GROUP_EVENTS: {
+        //     const events = {};
 
-            action.events.forEach(event => {
-                events[event.id] = event;
-            })
-            const newGroups = {...state, events};
-            return newGroups;
-        }
+        //     action.events.forEach(event => {
+        //         events[event.id] = event;
+        //     })
+        //     const newGroups = {...state, events};
+        //     return newGroups;
+        // }
         case CREATE_GROUP: {
             const newState = {
-                ...state,
-                events: {...state.events},
-                [action.group.id]: action.group,
+                allGroups: {
+                    ...state.allGroups,
+                    [action.group.id]: action.group
+                },
+                singleGroup: action.group
             };
             return newState;
         }
         case DELETE_GROUP: {
-            const newGroups = {...state, events: {...state.events}};
-            delete newGroups[action.groupId];
+            const newGroups = {...state, singleGroup: {}};
+            delete newGroups.allGroups[action.groupId];
             return newGroups;
         }
         default:

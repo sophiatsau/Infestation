@@ -17,26 +17,22 @@ export default function EventDetails() {
   const dispatch = useDispatch();
   const history = useHistory()
 
-  const event = useSelector(consumeOneEvent(eventId)) ?? {};
+  const event = useSelector(consumeOneEvent()) ?? {};
   const {name, groupId, EventImages, description} = event;
-  const group = useSelector(consumeOneGroup(groupId));
+  const group = useSelector(consumeOneGroup());
   const currentUser = useSelector(state => state.session.user)
-  const organizer = `${group?.Organizer?.firstName} ${group?.Organizer?.lastName}`
+  console.log("EVENTDETAILS", group, group.id, groupId)
+  const organizer = groupId && group.id === groupId ? `${group.Organizer.firstName} ${group.Organizer.lastName}` : ''
   const previewImage = EventImages && EventImages.find(image => image.preview);
   const [isOrganizer, setIsOrganizer] = useState(!!group?.Organizer)
-
-  useEffect(() => {
-    if (currentUser && parseInt(group?.Organizer?.id)===parseInt(currentUser.id)) {
-      setIsOrganizer(true);
-    } else setIsOrganizer(false);
-  }, [currentUser, group])
+  // const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     async function getGroup() {
         return await dispatch(fetchGroupById(groupId))
             .catch(async (res) => {
                 const data = await res.json();
-                console.log(data.title, '-', data.message)
+                // console.log(data.title, '-', data.message)
                 history.push('/not-found')
             })
     }
@@ -48,13 +44,20 @@ export default function EventDetails() {
     (async() => {
       try {
         await dispatch(fetchEventById(eventId))
+          // .then(setLoaded(true))
       } catch (e) {
         history.push('/not-found')
       }
     })()
   }, [dispatch, eventId, history])
 
-  if (!group || !event) return null;
+  useEffect(() => {
+    if (currentUser && group.Organizer && parseInt(group.Organizer.id)===parseInt(currentUser.id)) {
+      setIsOrganizer(true);
+    } else setIsOrganizer(false);
+  }, [currentUser, group])
+
+  if (event.id !== parseInt(eventId) || group.id !== parseInt(groupId)) return <>Loading...</>
 
   return (
     <div>

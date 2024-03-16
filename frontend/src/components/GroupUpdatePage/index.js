@@ -13,7 +13,7 @@ export default function GroupUpdatePage() {
     const dispatch = useDispatch();
 
     const sessionUserId = useSelector(state => state.session.user?.id);
-    const group = useSelector(consumeOneGroup(groupId));
+    const group = useSelector(consumeOneGroup());
     const {organizerId} = group || {}
 
     if (!sessionUserId ||

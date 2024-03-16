@@ -1,28 +1,28 @@
 import React, {useEffect, useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { thunkGetGroupMembers } from '../../store/members'
+// import MembershipCard from './MembershipCard'
+import MembershipsTable from './MembershipsTable'
+import { consumeGroupMembers } from '../../store/members'
 
 export default function ViewMembershipsModal({groupId}) {
-    const memberships = useSelector(state => state.members)
-    const [isLoaded, setIsLoaded] = useState(false)
+    const memberships = useSelector(consumeGroupMembers())
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(thunkGetGroupMembers(groupId)).then(()=>setIsLoaded(true))
-    }, [memberships, dispatch, setIsLoaded])
+        if (!memberships) dispatch(thunkGetGroupMembers(groupId))
+    }, [memberships, dispatch])
+
+    if (!memberships) return <>Loading...</>
 
     return (
-    <>
+    <div id="memberships-modal">
         <h1>Members</h1>
         {
-            !isLoaded ? "Loading memberships..."
+            !memberships ? "Loading memberships..."
             : !Object.values(memberships).length ? "There are no members in this group"
-            : Object.values(memberships).map(membership =>(
-                <div key={membership.id}>
-                    <span>{membership.firstName} {membership.lastName}</span> <span>{membership.Membership.status}</span>
-                </div>
-            ))
+            : <MembershipsTable memberships={memberships}/>
         }
-    </>
+    </div>
   )
 }

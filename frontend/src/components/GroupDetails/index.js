@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
-import {fetchGroupById, consumeOneGroup, fetchEventsByGroup } from '../../store/groups';
-import { sortEvents } from '../../store/events';
+import {fetchGroupById, consumeOneGroup } from '../../store/groups';
+import { sortEvents, consumeGroupEvents, fetchEventsByGroup } from '../../store/events';
 
 import GroupEvents from './GroupEvents';
 import BreadcrumbLink from '../BreadcrumbLink';
@@ -18,9 +18,10 @@ export default function GroupDetails() {
   const history = useHistory()
   const [eventsLoaded, setEventsLoaded] = useState(false)
 
-  const group = useSelector(consumeOneGroup(groupId))
+  const group = useSelector(consumeOneGroup())
 
-  let events = useSelector((state) => Object.values(state.groups.events));
+  // let events = useSelector((state) => Object.values(state.groups.events));
+  let events = useSelector(consumeGroupEvents())
 
   const [upcomingEvents, pastEvents] = events ? sortEvents(events) : [[],[]];
 
