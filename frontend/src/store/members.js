@@ -1,7 +1,9 @@
 import { csrfFetch } from "./csrf";
 import { REMOVE_USER } from "./session";
+import { consumeOneGroup } from "./groups";
+import { useSelector } from "react-redux";
 
-const GET_GROUP_MEMBERS = 'members/getGroupMembers'
+export const GET_GROUP_MEMBERS = 'members/getGroupMembers'
 const REQUEST_MEMBERSHIP = 'members/requestMembership'
 const UPDATE_MEMBERSHIP = 'members/updateMembership'
 const DELETE_MEMBERSHIP = 'members/deleteMembership'
@@ -49,6 +51,8 @@ export const thunkRequestMembership = (groupId) => async dispatch => {
 
     return data;
 }
+
+export const consumeGroupMembers = () => (state) => useSelector(consumeOneGroup()).Members
 
 const initialState = {}
 

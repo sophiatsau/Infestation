@@ -1,5 +1,5 @@
 import { csrfFetch } from "./csrf";
-import membersReducer from "./members";
+import membersReducer, {GET_GROUP_MEMBERS} from "./members";
 
 const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
@@ -7,8 +7,7 @@ const GET_ONE_GROUP = 'groups/getOneGroup';
 const CREATE_GROUP = 'groups/createGroup';
 // const EDIT_GROUP = 'groups/editGroup';
 const DELETE_GROUP = 'groups/deleteGroup'
-//TODO:
-const GET_CURRENT_GROUPS = 'groups/getCurrentGroups'
+// const GET_CURRENT_GROUPS = 'groups/getCurrentGroups'
 
 const getAllGroups = (groups) => {
     return {
@@ -167,6 +166,14 @@ const groupsReducer = (state = initialState, action) => {
             return {...state,
                 singleGroup: {
                     ...action.group,
+                    // Members: membersReducer(state.singleGroup.Members, action),
+                }
+            }
+        }
+        case GET_GROUP_MEMBERS: {
+            return {...state,
+                singleGroup: {
+                    ...state.singleGroup,
                     Members: membersReducer(state.singleGroup.Members, action),
                 }
             }
