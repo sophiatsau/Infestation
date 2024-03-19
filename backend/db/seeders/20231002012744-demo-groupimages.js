@@ -1,5 +1,5 @@
 'use strict';
-
+const { faker } = require('@faker-js/faker')
 const {GroupImage} = require('../models');
 
 let options = {};
@@ -31,6 +31,10 @@ const GroupImagesData = [
     preview: true,
   },
 ];
+
+for (let i=4; i <= 21; i++) {
+  GroupImagesData.push({groupId: i, url: faker.image.urlPicsumPhotos(), preview: true})
+}
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
