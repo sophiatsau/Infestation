@@ -1,7 +1,7 @@
 'use strict';
 
 const {EventImage} = require('../models');
-const bcrypt = require('bcryptjs');
+const { faker } = require('@faker-js/faker')
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
@@ -38,15 +38,14 @@ const eventImageInfo = [
   },
   {
     eventId: 6,
-    url: 'https://upload-os-bbs.hoyolab.com/upload/2021/11/01/111038170/396b5aa729a59c3dda88ed2333b1939e_5813360969437319082.jpg',
-    preview: true,
-  },
-  {
-    eventId: 7,
     url: 'https://c8.alamy.com/comp/DCBH94/cockroach-climbing-on-keyboard-to-present-about-computer-attacked-DCBH94.jpg',
     preview: true,
   },
 ]
+
+for (let i=7; i <= 23; i++) {
+  eventImageInfo.push({eventId: i, url: faker.image.urlPicsumPhotos(), preview: true})
+}
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
