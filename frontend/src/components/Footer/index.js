@@ -13,7 +13,7 @@ export default function Footer() {
                 <img className="footer-icon" src="./images/linkedin-logo.png" style={{height:"20px",width:"20px"}} alt="linkedin icon"/>
             </a>
         </div>
-        <div>© 2023 Crittr, Inc. All Rights Reserved. Terms, Privacy & Accessibility</div>
+        <div>© 2023 infestation, Inc. All Rights Reserved. Terms, Privacy & Accessibility</div>
     </div>
   )
 }
