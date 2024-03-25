@@ -206,9 +206,9 @@ router.get('/:groupId', checkGroup, async (req,res,next) => {
 
     let group = await Group.findByPk(req.params.groupId, {include});
 
-    const canViewPending = group.Memberships
+    const canViewPending = req.user ? group.Memberships
         .filter(member => member.userId === req.user.id && member.status==="co-host")
-        .length
+        .length : false
 
     const numEvents = await countNumEvents(group);
     group = addNumMembers(group.toJSON(), canViewPending);
