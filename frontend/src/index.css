@@ -6,6 +6,7 @@
     border-color: black;
 
     --light-color: rgb(255,220,220);
+    --grey-bg-color: rgb(240,240,240);
     --margin-left: 10%;
     --reddish-color: rgb(255,100,100);
 }
