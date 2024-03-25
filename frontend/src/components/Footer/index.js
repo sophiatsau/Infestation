@@ -13,7 +13,7 @@ export default function Footer() {
                 <img className="footer-icon" src="https://crittr-images.s3.us-west-1.amazonaws.com/LinkedIn_icon_circle.svg.png" alt="linkedin icon"/>
             </a>
         </div>
-        <div>© 2023 infestation, Inc. All Rights Reserved. Terms, Privacy & Accessibility</div>
+        <div style={{fontWeight:"lighter"}}>© 2023 infestation, Inc. All Rights Reserved. Terms, Privacy & Accessibility</div>
     </div>
   )
 }

@@ -14,6 +14,11 @@
     justify-content: center;
 }
 
+#footer>div {
+    font-weight: lighter;
+    font-size: smaller;
+}
+
 .footer-icon {
     height: 20px;
     width: 20px;
