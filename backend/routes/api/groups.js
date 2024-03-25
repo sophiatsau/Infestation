@@ -317,15 +317,15 @@ router.post('/:groupId/events', requireAuth, checkGroup, isGroupOrganizerOrCohos
 router.get('/:groupId/members', checkGroup, async (req,res,next) => {
     const {groupId} = req.params;
 
-    const isCoHost = await Membership.findOne({
+    const isCoHost = req.user ? await Membership.findOne({
         where: {
             userId: req.user.id,
             groupId,
             status: "co-host"
         }
-    })
+    }) : false
 
-    const isOrganizer = req.group.organizerId === req.user.id;
+    const isOrganizer = req.user ? req.group.organizerId === req.user.id : false;
 
     const status = ['co-host', 'member']
     //if is co-host, include pending
