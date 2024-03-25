@@ -11,10 +11,14 @@ export default function ViewMembershipsButton({groupId}) {
 
   if (!user) return null
 
+  console.log("NUM PENDING", group.numPending)
+
+  const buttonText = `View Members (${group.numMembers}) ${group.numPending ? `(${group.numPending} pending)` : ''}`
+
   return (
     <OpenModalButton
       modalComponent={<ViewMembershipsModal groupId={groupId}/>}
-      buttonText={`View Members (${group.numMembers})`}
+      buttonText={buttonText}
       className={"view-members-button teal"}
     />
   )
