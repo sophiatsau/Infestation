@@ -13,6 +13,7 @@ import GroupCreationPage from './components/GroupCreationPage';
 import GroupUpdatePage from './components/GroupUpdatePage';
 import EventCreationPage from './components/EventCreationPage';
 import PageNotFound from './components/PageNotFound'
+import Footer from './components/Footer';
 
 function App() {
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ function App() {
       </Switch>
       </div>
     )}
+    <Footer />
     </>
   );
 }
