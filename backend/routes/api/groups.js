@@ -58,8 +58,11 @@ async function addNumMembersPreviewImage(groups) {
     return jsonGroups;
 }
 
-function addNumMembers(group) {
-    group.numMembers = group.Memberships.length;
+function addNumMembers(group, isOrganizer) {
+    group.numMembers = group.Memberships.filter(member => member.status !== "pending").length;
+    if (isOrganizer) {
+        group.numPending = group.Memberships.filter(member => member.status == "pending").length;
+    }
     delete group.Memberships;
     return group;
 }
@@ -200,11 +203,13 @@ router.get('/:groupId', checkGroup, async (req,res,next) => {
         }
     ]
 
+    const isOrganizer = req.group.organizerId === req.user.id;
+
     let group = await Group.findByPk(req.params.groupId, {include});
 
 
     const numEvents = await countNumEvents(group);
-    group = addNumMembers(group.toJSON());
+    group = addNumMembers(group.toJSON(), isOrganizer);
     group.numberEvents = numEvents;
 
     res.json({Groups: group});
