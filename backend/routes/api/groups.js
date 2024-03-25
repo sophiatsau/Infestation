@@ -58,8 +58,11 @@ async function addNumMembersPreviewImage(groups) {
     return jsonGroups;
 }
 
-function addNumMembers(group) {
-    group.numMembers = group.Memberships.length;
+function addNumMembers(group, canViewPending) {
+    group.numMembers = group.Memberships.filter(member => member.status !== "pending").length;
+    if (canViewPending) {
+        group.numPending = group.Memberships.filter(member => member.status == "pending").length;
+    }
     delete group.Memberships;
     return group;
 }
@@ -200,11 +203,15 @@ router.get('/:groupId', checkGroup, async (req,res,next) => {
         }
     ]
 
+
     let group = await Group.findByPk(req.params.groupId, {include});
 
+    const canViewPending = group.Memberships
+        .filter(member => member.userId === req.user.id && member.status==="co-host")
+        .length
 
     const numEvents = await countNumEvents(group);
-    group = addNumMembers(group.toJSON());
+    group = addNumMembers(group.toJSON(), canViewPending);
     group.numberEvents = numEvents;
 
     res.json({Groups: group});
