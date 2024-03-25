@@ -128,12 +128,9 @@ export const editGroupById = (payload) => async dispatch => {
 }
 
 export const deleteOneGroup = (groupId) => async dispatch => {
-    console.log("deleting...")
     const res = await csrfFetch(`/api/groups/${groupId}`, {
         method: 'DELETE'
     })
-
-    console.log("delete complete")
 
     if (res.ok) dispatch(deleteGroup(groupId));
 

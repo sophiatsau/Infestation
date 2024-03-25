@@ -21,7 +21,6 @@ export default function EventDetails() {
   const {name, groupId, EventImages, description} = event;
   const group = useSelector(consumeOneGroup());
   const currentUser = useSelector(state => state.session.user)
-  console.log("EVENTDETAILS", group, group.id, groupId)
   const organizer = groupId && group.id === groupId ? `${group.Organizer.firstName} ${group.Organizer.lastName}` : ''
   const previewImage = EventImages && EventImages.find(image => image.preview);
   const [isOrganizer, setIsOrganizer] = useState(!!group?.Organizer)
@@ -32,7 +31,6 @@ export default function EventDetails() {
         return await dispatch(fetchGroupById(groupId))
             .catch(async (res) => {
                 const data = await res.json();
-                // console.log(data.title, '-', data.message)
                 history.push('/not-found')
             })
     }

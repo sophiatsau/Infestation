@@ -56,18 +56,15 @@ export default function GroupForm({formType, group={}}) {
 
     let thunk;
     if (formType==="create") {
-        console.log("creating")
         thunk = createNewGroup;
         payload.url = url
     } else {
-        console.log("editing")
         thunk = editGroupById;
         payload.groupId = group.id
     }
 
     try {
       const resGroup = await dispatch(thunk(payload))
-    //   console.log("🚀 ~ file: index.js:69 ~ handleSubmit ~ resGroup:", resGroup)
       history.push(`/groups/${resGroup.id}`)
     } catch(e) {
     //   const newErrors = await e.json()
