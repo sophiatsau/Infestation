@@ -52,6 +52,20 @@ export const thunkRequestMembership = (groupId) => async dispatch => {
     return data;
 }
 
+export const thunkUpdateMembership = (payload) => async dispatch => {
+    console.log("thunk payload", payload)
+    const res = await csrfFetch(`/api/groups/${payload.groupId}/membership`, {
+        method: "PUT",
+        body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+
+    if (res.ok) dispatch(updateMembership(data))
+
+    return data
+}
+
 export const consumeGroupMembers = () => (state) => useSelector(consumeOneGroup()).Members
 
 const initialState = {}
@@ -62,7 +76,8 @@ const membersReducer = (state=initialState, action) => {
             return initialState
         case GET_GROUP_MEMBERS:
             return {...action.payload.Members}
-        //TODO: update, request membership should be in session.user
+        case UPDATE_MEMBERSHIP:
+            return {...action.payload.Members}
         case REQUEST_MEMBERSHIP:
             return state
         default:
