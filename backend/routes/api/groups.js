@@ -60,9 +60,15 @@ async function addNumMembersPreviewImage(groups) {
 
 function addNumMembers(group, canViewPending) {
     group.numMembers = group.Memberships.filter(member => member.status !== "pending").length;
-    if (canViewPending) {
-        group.numPending = group.Memberships.filter(member => member.status == "pending").length;
-    }
+    // if (canViewPending) {
+    //     group.numPending = group.Memberships.filter(member => member.status == "pending").length;
+    // }
+    // group.numMembers = 0;
+    // group.numPending = 0;
+    // group.Memberships.forEach(member =>
+    //     member.status === "pending" ?
+    //         group.numPending += 1
+    //         : group.numMembers += 1)
     delete group.Memberships;
     return group;
 }
