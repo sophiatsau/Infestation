@@ -223,17 +223,17 @@ const membershipsData = [
   {
     "userId": 2,
     "groupId": 1,
-    "status": "member"
+    "status": "pending"
   },
   {
     "userId": 3,
     "groupId": 1,
-    "status": "member"
+    "status": "pending"
   },
   {
     "userId": 4,
     "groupId": 1,
-    "status": "member"
+    "status": "pending"
   },
   {
     "userId": 5,
