@@ -2,10 +2,11 @@ import { csrfFetch } from "./csrf";
 import { REMOVE_USER } from "./session";
 import { consumeOneGroup } from "./groups";
 import { useSelector } from "react-redux";
+import { UPDATE_MEMBERSHIP, GET_GROUP_MEMBERS } from "./actions";
 
-export const GET_GROUP_MEMBERS = 'members/getGroupMembers'
+// export const GET_GROUP_MEMBERS = 'members/getGroupMembers'
 const REQUEST_MEMBERSHIP = 'members/requestMembership'
-const UPDATE_MEMBERSHIP = 'members/updateMembership'
+// export const UPDATE_MEMBERSHIP = 'members/updateMembership'
 const DELETE_MEMBERSHIP = 'members/deleteMembership'
 
 const getGroupMembers = (payload) => {
@@ -53,7 +54,6 @@ export const thunkRequestMembership = (groupId) => async dispatch => {
 }
 
 export const thunkUpdateMembership = (payload) => async dispatch => {
-    console.log("thunk payload", payload)
     const res = await csrfFetch(`/api/groups/${payload.groupId}/membership`, {
         method: "PUT",
         body: JSON.stringify(payload)
@@ -75,10 +75,16 @@ const membersReducer = (state=initialState, action) => {
         case REMOVE_USER:
             return initialState
         case GET_GROUP_MEMBERS:
-            return {...action.payload.Members}
+            const members = {}
+            action.payload.Members.forEach(member => {
+                members[member.id] = member
+            });
+            return members
         case UPDATE_MEMBERSHIP:
             const updatedMembership = {...state[action.payload.memberId]}
+
             updatedMembership.Membership.status = action.payload.status
+
             return {...state, [action.payload.memberId]: updatedMembership}
         case REQUEST_MEMBERSHIP:
             return state
