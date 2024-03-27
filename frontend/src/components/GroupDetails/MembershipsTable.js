@@ -4,16 +4,16 @@ import MembershipCard from './MembershipCard'
 import { thunkUpdateMembership } from '../../store/members'
 
 
-export default function MembershipsTable({memberships}) {
+export default function MembershipsTable({memberships, groupId}) {
   const dispatch = useDispatch()
 
   const approveMembership = async (membership) => {
-    const {memberId, groupId, status} = membership
+    const {id} = membership
     console.log(membership, "memberships table membership")
 
     // if success, add to list of memberships
     try {
-      const resMember = await dispatch(thunkUpdateMembership({memberId, groupId, status}))
+      const resMember = await dispatch(thunkUpdateMembership({memberId: id, groupId, status: "member"}))
       console.log(resMember, "ACCEPTED MEMBER!")
     } catch(e) {
       console.log(e)

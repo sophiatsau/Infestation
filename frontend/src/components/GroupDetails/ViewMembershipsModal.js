@@ -21,7 +21,7 @@ export default function ViewMembershipsModal({groupId}) {
         {
             !memberships ? "Loading memberships..."
             : !Object.values(memberships).length ? "There are no members in this group"
-            : <MembershipsTable memberships={memberships}/>
+            : <MembershipsTable memberships={memberships} groupId={groupId}/>
         }
     </div>
   )

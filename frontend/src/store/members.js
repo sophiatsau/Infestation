@@ -77,7 +77,9 @@ const membersReducer = (state=initialState, action) => {
         case GET_GROUP_MEMBERS:
             return {...action.payload.Members}
         case UPDATE_MEMBERSHIP:
-            return {...action.payload.Members}
+            const updatedMembership = {...state[action.payload.memberId]}
+            updatedMembership.Membership.status = action.payload.status
+            return {...state, [action.payload.memberId]: updatedMembership}
         case REQUEST_MEMBERSHIP:
             return state
         default:
