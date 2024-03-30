@@ -64,6 +64,7 @@ const initialState = {user: null};
 const sessionReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_USER: {
+            if (!action.user.user) return {...action.user}
             const user = {
                 ...action.user.user,
                 memberships: {}

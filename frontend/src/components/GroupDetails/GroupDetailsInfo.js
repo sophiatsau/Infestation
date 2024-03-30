@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import OpenModalButton from '../OpenModalButton';
 import DeleteModal from '../DeleteModal';
 import ViewMembershipsButton from './ViewMembershipsButton';
+import RequestMembershipButton from './RequestMembershipButton';
 
 export default function GroupDetailsInfo({group, setLoaded}) {
   let history = useHistory();
@@ -25,9 +26,9 @@ export default function GroupDetailsInfo({group, setLoaded}) {
     setIsOrganizer(organizerId===sessionUserId)
   }, [organizerId, sessionUserId])
 
-  function joinGroupButton(e) {
-    alert("Feature coming soon");
-  }
+  // function joinGroupButton(e) {
+  //   alert("Feature coming soon");
+  // }
 
   const buttonOptions = (
     isOrganizer ? (
@@ -38,10 +39,10 @@ export default function GroupDetailsInfo({group, setLoaded}) {
           buttonText="Delete"
           modalComponent={<DeleteModal featureId={id} feature="group"/>}
         />
-      </>
+      </>)
     // ) : sessionUserId ? (
     //   <button className="join-group-button" onClick={joinGroupButton}>Join this group</button>
-    ) : null
+    : null
   )
 
   if (!Organizer) {
