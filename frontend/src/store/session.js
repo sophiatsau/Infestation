@@ -63,7 +63,16 @@ const initialState = {user: null};
 const sessionReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_USER: {
-            return Object.assign({}, action.user)
+            const user = {
+                ...action.user.user,
+                memberships: {
+                    pending: [],
+                    ["co-host"]: [],
+                    member: []
+                }
+            }
+            action.user.user.memberships.forEach(membership => user.memberships[membership.status].push(membership.groupId))
+            return {user}
         }
         case REMOVE_USER: {
             return {user: null};
