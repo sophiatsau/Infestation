@@ -21,10 +21,11 @@ const requestMembership = (payload) => {
         payload
 }}
 
-const updateMembership = (payload) => {
+const updateMembership = (payload, groupId) => {
     return {
         type: UPDATE_MEMBERSHIP,
-        payload
+        payload,
+        groupId
 }}
 
 const deleteMembership = (membershipId) => {
@@ -61,7 +62,7 @@ export const thunkUpdateMembership = (payload) => async dispatch => {
 
     const data = await res.json()
 
-    if (res.ok) dispatch(updateMembership(data))
+    if (res.ok) dispatch(updateMembership(data, payload.groupId))
 
     return data
 }
