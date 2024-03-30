@@ -12,7 +12,7 @@ export default function GroupDetailsInfo({group, setLoaded}) {
 
   let {GroupImages, name, city, state, about, numberEvents, isPrivate, Organizer, organizerId, id} = group || {};
 
-  const sessionUserId = useSelector(state => state.session.user?.id);
+  const user = useSelector(state => state.session.user);
 
   const [previewImage, setPreviewImage] = useState();
   const [isOrganizer, setIsOrganizer] = useState(false);
@@ -23,8 +23,8 @@ export default function GroupDetailsInfo({group, setLoaded}) {
   }, [GroupImages]);
 
   useEffect(() => {
-    setIsOrganizer(organizerId===sessionUserId)
-  }, [organizerId, sessionUserId])
+    setIsOrganizer(organizerId===user?.id)
+  }, [organizerId, user])
 
   // function joinGroupButton(e) {
   //   alert("Feature coming soon");
@@ -39,9 +39,11 @@ export default function GroupDetailsInfo({group, setLoaded}) {
           buttonText="Delete"
           modalComponent={<DeleteModal featureId={id} feature="group"/>}
         />
-      </>)
-    // ) : sessionUserId ? (
-    //   <button className="join-group-button" onClick={joinGroupButton}>Join this group</button>
+      </>
+      )
+    : user ? (
+      <RequestMembershipButton />
+    )
     : null
   )
 
