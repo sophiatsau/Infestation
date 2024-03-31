@@ -1,5 +1,5 @@
 import { csrfFetch } from "./csrf";
-import { UPDATE_MEMBERSHIP } from "./actions";
+import { UPDATE_MEMBERSHIP, REQUEST_MEMBERSHIP } from "./actions";
 
 export const SET_USER = 'session/setUser';
 export const REMOVE_USER = 'session/removeUser';
@@ -75,9 +75,15 @@ const sessionReducer = (state = initialState, action) => {
         case REMOVE_USER: {
             return {user: null};
         }
+        case REQUEST_MEMBERSHIP: {
+            const newState = {...state}
+            newState.user.memberships[action.groupId] = action.payload.status
+            return newState
+        }
         case UPDATE_MEMBERSHIP: {
             const newState = {...state}
             newState.user.memberships[action.groupId] = action.payload.status
+            return newState
         }
         default:
             return state;

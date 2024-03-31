@@ -2,10 +2,10 @@ import { csrfFetch } from "./csrf";
 import { REMOVE_USER } from "./session";
 import { consumeOneGroup } from "./groups";
 import { useSelector } from "react-redux";
-import { UPDATE_MEMBERSHIP, GET_GROUP_MEMBERS } from "./actions";
+import { UPDATE_MEMBERSHIP, GET_GROUP_MEMBERS, REQUEST_MEMBERSHIP } from "./actions";
 
 // export const GET_GROUP_MEMBERS = 'members/getGroupMembers'
-const REQUEST_MEMBERSHIP = 'members/requestMembership'
+// const REQUEST_MEMBERSHIP = 'members/requestMembership'
 // export const UPDATE_MEMBERSHIP = 'members/updateMembership'
 const DELETE_MEMBERSHIP = 'members/deleteMembership'
 
@@ -15,10 +15,11 @@ const getGroupMembers = (payload) => {
         payload
 }}
 
-const requestMembership = (payload) => {
+const requestMembership = (payload, groupId) => {
     return {
         type: REQUEST_MEMBERSHIP,
-        payload
+        payload,
+        groupId
 }}
 
 const updateMembership = (payload, groupId) => {
@@ -44,12 +45,12 @@ export const thunkGetGroupMembers = (groupId) => async dispatch => {
 }
 
 export const thunkRequestMembership = (groupId) => async dispatch => {
-    const res = await csrfFetch(`/api/groups/${groupId}/members`, {
+    const res = await csrfFetch(`/api/groups/${groupId}/membership`, {
         method: "POST"
     })
     const data = await res.json();
 
-    if (res.ok) dispatch(requestMembership(data))
+    if (res.ok) dispatch(requestMembership(data, groupId))
 
     return data;
 }

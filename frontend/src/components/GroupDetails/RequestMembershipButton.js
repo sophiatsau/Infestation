@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
 
 import OpenModalButton from '../OpenModalButton'
 import { consumeOneGroup } from '../../store/groups'
+import UpdateMembershipModal from './UpdateMembershipModal'
 
 export default function RequestMembershipButton() {
   const user = useSelector(state => state.session.user)
   const group = useSelector(consumeOneGroup())
 
   const status = user.memberships[group.id]
+
+  // if pending, member, co-host: can delete own membership
+  // else, can request membership (change to pending)
   const buttonText =
-    status==="pending" ? "Membership Requested"
+    status==="pending" ? "Membership Pending"
     : !status ? "Request Membership"
-    : "Already a Member"
+    : "View Membership"
+
+  const modalComponent =
+    status==="pending" ? "Remove Pending Request?"
+    : !status ? <UpdateMembershipModal />
+    : "Edit Membership"
 
   return (
     <OpenModalButton
       buttonText={buttonText}
+      modalComponent={modalComponent}
     />
   )
 }
