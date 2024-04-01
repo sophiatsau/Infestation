@@ -10,7 +10,7 @@ export default function RequestMembershipButton() {
   const user = useSelector(state => state.session.user)
   const group = useSelector(consumeOneGroup())
 
-  const status = user.memberships[group.id].status
+  const status = user.memberships[group.id]
 
   // if pending, member, co-host: can delete own membership
   // else, can request membership (change to pending)
