@@ -50,7 +50,7 @@ function restoreUser(req,res,next) {
               },
               include: {
                 model: Membership,
-                attributes: ['groupId', 'status', 'id']
+                attributes: ['groupId', 'status']
               }
             });
           } catch (e) {
