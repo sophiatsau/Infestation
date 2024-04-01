@@ -4,7 +4,7 @@ const {Op} = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { User } = require('../../db/models');
+const { User, Membership } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
@@ -36,6 +36,10 @@ router.post('/', validateLogin, async(req,res,next) => {
                 username: credential,
                 email: credential,
             }
+        },
+        include: {
+          model: Membership,
+          attributes: ['groupId', 'status']
         }
     });
 
@@ -53,6 +57,9 @@ router.post('/', validateLogin, async(req,res,next) => {
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
+        memberships: user.Memberships.map(member => {
+          return {groupId: member.groupId, status: member.status}
+        })
     }
 
     //set cookies based on safe user info
@@ -72,7 +79,7 @@ router.delete('/', (_req,res,_next) => {
 
 
 //Get session user: GET /api/session
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     //req.user is assigned when restoreUser middleware is called
     const { user } = req;
     if (user) {
@@ -82,6 +89,9 @@ router.get('/', (req, res) => {
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
+        memberships: user.Memberships.map(member => {
+          return {groupId: member.groupId, status: member.status}
+        })
       };
 
       return res.json({

@@ -1,5 +1,6 @@
 import { csrfFetch } from "./csrf";
-import membersReducer, {GET_GROUP_MEMBERS} from "./members";
+import {DELETE_MEMBERSHIP, GET_GROUP_MEMBERS, UPDATE_MEMBERSHIP} from "./actions";
+import membersReducer from "./members";
 
 const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
@@ -128,12 +129,9 @@ export const editGroupById = (payload) => async dispatch => {
 }
 
 export const deleteOneGroup = (groupId) => async dispatch => {
-    console.log("deleting...")
     const res = await csrfFetch(`/api/groups/${groupId}`, {
         method: 'DELETE'
     })
-
-    console.log("delete complete")
 
     if (res.ok) dispatch(deleteGroup(groupId));
 
@@ -170,13 +168,33 @@ const groupsReducer = (state = initialState, action) => {
                 }
             }
         }
-        case GET_GROUP_MEMBERS: {
-            return {...state,
+        // case GET_GROUP_MEMBERS: {
+        //     return {...state,
+        //         singleGroup: {
+        //             ...state.singleGroup,
+        //             Members: membersReducer(state.singleGroup.Members, action),
+        //         }
+        //     }
+        // }
+        case DELETE_MEMBERSHIP:
+        case UPDATE_MEMBERSHIP: {
+            const newState = {...state,
                 singleGroup: {
                     ...state.singleGroup,
                     Members: membersReducer(state.singleGroup.Members, action),
                 }
             }
+            newState.singleGroup.numMembers = Object.values(newState.singleGroup.Members).length
+            return newState
+        }
+        case GET_GROUP_MEMBERS: {
+            const newState = {...state,
+                singleGroup: {
+                    ...state.singleGroup,
+                    Members: membersReducer(state.singleGroup.Members, action),
+                }
+            }
+            return newState
         }
         // case GET_GROUP_EVENTS: {
         //     const events = {};

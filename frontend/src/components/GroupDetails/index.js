@@ -31,7 +31,7 @@ export default function GroupDetails() {
           await dispatch(fetchGroupById(groupId))
         } catch (e) {
           const data = await e.json();
-          console.log(data.title, '-', data.message)
+          // console.log(data.title, '-', data.message)
           history.push('/not-found')
         }
     }

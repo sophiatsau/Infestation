@@ -60,9 +60,15 @@ async function addNumMembersPreviewImage(groups) {
 
 function addNumMembers(group, canViewPending) {
     group.numMembers = group.Memberships.filter(member => member.status !== "pending").length;
-    if (canViewPending) {
-        group.numPending = group.Memberships.filter(member => member.status == "pending").length;
-    }
+    // if (canViewPending) {
+    //     group.numPending = group.Memberships.filter(member => member.status == "pending").length;
+    // }
+    // group.numMembers = 0;
+    // group.numPending = 0;
+    // group.Memberships.forEach(member =>
+    //     member.status === "pending" ?
+    //         group.numPending += 1
+    //         : group.numMembers += 1)
     delete group.Memberships;
     return group;
 }
@@ -317,15 +323,15 @@ router.post('/:groupId/events', requireAuth, checkGroup, isGroupOrganizerOrCohos
 router.get('/:groupId/members', checkGroup, async (req,res,next) => {
     const {groupId} = req.params;
 
-    const isCoHost = await Membership.findOne({
+    const isCoHost = req.user ? await Membership.findOne({
         where: {
             userId: req.user.id,
             groupId,
             status: "co-host"
         }
-    })
+    }) : false
 
-    const isOrganizer = req.group.organizerId === req.user.id;
+    const isOrganizer = req.user ? req.group.organizerId === req.user.id : false;
 
     const status = ['co-host', 'member']
     //if is co-host, include pending

@@ -2,11 +2,12 @@ import { csrfFetch } from "./csrf";
 import { REMOVE_USER } from "./session";
 import { consumeOneGroup } from "./groups";
 import { useSelector } from "react-redux";
+import { UPDATE_MEMBERSHIP, GET_GROUP_MEMBERS, REQUEST_MEMBERSHIP, DELETE_MEMBERSHIP } from "./actions";
 
-export const GET_GROUP_MEMBERS = 'members/getGroupMembers'
-const REQUEST_MEMBERSHIP = 'members/requestMembership'
-const UPDATE_MEMBERSHIP = 'members/updateMembership'
-const DELETE_MEMBERSHIP = 'members/deleteMembership'
+// export const GET_GROUP_MEMBERS = 'members/getGroupMembers'
+// const REQUEST_MEMBERSHIP = 'members/requestMembership'
+// export const UPDATE_MEMBERSHIP = 'members/updateMembership'
+// const DELETE_MEMBERSHIP = 'members/deleteMembership'
 
 const getGroupMembers = (payload) => {
     return {
@@ -14,22 +15,24 @@ const getGroupMembers = (payload) => {
         payload
 }}
 
-const requestMembership = (payload) => {
+const requestMembership = (payload, groupId) => {
     return {
         type: REQUEST_MEMBERSHIP,
-        payload
+        payload,
+        groupId
 }}
 
-const updateMembership = (payload) => {
+const updateMembership = (payload, groupId) => {
     return {
         type: UPDATE_MEMBERSHIP,
-        payload
+        payload,
+        groupId
 }}
 
-const deleteMembership = (membershipId) => {
+const deleteMembership = (payload) => {
     return {
         type: DELETE_MEMBERSHIP,
-        membershipId
+        payload //groupId, memberId
 }}
 
 export const thunkGetGroupMembers = (groupId) => async dispatch => {
@@ -42,14 +45,40 @@ export const thunkGetGroupMembers = (groupId) => async dispatch => {
 }
 
 export const thunkRequestMembership = (groupId) => async dispatch => {
-    const res = await csrfFetch(`/api/groups/${groupId}/members`, {
+    const res = await csrfFetch(`/api/groups/${groupId}/membership`, {
         method: "POST"
     })
     const data = await res.json();
 
-    if (res.ok) dispatch(requestMembership(data))
+    if (res.ok) dispatch(requestMembership(data, groupId))
 
     return data;
+}
+
+export const thunkUpdateMembership = (payload) => async dispatch => {
+    const res = await csrfFetch(`/api/groups/${payload.groupId}/membership`, {
+        method: "PUT",
+        body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+
+    if (res.ok) dispatch(updateMembership(data, payload.groupId))
+
+    return data
+}
+
+export const thunkDeleteMembership = (groupId, memberId) => async dispatch => {
+    const res = await csrfFetch(`/api/groups/${groupId}/membership`, {
+        method: 'DELETE',
+        body: JSON.stringify({memberId})
+    })
+
+    const data = await res.json()
+
+    if (res.ok) dispatch(deleteMembership({groupId, memberId}))
+
+    return data
 }
 
 export const consumeGroupMembers = () => (state) => useSelector(consumeOneGroup()).Members
@@ -61,10 +90,24 @@ const membersReducer = (state=initialState, action) => {
         case REMOVE_USER:
             return initialState
         case GET_GROUP_MEMBERS:
-            return {...action.payload.Members}
-        //TODO: update, request membership should be in session.user
-        case REQUEST_MEMBERSHIP:
-            return state
+            const members = {}
+            action.payload.Members.forEach(member => {
+                members[member.id] = member
+            });
+            return members
+        case UPDATE_MEMBERSHIP:
+            const updatedMembership = {...state[action.payload.memberId]}
+
+            updatedMembership.Membership.status = action.payload.status
+
+            return {...state, [action.payload.memberId]: updatedMembership}
+        // case REQUEST_MEMBERSHIP:
+        //     return state
+        case DELETE_MEMBERSHIP: {
+            const newState = {...state}
+            delete newState[action.payload.memberId]
+            return newState
+        }
         default:
             return state
     }
