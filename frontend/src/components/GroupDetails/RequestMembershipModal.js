@@ -6,7 +6,7 @@ import { useModal } from '../../context/Modal'
 import { consumeOneGroup } from '../../store/groups'
 import { thunkRequestMembership } from '../../store/members'
 
-export default function UpdateMembershipModal() {
+export default function RequestMembershipModal() {
     const {closeModal} = useModal()
     const dispatch = useDispatch()
 
@@ -14,11 +14,12 @@ export default function UpdateMembershipModal() {
     const group = useSelector(consumeOneGroup())
 
 
-    const status = user.memberships[group.id]
+    // const status = user.memberships[group.id]
 
     const requestMembership = async () => {
         const res = await dispatch(thunkRequestMembership(group.id))
-        console.log("🚀 ~ requestMembership ~ res:", res)
+        // console.log("🚀 ~ requestMembership ~ res:", res)
+        // TODO: confirmation success?
         closeModal()
     }
 
