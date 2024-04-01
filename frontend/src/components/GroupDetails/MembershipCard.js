@@ -32,7 +32,7 @@ export default function MembershipCard({membership, approveMembership, authorize
                 <i className="fa-solid fa-ellipsis"></i>
             </button>
             <ul className={menuClass} ref={ulRef}>
-                {isOrganizer && membership.Membership.status !=="co-host" &&
+                {isOrganizer && membership.Membership.status ==="member" &&
                 <li><button className='light-button' onClick={makeCoHost(membership, toggleMenu)}>Make Co-Host</button></li>}
                 <li><button className='light-button' onClick={deleteMembership(membership)}>Remove Member</button></li>
             </ul>
