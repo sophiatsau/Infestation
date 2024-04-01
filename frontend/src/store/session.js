@@ -77,6 +77,7 @@ const sessionReducer = (state = initialState, action) => {
         }
         case UPDATE_MEMBERSHIP:
         case REQUEST_MEMBERSHIP: {
+            if (action.payload.memberId !== state.user.id) return state
             const newState = {...state}
             newState.user.memberships[action.groupId] = action.payload.status
             return newState
@@ -88,7 +89,6 @@ const sessionReducer = (state = initialState, action) => {
         // }
         case DELETE_MEMBERSHIP: {
             const newState = {...state}
-            console.log("🚀 ~ sessionReducer ~ ABOUT TO DELETE:", newState.user.memberships[action.payload.groupId])
             delete newState.user.memberships[action.payload.groupId]
             return newState
         }
