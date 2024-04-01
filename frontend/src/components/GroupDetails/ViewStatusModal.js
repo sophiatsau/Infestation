@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { consumeOneGroup } from '../../store/groups'
 import { thunkDeleteMembership } from '../../store/members'
+import { useModal } from '../../context/Modal'
 
 export default function ViewStatusModal() {
     const user = useSelector(state => state.session.user)
     const group = useSelector(consumeOneGroup())
     const dispatch = useDispatch()
+    const {closeModal} = useModal()
 
     const [openMenu, setOpenMenu] = useState(false)
 
@@ -17,6 +19,7 @@ export default function ViewStatusModal() {
 
     const deleteMembership = async () => {
         const res = await dispatch(thunkDeleteMembership(group.id, user.id))
+        closeModal()
     }
 
     const dropDownClass = openMenu ? "dropdown" : "hidden"

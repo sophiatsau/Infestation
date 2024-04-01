@@ -101,8 +101,8 @@ const membersReducer = (state=initialState, action) => {
             updatedMembership.Membership.status = action.payload.status
 
             return {...state, [action.payload.memberId]: updatedMembership}
-        case REQUEST_MEMBERSHIP:
-            return state
+        // case REQUEST_MEMBERSHIP:
+        //     return state
         case DELETE_MEMBERSHIP: {
             const newState = {...state}
             delete newState[action.payload.memberId]
