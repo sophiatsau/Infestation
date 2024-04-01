@@ -16,7 +16,7 @@ export default function ViewStatusModal() {
     }
 
     const deleteMembership = async () => {
-        const res = await dispatch(thunkDeleteMembership(group.id, ))
+        const res = await dispatch(thunkDeleteMembership(group.id, user.id))
     }
 
     const dropDownClass = openMenu ? "dropdown" : "hidden"
@@ -25,7 +25,7 @@ export default function ViewStatusModal() {
         <div>
             <h2>Your Membership Info</h2>
             <div>Name: {user.firstName} {user.lastName}</div>
-            <div className='grey lighter small'>Status: {user.memberships[group.id].status}</div>
+            <div className='grey lighter small'>Status: {user.memberships[group.id]}</div>
             <button onClick={toggleMenu}>Delete Membership</button>
             <div className={dropDownClass}>
                 Delete your membership?
