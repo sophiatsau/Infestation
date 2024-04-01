@@ -39,13 +39,9 @@ router.post('/', validateLogin, async(req,res,next) => {
         },
         include: {
           model: Membership,
-          attributes: ['groupId', 'status', "id"]
+          attributes: ['groupId', 'status']
         }
     });
-
-    // const members = await user.getMemberships({
-    //   attributes: ["status", "groupId", "id"]
-    // })
 
     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
         const err = new Error('Invalid credentials');
@@ -62,7 +58,7 @@ router.post('/', validateLogin, async(req,res,next) => {
         firstName: user.firstName,
         lastName: user.lastName,
         memberships: user.Memberships.map(member => {
-          return {groupId: member.groupId, status: member.status, membershipId: member.id}
+          return {groupId: member.groupId, status: member.status}
         })
     }
 
@@ -87,9 +83,6 @@ router.get('/', async (req, res) => {
     //req.user is assigned when restoreUser middleware is called
     const { user } = req;
     if (user) {
-      user.Memberships.forEach(element => {
-        console.log("THE THING 🚀👨‍🎤🚀", element)
-      });
       const safeUser = {
         id: user.id,
         email: user.email,
@@ -97,7 +90,7 @@ router.get('/', async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         memberships: user.Memberships.map(member => {
-          return {groupId: member.groupId, status: member.status, membershipId: member.id}
+          return {groupId: member.groupId, status: member.status}
         })
       };
 
