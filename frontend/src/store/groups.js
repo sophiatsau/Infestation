@@ -176,9 +176,9 @@ const groupsReducer = (state = initialState, action) => {
         //         }
         //     }
         // }
-        case GET_GROUP_MEMBERS:
-        case DELETE_MEMBERSHIP:
-        case UPDATE_MEMBERSHIP: {
+        // case DELETE_MEMBERSHIP:
+        case UPDATE_MEMBERSHIP:
+        case GET_GROUP_MEMBERS: {
             return {...state,
                 singleGroup: {
                     ...state.singleGroup,
