@@ -12,7 +12,7 @@ export default function MembershipsTable({memberships, groupId}) {
   const authorized = user.memberships[groupId] === "co-host"
   const isOrganizer = user.id === group.organizerId
 
-  const approveMembership = async (membership) => {
+  const approveMembership = membership => async() => {
     const {id} = membership
 
     // TODO: add banner message to confirm success v errors
@@ -25,7 +25,7 @@ export default function MembershipsTable({memberships, groupId}) {
     }
   }
 
-  const deleteMembership = async(membership) => {
+  const deleteMembership = membership => async() => {
     const {id} = membership
     try {
       const res = await dispatch(thunkDeleteMembership(groupId, id))
@@ -34,13 +34,14 @@ export default function MembershipsTable({memberships, groupId}) {
     }
   }
 
-  const makeCoHost = async(membership) => {
+  const makeCoHost = (membership, closeMenu) => async() => {
     const {id} = membership
     try {
-      const res = await dispatch(thunkUpdateMembership({status:"co-host", memberId:id}))
+      const res = await dispatch(thunkUpdateMembership({status:"co-host", memberId:id, groupId}))
     } catch(e) {
       // console.log(e)
     }
+    closeMenu()
   }
 
   // const props = {membership, approveMembership}
@@ -52,7 +53,7 @@ export default function MembershipsTable({memberships, groupId}) {
       <tbody>
         {Object.values(memberships).map(membership =>(
             <tr key={membership.id}>
-                <MembershipCard {...{membership, approveMembership, authorized, isOrganizer}}/>
+                <MembershipCard {...{membership, approveMembership, authorized, isOrganizer, deleteMembership, makeCoHost}}/>
             </tr>
         ))}
       </tbody>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react'
-// import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-export default function MembershipCard({membership, approveMembership, authorized, isOrganizer}) {
+export default function MembershipCard({membership, approveMembership, authorized, isOrganizer, deleteMembership, makeCoHost}) {
     const [openMenu, setOpenMenu] = useState(false)
     const ulRef = useRef()
-    // const user = useSelector(state => state.session.user)
+    const user = useSelector(state => state.session.user)
     // const group = useSelector(state => state.groups.currentGroup)
     // const isOrganizer = user.id === group.organizerId
     // const dispatch = useDispatch()
@@ -29,11 +29,12 @@ export default function MembershipCard({membership, approveMembership, authorize
     const dropdownOptions = (
         <>
             <button className='light-button' onClick={toggleMenu}>
-                <i class="fa-solid fa-ellipsis"></i>
+                <i className="fa-solid fa-ellipsis"></i>
             </button>
             <ul className={menuClass} ref={ulRef}>
-                {isOrganizer && <li><button className='light-button'>Make Co-Host</button></li>}
-                <li><button className='light-button'>Remove Member</button></li>
+                {isOrganizer && membership.Membership.status !=="co-host" &&
+                <li><button className='light-button' onClick={makeCoHost(membership, toggleMenu)}>Make Co-Host</button></li>}
+                <li><button className='light-button' onClick={deleteMembership(membership)}>Remove Member</button></li>
             </ul>
         </>
     )
@@ -45,10 +46,10 @@ export default function MembershipCard({membership, approveMembership, authorize
             <div className='grey lighter small'>{membership.Membership.status}</div>
         </td>
         <td>
-            {membership.Membership.status === "pending" && <button onClick={() => approveMembership(membership)}>Approve</button>}
+            {membership.Membership.status === "pending" && <button onClick={approveMembership(membership)}>Approve</button>}
         </td>
         <td>
-            {authorized && dropdownOptions}
+            {isOrganizer && membership.id !== user.id && dropdownOptions}
         </td>
         </>
     )

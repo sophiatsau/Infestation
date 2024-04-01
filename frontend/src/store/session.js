@@ -77,6 +77,7 @@ const sessionReducer = (state = initialState, action) => {
         }
         case UPDATE_MEMBERSHIP:
         case REQUEST_MEMBERSHIP: {
+            if (action.payload.memberId !== state.user.id) return state
             const newState = {...state}
             newState.user.memberships[action.groupId] = action.payload.status
             return newState
