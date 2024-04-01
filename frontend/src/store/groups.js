@@ -176,15 +176,25 @@ const groupsReducer = (state = initialState, action) => {
         //         }
         //     }
         // }
-        // case DELETE_MEMBERSHIP:
-        case UPDATE_MEMBERSHIP:
-        case GET_GROUP_MEMBERS: {
-            return {...state,
+        case DELETE_MEMBERSHIP:
+        case UPDATE_MEMBERSHIP: {
+            const newState = {...state,
                 singleGroup: {
                     ...state.singleGroup,
                     Members: membersReducer(state.singleGroup.Members, action),
                 }
             }
+            newState.singleGroup.numMembers = Object.values(newState.singleGroup.Members).length
+            return newState
+        }
+        case GET_GROUP_MEMBERS: {
+            const newState = {...state,
+                singleGroup: {
+                    ...state.singleGroup,
+                    Members: membersReducer(state.singleGroup.Members, action),
+                }
+            }
+            return newState
         }
         // case GET_GROUP_EVENTS: {
         //     const events = {};

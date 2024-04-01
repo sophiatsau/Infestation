@@ -103,11 +103,11 @@ const membersReducer = (state=initialState, action) => {
             return {...state, [action.payload.memberId]: updatedMembership}
         // case REQUEST_MEMBERSHIP:
         //     return state
-        // case DELETE_MEMBERSHIP: {
-        //     const newState = {...state}
-        //     // delete newState[action.payload.memberId]
-        //     return newState.filter(member => member.memberId===action.payload.memberId)
-        // }
+        case DELETE_MEMBERSHIP: {
+            const newState = {...state}
+            delete newState[action.payload.memberId]
+            return newState
+        }
         default:
             return state
     }
