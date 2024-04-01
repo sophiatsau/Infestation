@@ -1,14 +1,16 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import MembershipCard from './MembershipCard'
-import { thunkUpdateMembership } from '../../store/members'
+import { thunkDeleteMembership, thunkUpdateMembership } from '../../store/members'
+import { consumeOneGroup } from '../../store/groups'
 
 
 export default function MembershipsTable({memberships, groupId}) {
   const dispatch = useDispatch()
   const user = useSelector(state => state.session.user)
-  // const group = useSelector(state => state.groups.currentGroup)
+  const group = useSelector(consumeOneGroup())
   const authorized = user.memberships[groupId] === "co-host"
+  const isOrganizer = user.id === group.organizerId
 
   const approveMembership = async (membership) => {
     const {id} = membership
@@ -23,6 +25,24 @@ export default function MembershipsTable({memberships, groupId}) {
     }
   }
 
+  const deleteMembership = async(membership) => {
+    const {id} = membership
+    try {
+      const res = await dispatch(thunkDeleteMembership(groupId, id))
+    } catch(e) {
+      // console.log(e)
+    }
+  }
+
+  const makeCoHost = async(membership) => {
+    const {id} = membership
+    try {
+      const res = await dispatch(thunkUpdateMembership({status:"co-host", memberId:id}))
+    } catch(e) {
+      // console.log(e)
+    }
+  }
+
   // const props = {membership, approveMembership}
 
   //TODO: if is organizer or co-host, access buttons for removing, promoting members
@@ -32,7 +52,7 @@ export default function MembershipsTable({memberships, groupId}) {
       <tbody>
         {Object.values(memberships).map(membership =>(
             <tr key={membership.id}>
-                <MembershipCard {...{membership, approveMembership, authorized}}/>
+                <MembershipCard {...{membership, approveMembership, authorized, isOrganizer}}/>
             </tr>
         ))}
       </tbody>

@@ -1,18 +1,20 @@
 import React, { useEffect, useState, useRef } from 'react'
 // import { useDispatch, useSelector } from 'react-redux'
 
-export default function MembershipCard({membership, approveMembership, authorized}) {
+export default function MembershipCard({membership, approveMembership, authorized, isOrganizer}) {
     const [openMenu, setOpenMenu] = useState(false)
     const ulRef = useRef()
     // const user = useSelector(state => state.session.user)
     // const group = useSelector(state => state.groups.currentGroup)
+    // const isOrganizer = user.id === group.organizerId
     // const dispatch = useDispatch()
 
     useEffect(() => {
         if (!openMenu) return
 
         const closeMenu = (e) => {
-            if (ulRef.current.contains(e.target)) return
+            // account also for clicking outside of modal (ulRef.current === null)
+            if (!ulRef.current || ulRef.current.contains(e.target)) return
             setOpenMenu(false)
         }
 
@@ -29,7 +31,10 @@ export default function MembershipCard({membership, approveMembership, authorize
             <button className='light-button' onClick={toggleMenu}>
                 <i class="fa-solid fa-ellipsis"></i>
             </button>
-            <div className={menuClass} ref={ulRef}>Menu</div>
+            <ul className={menuClass} ref={ulRef}>
+                {isOrganizer && <li><button className='light-button'>Make Co-Host</button></li>}
+                <li><button className='light-button'>Remove Member</button></li>
+            </ul>
         </>
     )
 
