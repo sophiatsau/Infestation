@@ -69,7 +69,7 @@ const sessionReducer = (state = initialState, action) => {
                 ...action.user.user,
                 memberships: {}
             }
-            action.user.user.memberships.forEach(membership => user.memberships[membership.groupId] = membership)
+            action.user.user.memberships.forEach(membership => user.memberships[membership.groupId] = membership.status)
             return {user}
         }
         case REMOVE_USER: {
@@ -77,12 +77,12 @@ const sessionReducer = (state = initialState, action) => {
         }
         case REQUEST_MEMBERSHIP: {
             const newState = {...state}
-            newState.user.memberships[action.groupId].status = action.payload.status
+            newState.user.memberships[action.groupId] = action.payload.status
             return newState
         }
         case UPDATE_MEMBERSHIP: {
             const newState = {...state}
-            newState.user.memberships[action.groupId].status = action.payload.status
+            newState.user.memberships[action.groupId] = action.payload.status
             return newState
         }
         default:
