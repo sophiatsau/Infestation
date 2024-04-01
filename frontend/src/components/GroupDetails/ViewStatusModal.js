@@ -25,7 +25,7 @@ export default function ViewStatusModal() {
         <div>
             <h2>Your Membership Info</h2>
             <div>Name: {user.firstName} {user.lastName}</div>
-            <div className='grey lighter small'>Status: {user.memberships[group.id]}</div>
+            <div className='grey lighter small'>Status: {user.memberships[group.id].status}</div>
             <button onClick={toggleMenu}>Delete Membership</button>
             <div className={dropDownClass}>
                 Delete your membership?
