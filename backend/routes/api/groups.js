@@ -227,6 +227,11 @@ router.get('/:groupId', checkGroup, async (req,res,next) => {
 router.post('/', requireAuth, validateGroup, async (req,res,next) => {
     req.body.organizerId = req.user.id
     const newGroup = await Group.create(req.body);
+    const newMembership = await Membership.create({
+        userId: req.user.id,
+        groupId: newGroup.id,
+        status: "co-host"
+    })
 
     return res.status(201).json(newGroup);
 })

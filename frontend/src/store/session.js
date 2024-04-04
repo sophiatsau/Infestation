@@ -1,5 +1,5 @@
 import { csrfFetch } from "./csrf";
-import { UPDATE_MEMBERSHIP, REQUEST_MEMBERSHIP, DELETE_MEMBERSHIP } from "./actions";
+import { UPDATE_MEMBERSHIP, REQUEST_MEMBERSHIP, DELETE_MEMBERSHIP, CREATE_GROUP, DELETE_GROUP } from "./actions";
 
 export const SET_USER = 'session/setUser';
 export const REMOVE_USER = 'session/removeUser';
@@ -74,6 +74,19 @@ const sessionReducer = (state = initialState, action) => {
         }
         case REMOVE_USER: {
             return {user: null};
+        }
+        case CREATE_GROUP: {
+            const newState = {...state}
+            newState.user.memberships[action.group.id] = "co-host"
+            return newState
+        }
+        case DELETE_GROUP: {
+            const newState = {
+                user: {...state.user,
+                    memberships: {...state.user.memberships}
+                }}
+            delete newState.user.memberships[action.groupId]
+            return newState
         }
         case UPDATE_MEMBERSHIP:
         case REQUEST_MEMBERSHIP: {
