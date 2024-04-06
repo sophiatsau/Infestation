@@ -50,19 +50,15 @@ export default function SignupFormModal() {
           });
     }
 
+    const handleErrors = e => {
+        const {value, name} = e.target
+    }
+
     return (
         <>
         <h2 id="sign-up-header">Sign Up</h2>
-        <div className='form-error' style={{maxWidth:"300px", height: "40px"}}>
-            {errors.email && <p>{errors.email}</p>}
-            {errors.username && <p>{errors.username}</p>}
-            {errors.firstName && <p>{errors.firstName}</p>}
-            {errors.lastName && <p>{errors.lastName}</p>}
-            {errors.password && <p>{errors.password}</p>}
-            {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        </div>
         <form id='sign-up-form' onSubmit={handleSubmit}>
-        <label htmlFor='first-name'>
+            <label htmlFor='first-name'>
                 First Name
                 <input
                     type="text"
@@ -70,9 +66,13 @@ export default function SignupFormModal() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
+                    onBlur={handleErrors}
                 />
-                </label>
-                <label htmlFor='last-name'>
+                <div className='form-error'>
+                    {errors.firstName && <p>{errors.firstName}</p>}
+                </div>
+            </label>
+            <label htmlFor='last-name'>
                 Last Name
                 <input
                     type="text"
@@ -80,25 +80,37 @@ export default function SignupFormModal() {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
+                    onBlur={handleErrors}
                 />
-                </label>
-            <label>
-            Email
-            <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
+                <div className='form-error'>
+                    {errors.lastName && <p>{errors.lastName}</p>}
+                </div>
             </label>
             <label>
-            Username
-            <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-            />
+                Email
+                <input
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    onBlur={handleErrors}
+                />
+                <div className='form-error'>
+                    {errors.email && <p>{errors.email}</p>}
+                </div>
+            </label>
+            <label>
+                Username
+                <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    onBlur={handleErrors}
+                />
+                <div className='form-error'>
+                    {errors.username && <p>{errors.username}</p>}
+                </div>
             </label>
             <label>
                 Password
@@ -107,17 +119,25 @@ export default function SignupFormModal() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    onBlur={handleErrors}
                 />
-                </label>
-                <label>
+                <div className='form-error'>
+                    {errors.password && <p>{errors.password}</p>}
+                </div>
+            </label>
+            <label>
                 Confirm Password
                 <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
+                    onBlur={handleErrors}
                 />
-                </label>
+                <div className='form-error'>
+                    {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+                </div>
+            </label>
 
             <button type="submit" disabled={disabled}>Sign Up</button>
         </form>

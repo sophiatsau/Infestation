@@ -1,12 +1,19 @@
+#sign-up-form {
+    max-height: 80vh;
+    /* overflow: scroll; */
+}
+
 #sign-up-header {
     margin: 0 auto 5px auto;
     padding: 0;
     text-align: center;
 }
 
-/* #sign-up-form {
-    width: 500px;
-} */
+#sign-up-form .form-error {
+    /* width: 500px; */
+    max-width: 300px;
+    height: 20px;
+}
 
 #sign-up-form input {
     display: block;
