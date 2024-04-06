@@ -14,11 +14,11 @@ export default function LoginFormModal() {
     const [errors, setErrors] = useState({});
     const [disabled, setDisabled] = useState(true);
 
-    // useEffect(() => {
-    //     if (credential.length>=4 && password.length>=6) {
-    //         setDisabled(false);
-    //     } else setDisabled(true);
-    // }, [credential, password])
+    useEffect(() => {
+        if (credential.length>=4 && password.length>=6) {
+            setDisabled(false);
+        } else setDisabled(true);
+    }, [credential, password])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -56,9 +56,7 @@ export default function LoginFormModal() {
                 }
                 break
             default:
-                if (credential.length>=4 && password.length>=6) {
-                    setDisabled(false)
-                }
+                return
         }
     }
 

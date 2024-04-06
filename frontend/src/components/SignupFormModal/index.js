@@ -17,10 +17,10 @@ export default function SignupFormModal() {
     const dispatch = useDispatch();
     const { closeModal } = useModal();
 
-    // useEffect(() => {
-    //     if (username.length>=4 && firstName && lastName && email && password.length>=6 && confirmPassword) setDisabled(false);
-    //     else setDisabled(true)
-    // }, [username, firstName, lastName, email, password, confirmPassword])
+    useEffect(() => {
+        if (username.length>=4 && firstName && lastName && email && password.length>=6 && confirmPassword===password) setDisabled(false);
+        else setDisabled(true)
+    }, [username, firstName, lastName, email, password, confirmPassword])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -92,9 +92,7 @@ export default function SignupFormModal() {
                 }
                 break
             default:
-                if (username.length>=4 && firstName && lastName && email && password.length>=6 && confirmPassword===password) {
-                    setDisabled(false)
-                }
+                return
         }
     }
 
