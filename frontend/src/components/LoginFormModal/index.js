@@ -31,6 +31,11 @@ export default function LoginFormModal() {
         dispatchLogin("Demo-lition", "password")
     }
 
+    const validateInput = e => {
+        const {value, name} = e.target;
+        console.log("value", value, "and name", name)
+    }
+
     function dispatchLogin(credential, password) {
         return dispatch(
             sessionActions.login({ credential, password }))
@@ -54,8 +59,10 @@ export default function LoginFormModal() {
             Username or Email
             <input
                 type="text"
+                name="credential"
                 value={credential}
                 onChange={(e) => setCredential(e.target.value)}
+                onBlur={validateInput}
                 required
             />
             </label>
@@ -66,6 +73,8 @@ export default function LoginFormModal() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                onBlur={validateInput}
+                name="password"
             />
             </label>
             <button type="submit" disabled={disabled}>Log In</button>
