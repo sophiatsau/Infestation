@@ -17,10 +17,10 @@ export default function SignupFormModal() {
     const dispatch = useDispatch();
     const { closeModal } = useModal();
 
-    useEffect(() => {
-        if (username.length>=4 && firstName && lastName && email && password.length>=6 && confirmPassword) setDisabled(false);
-        else setDisabled(true)
-    }, [username, firstName, lastName, email, password, confirmPassword])
+    // useEffect(() => {
+    //     if (username.length>=4 && firstName && lastName && email && password.length>=6 && confirmPassword) setDisabled(false);
+    //     else setDisabled(true)
+    // }, [username, firstName, lastName, email, password, confirmPassword])
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -50,8 +50,52 @@ export default function SignupFormModal() {
           });
     }
 
+    const updateErrorsDisabled = (value, fieldName, minLength, errMsg) => {
+        console.log("updateErrorsDisabled:", value, fieldName, minLength, errMsg)
+        if (value.length < minLength) {
+            setDisabled(true)
+            setErrors({...errors, [fieldName]: errMsg})
+        } else {
+            const newErrors = {...errors}
+            delete newErrors[fieldName]
+            setErrors(newErrors)
+        }
+    }
+
     const handleErrors = e => {
-        const {value, name} = e.target
+        const {value, id} = e.target
+        console.log(value, id)
+        switch (id) {
+            case "first-name":
+                updateErrorsDisabled(value, "firstName", 1, "Please enter a first name")
+                break
+            case "last-name":
+                updateErrorsDisabled(value, "lastName", 1, "Please enter a last name")
+                break
+            case "email":
+                updateErrorsDisabled(value, "email", 1, "Please enter your email")
+                break
+            case "username":
+                updateErrorsDisabled(value, "username", 4, "Username must be 4 or more letters")
+                break
+            case "password":
+                updateErrorsDisabled(value, "password", 6, "Password must be 6 or more letters")
+                break
+            case "confirm-password":
+                if (value !== password) {
+                    setDisabled(true)
+                    setErrors({...errors, confirmPassword: "Passwords do not match"})
+                } else {
+                    const newErrors = {...errors}
+                    delete newErrors.confirmPassword
+                    setErrors(newErrors)
+                }
+                break
+            default:
+                if (username.length>=4 && firstName && lastName && email && password.length>=6 && confirmPassword===password) {
+                    setDisabled(false)
+                }
+        }
     }
 
     return (
@@ -86,10 +130,11 @@ export default function SignupFormModal() {
                     {errors.lastName && <p>{errors.lastName}</p>}
                 </div>
             </label>
-            <label>
+            <label htmlFor='email'>
                 Email
                 <input
                     type="text"
+                    id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -99,11 +144,12 @@ export default function SignupFormModal() {
                     {errors.email && <p>{errors.email}</p>}
                 </div>
             </label>
-            <label>
+            <label htmlFor='username'>
                 Username
                 <input
                     type="text"
                     value={username}
+                    id='username'
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     onBlur={handleErrors}
@@ -112,23 +158,25 @@ export default function SignupFormModal() {
                     {errors.username && <p>{errors.username}</p>}
                 </div>
             </label>
-            <label>
+            <label htmlFor='password'>
                 Password
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    id='password'
                     onBlur={handleErrors}
                 />
                 <div className='form-error'>
                     {errors.password && <p>{errors.password}</p>}
                 </div>
             </label>
-            <label>
+            <label htmlFor='confirm-password'>
                 Confirm Password
                 <input
                     type="password"
+                    id='confirm-password'
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
