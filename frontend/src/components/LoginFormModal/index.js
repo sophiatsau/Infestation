@@ -33,7 +33,33 @@ export default function LoginFormModal() {
 
     const validateInput = e => {
         const {value, name} = e.target;
-        console.log("value", value, "and name", name)
+        switch (name) {
+            case "login":
+                if (value.length < 4) {
+                    setDisabled(true)
+                    setErrors({...errors, login: "Username or Email must be 4 or more characters"})
+                } else {
+                    const newErrors = {...errors}
+                    delete newErrors.login
+                    setErrors(newErrors)
+                }
+                break
+            case "password":
+                if (value.length < 6) {
+                    setDisabled(true)
+                    setErrors({...errors, password: "Password must be 6 or more characters"})
+                }
+                else {
+                    const newErrors = {...errors}
+                    delete newErrors.password
+                    setErrors(newErrors)
+                }
+                break
+            default:
+                if (credential.length>=4 && password.length>=6) {
+                    setDisabled(false)
+                }
+        }
     }
 
     function dispatchLogin(credential, password) {
@@ -59,13 +85,16 @@ export default function LoginFormModal() {
             Username or Email
             <input
                 type="text"
-                name="credential"
+                name="login"
                 value={credential}
                 onChange={(e) => setCredential(e.target.value)}
                 onBlur={validateInput}
                 required
             />
             </label>
+            <div className='form-error'>
+                {errors.login && <p>{errors.login}</p>}
+            </div>
             <label>
             Password
             <input
@@ -77,6 +106,9 @@ export default function LoginFormModal() {
                 name="password"
             />
             </label>
+            <div className='form-error'>
+                {errors.password && <p>{errors.password}</p>}
+            </div>
             <button type="submit" disabled={disabled}>Log In</button>
             <button id="demo-login" onClick={demoLogIn}>Log In As Demo User</button>
         </form>
