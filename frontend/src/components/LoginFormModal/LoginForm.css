@@ -6,7 +6,8 @@
 
 #login-form input{
     display: block;
-    margin: 8px auto;
+    margin-top: 8px;
+    width: 350px;
 }
 
 #demo-login {
@@ -18,4 +19,10 @@
     margin: 0 auto;
     font-size: small;
     text-decoration: underline;
+}
+
+#login-form .form-error {
+    font-size: small;
+    max-width: 350px;
+    height: 20px;
 }
