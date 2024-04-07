@@ -1,13 +1,13 @@
 import { csrfFetch } from "./csrf";
-import {DELETE_MEMBERSHIP, GET_GROUP_MEMBERS, UPDATE_MEMBERSHIP} from "./actions";
+import {DELETE_MEMBERSHIP, GET_GROUP_MEMBERS, UPDATE_MEMBERSHIP, CREATE_GROUP, DELETE_GROUP} from "./actions";
 import membersReducer from "./members";
 
 const GET_ALL_GROUPS = 'groups/getAllGroups';
 const GET_ONE_GROUP = 'groups/getOneGroup';
 // const GET_GROUP_EVENTS = 'groups/getGroupEvents';
-const CREATE_GROUP = 'groups/createGroup';
+// export const CREATE_GROUP = 'groups/createGroup';
 // const EDIT_GROUP = 'groups/editGroup';
-const DELETE_GROUP = 'groups/deleteGroup'
+// export const DELETE_GROUP = 'groups/deleteGroup'
 // const GET_CURRENT_GROUPS = 'groups/getCurrentGroups'
 
 const getAllGroups = (groups) => {
@@ -31,12 +31,12 @@ const getOneGroup = (group) => {
 //     }
 // }
 
-// const createGroup = (group) => {
-//     return {
-//         type: CREATE_GROUP,
-//         group,
-//     }
-// }
+const createGroup = (group) => {
+    return {
+        type: CREATE_GROUP,
+        group,
+    }
+}
 
 // const editGroup = (group) => {
 //     return {
@@ -95,10 +95,12 @@ export const createNewGroup = (payload) => async dispatch => {
 
     const dataGroup = await resGroup.json();
 
-    await csrfFetch(`/api/groups/${dataGroup.id}/images`, {
+    const resImage = await csrfFetch(`/api/groups/${dataGroup.id}/images`, {
         method: 'POST',
         body: JSON.stringify({url, preview: true})
     })
+
+    if (resGroup.ok) dispatch(createGroup(dataGroup))
 
     // const dataImage = await resImage.json();
 
@@ -205,16 +207,16 @@ const groupsReducer = (state = initialState, action) => {
         //     const newGroups = {...state, events};
         //     return newGroups;
         // }
-        case CREATE_GROUP: {
-            const newState = {
-                allGroups: {
-                    ...state.allGroups,
-                    [action.group.id]: action.group
-                },
-                singleGroup: action.group
-            };
-            return newState;
-        }
+        // case CREATE_GROUP: {
+        //     const newState = {
+        //         allGroups: {
+        //             ...state.allGroups,
+        //             [action.group.id]: action.group
+        //         },
+        //         singleGroup: action.group
+        //     };
+        //     return newState;
+        // }
         case DELETE_GROUP: {
             const newGroups = {...state, singleGroup: {}};
             delete newGroups.allGroups[action.groupId];
