@@ -9,8 +9,8 @@ export default function MembershipsTable({memberships, groupId}) {
   const dispatch = useDispatch()
   const user = useSelector(state => state.session.user)
   const group = useSelector(consumeOneGroup())
-  const authorized = user.memberships[groupId] === "co-host"
-  const isOrganizer = user.id === group.organizerId
+  const authorized = user && user.memberships[groupId] === "co-host"
+  const isOrganizer = user && user.id === group.organizerId
 
   const approveMembership = membership => async() => {
     const {id} = membership
