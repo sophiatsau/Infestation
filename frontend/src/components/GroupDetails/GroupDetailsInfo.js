@@ -54,7 +54,7 @@ export default function GroupDetailsInfo({group, setLoaded}) {
   return (
     <div>
         <div className='group-details'>
-            <img src={previewImage} alt="No preview available"/>
+            <img src={previewImage} alt="No preview available" className='group-preview-img'/>
             <div className='group-information'>
               <div>
                 <h2>{name}</h2>

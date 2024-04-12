@@ -16,9 +16,9 @@
     height: 300px;
 }
 
-.group-details img {
+.group-preview-img {
     height: 300px;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .groups-details-grey {
