@@ -16,8 +16,9 @@
     grid-template-areas:
         "a a b b b"
         "a a b b b"
-        "c c c c c";
-;
+        "a a c c c";
+    padding: 30px;
+    column-gap: 20px;
 }
 
 /* .events-list .event-card .event-card-description {
@@ -35,9 +36,9 @@
 .events-list .event-card img {
     /* padding: 0;
     object-fit: contain; */
-    max-width: 100%;
-    max-height: 300px;
-    object-fit: scale-down;
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
 }
 
 .events-list .event-card:hover {
