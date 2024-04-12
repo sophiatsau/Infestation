@@ -66,7 +66,7 @@ export default function EventDetails() {
         </div>
         <div className='grey-background'>
           <div className="event-details-top-section">
-            <img src={previewImage?.url} alt="Preview not available"/>
+            <img src={previewImage?.url} alt="Preview not available" className='event-details-cover-img'/>
             <GroupInfoBox group={group}/>
             <EventInfoBox event={event} isOrganizer={isOrganizer}/>
           </div>
