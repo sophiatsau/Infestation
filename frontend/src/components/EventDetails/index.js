@@ -32,6 +32,7 @@ export default function EventDetails() {
             .catch(async (res) => {
                 const data = await res.json();
                 history.push('/not-found')
+                if (process.env.NODE_ENV !== "production") console.log("fetch group error: ", data)
             })
     }
     if (groupId) getGroup()

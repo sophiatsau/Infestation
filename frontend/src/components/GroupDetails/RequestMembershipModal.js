@@ -10,7 +10,7 @@ export default function RequestMembershipModal() {
     const {closeModal} = useModal()
     const dispatch = useDispatch()
 
-    const user = useSelector(state => state.session.user)
+    // const user = useSelector(state => state.session.user)
     const group = useSelector(consumeOneGroup())
 
 
@@ -18,7 +18,9 @@ export default function RequestMembershipModal() {
 
     const requestMembership = async () => {
         const res = await dispatch(thunkRequestMembership(group.id))
-        // console.log("🚀 ~ requestMembership ~ res:", res)
+        if (process.env.NODE_ENV !== "production") {
+            console.log("🚀 ~ requestMembership ~ res:", res)
+        }
         // TODO: confirmation success?
         closeModal()
     }
