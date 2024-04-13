@@ -95,7 +95,8 @@ export const createNewGroup = (payload) => async dispatch => {
 
     const dataGroup = await resGroup.json();
 
-    const resImage = await csrfFetch(`/api/groups/${dataGroup.id}/images`, {
+    // const resImage =
+    await csrfFetch(`/api/groups/${dataGroup.id}/images`, {
         method: 'POST',
         body: JSON.stringify({url, preview: true})
     })
