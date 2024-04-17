@@ -78,6 +78,12 @@ router.delete('/', (_req,res,_next) => {
 })
 
 
+//OAUTH redirect url: initialize oauth flow
+router.get('/oauth_login', async(req,res,next) => {
+  return
+})
+
+
 //Get session user: GET /api/session
 router.get('/', async (req, res) => {
     //req.user is assigned when restoreUser middleware is called
