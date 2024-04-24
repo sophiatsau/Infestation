@@ -137,6 +137,116 @@ router.get('/oauth_login', async(req,res,next) => {
 })
 
 
+router.get('/callback', async (req,res) => {
+  //callback function for trading Google code for Access Token
+
+  // will be returned from OpenID as JWT payload
+  let claims = {}
+  const code = req.query.code // temp code returned by Google
+
+  // CSRF. mismatched states = invalid client-side
+  const googleState = req.query.state
+  if (googleState !== oAuthState.state) {
+    res.status(500).json({error: 'Could not verify client'})
+  }
+
+  try {
+    const oAuth2Client = new OAuth2Client(
+      oauthClient,
+      oauthSecret,
+      redirectUri // the redirect URL
+    )
+
+    const params = {
+      code: code, // code from Google
+      codeVerifier: oAuthState.codeVerifier,
+    }
+
+    // use code in params to retrieve access token
+    const res = await oAuth2Client.getToken(params)
+    // set credentials property of Client class
+    await oAuth2Client.setCredentials(res.tokens)
+
+    const user = oAuth2Client.credentials // retrieved user info
+    const idToken = user.id_token // token from OpenID Connect
+    const expiry = user.expiry_date
+
+    // verify JWT signature
+    const ticket = await oAuth2Client.verifyIdToken({idToken, oauthClient, expiry})
+    const payload = ticket.getPayload()
+
+    // verify nonce (CSRF)
+    const openIdNonce = payload.nonce
+    if (openIdNonce !== oAuthState.nonce) {
+      res.status(500).json({error: 'Could not verify client!'})
+    }
+
+    claims = payload
+  } catch(err) {
+    console.log("Could not sign in with Google", err)
+  }
+
+  const gmail = claims.email // user's email
+
+  // check if user exists
+  const user = await User.unscoped().findOne({
+    where: {
+      [Op.or]: {
+        username: gmail,
+        email: gmail
+      }
+    },
+    include: {
+      model: Membership,
+      attributes: ['groupId', 'status']
+    }
+  })
+
+  let safeUser = {}
+
+  if (user) {
+    // login
+    safeUser = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      memberships: user.Memberships.map(member => {
+        return {groupId: member.groupId, status: member.status}
+      })
+    }
+  } else {
+    // sign up
+    const newUserInfo = {email: gmail, username: claims.name, hashedPassword: "password", firstName: claims.givenName, lastName: claims.familyName}
+
+    const newUser = await User.create(newUserInfo)
+
+    safeUser = {
+        username: newUser.username,
+        email: newUser.email,
+        id: newUser.id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        memberships: []
+    }
+  }
+
+  // reset oauth state
+  oAuthState = {
+    codeVerifier: '',
+    nonce: '',
+    state: ''
+  }
+
+  await setTokenCookie(res, safeUser)
+
+  // return to browser
+  return res.redirect('http://localhost:8000')
+
+})
+
+
 //Get session user: GET /api/session
 router.get('/', async (req, res) => {
     //req.user is assigned when restoreUser middleware is called
