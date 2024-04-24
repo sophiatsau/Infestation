@@ -2,7 +2,9 @@
 const express = require('express');
 const {Op} = require('sequelize');
 const bcrypt = require('bcryptjs');
-const {OAuth2Client} = require('google-auth-library')
+const {OAuth2Client} = require('google-auth-library');
+const oauthClient = process.env.CLIENT_ID
+const oauthSecret = process.env.CLIENT_SECRET
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User, Membership } = require('../../db/models');
@@ -10,6 +12,28 @@ const { User, Membership } = require('../../db/models');
 //used to validate request bodies
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
+
+/*********************** OAUTH TOOLS ********* */
+// saves state, PKCE (Proof Key for Code Exchange)
+let oAuthState = {
+  codeVerifier: '',
+  nonce: '',
+  state: ''
+}
+
+// generate random string, used for state and nonce
+function generateRandomString(length) {
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  let randString = ''
+
+  for (let i = 0; i < length; i++) {
+    // charset.length is 62
+    const randIndex = Math.floor(Math.random() * 62)
+    randString += charset[randIndex]
+  }
+
+  return randString
+}
 
 /******************* MIDDLEWARE *************** */
 const validateLogin = [
