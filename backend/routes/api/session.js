@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const {OAuth2Client} = require('google-auth-library');
 const oauthClient = process.env.CLIENT_ID
 const oauthSecret = process.env.CLIENT_SECRET
+const redirectUri = process.env.REDIRECT_URI
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User, Membership } = require('../../db/models');
@@ -105,7 +106,34 @@ router.delete('/', (_req,res,_next) => {
 
 //OAUTH redirect url: initialize oauth flow
 router.get('/oauth_login', async(req,res,next) => {
-  return
+  // configure Client class
+  const oAuth2Client = new OAuth2Client(
+    oauthClient,
+    oauthSecret,
+    redirectUri
+  )
+
+  // generate codeVerifier, codeChallenge for PKCE
+  const {codeVerifier, codeChallenge} = await oAuth2Client.generateCodeVerifierAsync()
+
+  // saves state (for verification later)
+  oAuthState.codeVerifier = codeVerifier
+  oAuthState.state = generateRandomString(16)
+  oAuthState.nonce = generateRandomString(32)
+
+  // use official oAuth2 SDK to generate URL with appropriate values
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline', // forces refresh token to be sent
+    scope: 'https://www.googleapis.com/auth/userinfo.profile openid email',
+    prompt: 'select_account consent', // prompt user to select account even if they're already logged in
+    state: oAuthState.state, // for CSRF
+    nonce: oAuthState.nonce, // for CSRF
+    code_challenge_method: 'S256', // for PKCE
+    code_challenge: codeChallenge, // for PKCE
+  })
+
+  // redirects client to Google's "Select an Account" menu
+  res.redirect(authUrl)
 })
 
 
