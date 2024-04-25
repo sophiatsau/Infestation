@@ -8,11 +8,10 @@ export default function OauthButton() {
 
   //clicking link --> redirect url
   return (
-    <a className="oauth-link" href={`${BASE_URL}/api/session/oauth_login`}>
-        {/* <button> */}
-            {/* Google logo here */}
-            Log In with Google Account
-        {/* </button> */}
+    <a className="oauth-button" href={`${BASE_URL}/api/session/oauth_login`}>
+        {/* Google logo here */}
+        <img src="https://crittr-images.s3.us-west-1.amazonaws.com/google-logo.png" className='oauth-button-icon' alt="google icon"/>
+        Log In with Google Account
     </a>
   )
 }

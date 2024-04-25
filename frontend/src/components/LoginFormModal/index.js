@@ -109,8 +109,8 @@ export default function LoginFormModal() {
                 {errors.password && <p>{errors.password}</p>}
             </div>
             <button type="submit" disabled={disabled}>Log In</button>
-            <button id="demo-login" onClick={demoLogIn}>Log In As Demo User</button>
             <OauthButton />
+            <button id="demo-login" onClick={demoLogIn}>Log In As Demo User</button>
         </form>
         </>
     )
