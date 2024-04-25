@@ -218,7 +218,7 @@ router.get('/callback', async (req,res) => {
     }
   } else {
     // sign up
-    const newUserInfo = {email: gmail, username: claims.name, hashedPassword: "password", firstName: claims.givenName, lastName: claims.familyName}
+    const newUserInfo = {email: gmail, username: claims.name, hashedPassword: "oauth2_passwordoauth2_passwordoauth2_passwordoauth2_password", firstName: claims.given_name, lastName: claims.family_name}
 
     const newUser = await User.create(newUserInfo)
 
@@ -242,7 +242,7 @@ router.get('/callback', async (req,res) => {
   await setTokenCookie(res, safeUser)
 
   // return to browser
-  return res.redirect('http://localhost:8000')
+  return res.redirect(process.env.BROWSER_URI)
 
 })
 
