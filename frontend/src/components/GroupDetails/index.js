@@ -31,7 +31,9 @@ export default function GroupDetails() {
           await dispatch(fetchGroupById(groupId))
         } catch (e) {
           const data = await e.json();
-          // console.log(data.title, '-', data.message)
+          if (process.env.NODE_ENV !== "production") {
+            console.log(data.title, '-', data.message)
+          }
           history.push('/not-found')
         }
     }

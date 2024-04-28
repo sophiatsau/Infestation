@@ -4,6 +4,7 @@ import * as sessionActions from "../../store/session";
 
 import { useModal } from '../../context/Modal';
 import './SignupForm.css';
+import OauthButton from '../OauthButton';
 
 export default function SignupFormModal() {
     const [username, setUsername] = useState('');
@@ -51,7 +52,7 @@ export default function SignupFormModal() {
     }
 
     const updateErrorsDisabled = (value, fieldName, minLength, errMsg) => {
-        console.log("updateErrorsDisabled:", value, fieldName, minLength, errMsg)
+        // console.log("updateErrorsDisabled:", value, fieldName, minLength, errMsg)
         if (value.length < minLength) {
             setDisabled(true)
             setErrors({...errors, [fieldName]: errMsg})
@@ -64,7 +65,7 @@ export default function SignupFormModal() {
 
     const handleErrors = e => {
         const {value, id} = e.target
-        console.log(value, id)
+        // console.log(value, id)
         switch (id) {
             case "first-name":
                 updateErrorsDisabled(value, "firstName", 1, "Please enter a first name")
@@ -186,6 +187,7 @@ export default function SignupFormModal() {
             </label>
 
             <button type="submit" disabled={disabled}>Sign Up</button>
+            <OauthButton />
         </form>
         </>
     )

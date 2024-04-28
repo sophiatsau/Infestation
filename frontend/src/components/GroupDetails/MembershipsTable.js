@@ -19,7 +19,10 @@ export default function MembershipsTable({memberships, groupId}) {
     // if success, add to list of memberships
     try {
       const resMember = await dispatch(thunkUpdateMembership({memberId: id, groupId, status: "member"}))
-      // console.log(resMember, "ACCEPTED MEMBER!")
+      // future: banner
+      if (process.env.NODE_ENV !== "production") {
+        console.log(resMember, "ACCEPTED MEMBER!")
+      }
     } catch(e) {
       // console.log(e)
     }
@@ -29,6 +32,9 @@ export default function MembershipsTable({memberships, groupId}) {
     const {id} = membership
     try {
       const res = await dispatch(thunkDeleteMembership(groupId, id))
+      if (process.env.NODE_ENV !== "production") {
+        console.log("delete successful", res)
+      }
     } catch(e) {
       // console.log(e)
     }
@@ -38,6 +44,9 @@ export default function MembershipsTable({memberships, groupId}) {
     const {id} = membership
     try {
       const res = await dispatch(thunkUpdateMembership({status:"co-host", memberId:id, groupId}))
+      if (process.env.NODE_ENV !== "production") {
+        console.log("update successful", res)
+      }
     } catch(e) {
       // console.log(e)
     }

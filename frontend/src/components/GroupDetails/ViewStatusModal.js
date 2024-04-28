@@ -19,6 +19,10 @@ export default function ViewStatusModal() {
 
     const deleteMembership = async () => {
         const res = await dispatch(thunkDeleteMembership(group.id, user.id))
+        // make a banner message in future?
+        if (process.env.NODE_ENV !== "production") {
+            console.log(res)
+        }
         closeModal()
     }
 

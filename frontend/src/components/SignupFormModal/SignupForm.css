@@ -12,7 +12,7 @@
 #sign-up-form .form-error {
     /* width: 500px; */
     max-width: 300px;
-    height: 20px;
+    height: 10px;
     font-size: small;
 }
 
@@ -25,7 +25,7 @@
     grid-template-columns: 45% 45%;
     grid-template-areas: 'a b';
     /* display: flex; */
-    column-gap: 9%;
+    column-gap: 8%;
 }
 
 #first-name {
@@ -39,4 +39,10 @@
     grid-area: b;
     /* display:inline; */
 
+}
+
+@media screen and (max-height: 900px) {
+    #sign-up-form {
+        overflow: scroll;
+    }
 }

@@ -1,0 +1,23 @@
+.oauth-button-icon {
+    height: 20px;
+    width: 20px;
+    margin: 0;
+    padding: 0;
+    margin-right: 10px;
+    background-color: transparent;
+}
+
+.oauth-button {
+    border: 2px rgb(50,50,50) solid;
+    border-radius: 3px;
+    box-shadow: 2px 2px rgb(50,50,50);
+    font-size: small;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+.oauth-button:hover {
+    background-color: var(--grey-bg-color);
+}
