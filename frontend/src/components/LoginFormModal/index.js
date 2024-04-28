@@ -4,6 +4,7 @@ import "./LoginForm.css";
 
 import * as sessionActions from "../../store/session";
 import { useModal } from '../../context/Modal';
+import OauthButton from '../OauthButton';
 
 export default function LoginFormModal() {
     const {closeModal} = useModal();
@@ -108,6 +109,7 @@ export default function LoginFormModal() {
                 {errors.password && <p>{errors.password}</p>}
             </div>
             <button type="submit" disabled={disabled}>Log In</button>
+            <OauthButton />
             <button id="demo-login" onClick={demoLogIn}>Log In As Demo User</button>
         </form>
         </>
