@@ -2,10 +2,10 @@ import { csrfFetch } from "./csrf";
 import attendeesReducer from "./attendees";
 
 const GET_ALL_EVENTS = 'events/getAllEvents';
-const GET_ONE_EVENT = 'events/getOneEvent';
+export const GET_ONE_EVENT = 'events/getOneEvent';
 const GET_GROUP_EVENTS = 'groups/getGroupEvents';
-const CREATE_EVENT = 'events/createEvent';
-const DELETE_EVENT = 'events/deleteEvent'
+export const CREATE_EVENT = 'events/createEvent';
+export const DELETE_EVENT = 'events/deleteEvent'
 
 const getAllEvents = (events) => {
     return {
