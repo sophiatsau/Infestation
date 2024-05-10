@@ -1,5 +1,5 @@
 import { csrfFetch } from "./csrf";
-// import membersReducer from "./members";
+import attendeesReducer from "./attendees";
 
 const GET_ALL_EVENTS = 'events/getAllEvents';
 const GET_ONE_EVENT = 'events/getOneEvent';
@@ -157,8 +157,7 @@ const eventsReducer = (state = initialState, action) => {
             return {...state,
                 singleEvent: {
                     ...action.event,
-                    // Members: membersReducer(state.singleEvent, action),
-                    // Attendees: attendeesReducer(state.singleEvent, action)
+                    Attendees: attendeesReducer(state.singleEvent, action)
                 }
             }
         }
