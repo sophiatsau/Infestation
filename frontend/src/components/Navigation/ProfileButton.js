@@ -47,14 +47,19 @@ function ProfileButton({ user }) {
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 
+  const navigate = (url) => {
+    history.push(url)
+    setShowMenu(false)
+  }
+
 return (
   <>
     <button onClick={openMenu} className="profile-button">
       <i className="fas fa-bug" style={{color:"white"}}/>
     </button>
     <ul className={ulClassName} ref={ulRef}>
-      <button className="light-button" onClick={() => history.push('/groups')}>View groups</button>
-      <button className="light-button" onClick={() => history.push('/events')}>View events</button>
+      <button className="light-button" onClick={() => navigate('/groups')}>View groups</button>
+      <button className="light-button" onClick={() => navigate('/events')}>View events</button>
       {user ? (
         <>
           <li className="top-grey-line">Hello, {user.firstName}</li>
