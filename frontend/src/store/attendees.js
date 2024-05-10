@@ -30,6 +30,15 @@ const deleteAttendance = (payload) => {
     }
 }
 
+export const thunkGetAttendees = (eventId) => async dispatch => {
+    const res = await csrfFetch(`/api/events/${eventId}/attendees`)
+    const data = await res.json()
+
+    if (res.ok) dispatch(getEventAttendees(data))
+
+    return data
+}
+
 const initialState = {}
 
 const attendeesReducer = (state = initialState, action) => {
