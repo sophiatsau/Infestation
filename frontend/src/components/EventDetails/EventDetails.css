@@ -141,3 +141,18 @@
     flex-direction: column;
     justify-content: space-evenly;
 } */
+
+/**************** ATTENDANCES *********************/
+.view-attendees-button {
+    margin-top: 10px;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    width: fit-content;
+    height: fit-content;
+}
+
+.view-attendees-button:hover {
+    text-decoration: underline;
+    background-color: transparent;
+}

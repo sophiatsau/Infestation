@@ -80,8 +80,8 @@ export default function EventDetails() {
           {currentUser &&
           <>
           <RequestAttendanceButton />
-          <ViewAttendeesButton />
           </>}
+          <ViewAttendeesButton />
         </div>
     </div>
   )
