@@ -36,7 +36,44 @@ export const thunkGetAttendees = (eventId) => async dispatch => {
     const data = await res.json()
 
     if (res.ok) dispatch(getEventAttendees(data))
-    else console.log(data)
+    // else console.log(data)
+
+    return data
+}
+
+export const thunkRequestAttendance = (eventId) => async dispatch => {
+    const res = await csrfFetch(`/api/events/${eventId}/attendance`, {
+        method: 'POST',
+    })
+    const data = await res.json()
+
+    if (res.ok) dispatch(requestAttendance(data))
+    // else console.log(data)
+
+    return data
+}
+
+export const thunkUpdateAttendance = (eventId, userId, status) => async dispatch => {
+    const res = await csrfFetch(`/api/events/${eventId}/attendance`, {
+        method: 'PUT',
+        body: JSON.stringify({ userId, status })
+    })
+    const data = await res.json()
+
+    if (res.ok) dispatch(updateAttendance(data))
+
+    return data
+}
+
+export const thunkDeleteAttendance = (eventId, userId) => async dispatch => {
+    const res = await csrfFetch(`/api/events/${eventId}/attendance`, {
+        method: 'DELETE',
+        body: JSON.stringify({ userId })
+    })
+
+    const data = await res.json()
+
+    if (res.ok) dispatch(deleteAttendance(data))
 
     return data
 }
@@ -47,8 +84,15 @@ const initialState = []
 
 const attendeesReducer = (state = initialState, action) => {
     switch (action.type) {
+        case GET_ONE_EVENT:
+        case CREATE_EVENT:
+            return initialState
         case GET_ALL_ATTENDEES:
             return action.payload.Attendees
+        // TODO: organize this
+        case REQUEST_ATTENDANCE: {
+            return state
+        }
         default:
             return state
     }
