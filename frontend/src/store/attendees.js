@@ -1,6 +1,7 @@
 import { csrfFetch } from "./csrf"
-import { GET_ONE_EVENT, CREATE_EVENT, DELETE_EVENT } from "./events"
+import { GET_ONE_EVENT, CREATE_EVENT, DELETE_EVENT, consumeOneEvent } from "./events"
 import { GET_ALL_ATTENDEES, REQUEST_ATTENDANCE,UPDATE_ATTENDANCE, DELETE_ATTENDANCE } from "./actions"
+import { useSelector } from "react-redux"
 
 const getEventAttendees = (payload) => {
     return {
@@ -39,10 +40,14 @@ export const thunkGetAttendees = (eventId) => async dispatch => {
     return data
 }
 
-const initialState = {}
+export const consumeEventAttendees = () => (state) => useSelector(consumeOneEvent()).Attendees
+
+const initialState = []
 
 const attendeesReducer = (state = initialState, action) => {
     switch (action.type) {
+        case GET_ALL_ATTENDEES:
+            return action.payload.Attendees
         default:
             return state
     }

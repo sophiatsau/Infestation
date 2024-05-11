@@ -12,7 +12,7 @@ export default function ViewAttendeesButton() {
 
   return (
     <OpenModalButton
-        modalComponent={<ViewAttendeesModal/>}
+        modalComponent={<ViewAttendeesModal eventId={event.id}/>}
         buttonText={buttonText}
         className={"view-attendees-button teal"}
     />
