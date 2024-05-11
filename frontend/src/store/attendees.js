@@ -24,10 +24,10 @@ const updateAttendance = (payload) => {
     }
 }
 
-const deleteAttendance = (payload) => {
+const deleteAttendance = (userId) => {
     return {
         type: DELETE_ATTENDANCE,
-        payload
+        userId
     }
 }
 
@@ -73,7 +73,7 @@ export const thunkDeleteAttendance = (eventId, userId) => async dispatch => {
 
     const data = await res.json()
 
-    if (res.ok) dispatch(deleteAttendance(data))
+    if (res.ok) dispatch(deleteAttendance(userId))
 
     return data
 }
@@ -89,9 +89,24 @@ const attendeesReducer = (state = initialState, action) => {
             return initialState
         case GET_ALL_ATTENDEES:
             return action.payload.Attendees
-        // TODO: organize this
+        // TODO: move this into session slice of state
         case REQUEST_ATTENDANCE: {
             return state
+        }
+        case UPDATE_ATTENDANCE: {
+            const newState = []
+            state.forEach(attendee => {
+                newState.push(attendee.id = action.payload.userId ?
+                    {
+                        ...attendee,
+                        Attendance: {status: action.payload.status}
+                    } : attendee
+                )
+            })
+            return newState
+        }
+        case DELETE_ATTENDANCE: {
+            return state.filter(attendee => attendee.id !== action.userId)
         }
         default:
             return state
