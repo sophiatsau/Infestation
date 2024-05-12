@@ -1,5 +1,5 @@
 import { csrfFetch } from "./csrf";
-import { UPDATE_MEMBERSHIP, REQUEST_MEMBERSHIP, DELETE_MEMBERSHIP, CREATE_GROUP, DELETE_GROUP } from "./actions";
+import { UPDATE_MEMBERSHIP, REQUEST_MEMBERSHIP, DELETE_MEMBERSHIP, CREATE_GROUP, DELETE_GROUP, REQUEST_ATTENDANCE } from "./actions";
 
 export const SET_USER = 'session/setUser';
 export const REMOVE_USER = 'session/removeUser';
@@ -105,6 +105,8 @@ const sessionReducer = (state = initialState, action) => {
             delete newState.user.memberships[action.payload.groupId]
             return newState
         }
+        case REQUEST_ATTENDANCE:
+            return state
         default:
             return state;
     }

@@ -8,7 +8,7 @@ const oauthSecret = process.env.CLIENT_SECRET
 const redirectUri = process.env.REDIRECT_URI
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { User, Membership } = require('../../db/models');
+const { User, Membership, Attendance } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
@@ -63,10 +63,13 @@ router.post('/', validateLogin, async(req,res,next) => {
                 email: credential,
             }
         },
-        include: {
+        include: [{
           model: Membership,
           attributes: ['groupId', 'status']
-        }
+        },{
+          model: Attendance,
+          attributes: ['eventId', 'status']
+        }]
     });
 
     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
@@ -85,7 +88,10 @@ router.post('/', validateLogin, async(req,res,next) => {
         lastName: user.lastName,
         memberships: user.Memberships.map(member => {
           return {groupId: member.groupId, status: member.status}
-        })
+        }),
+        attendances: user.Attendances.map(attendance => {
+          return {eventId: attendance.eventId, status: attendance.status}
+        }),
     }
 
     //set cookies based on safe user info
@@ -196,10 +202,14 @@ router.get('/callback', async (req,res) => {
         email: gmail
       }
     },
-    include: {
+    include: [{
       model: Membership,
       attributes: ['groupId', 'status']
+    }, {
+      model: Attendance,
+      attributes: ['eventId', 'status']
     }
+    ]
   })
 
   let safeUser = {}
@@ -214,7 +224,10 @@ router.get('/callback', async (req,res) => {
       lastName: user.lastName,
       memberships: user.Memberships.map(member => {
         return {groupId: member.groupId, status: member.status}
-      })
+      }),
+      attendances: user.Attendances.map(attendance => {
+        return {eventId: attendance.eventId, status: attendance.status}
+      }),
     }
   } else {
     // sign up
@@ -228,7 +241,8 @@ router.get('/callback', async (req,res) => {
         id: newUser.id,
         firstName: newUser.firstName,
         lastName: newUser.lastName,
-        memberships: []
+        memberships: [],
+        attendances: [],
     }
   }
 
@@ -260,7 +274,10 @@ router.get('/', async (req, res) => {
         lastName: user.lastName,
         memberships: user.Memberships.map(member => {
           return {groupId: member.groupId, status: member.status}
-        })
+        }),
+        attendances: user.Attendances.map(attendance => {
+          return {eventId: attendance.eventId, status: attendance.status}
+        }),
       };
 
       return res.json({
