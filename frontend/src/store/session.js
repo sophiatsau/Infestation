@@ -67,9 +67,11 @@ const sessionReducer = (state = initialState, action) => {
             if (!action.user.user) return {...action.user}
             const user = {
                 ...action.user.user,
-                memberships: {}
+                // memberships: {},
+                // attendances: {},
             }
-            action.user.user.memberships.forEach(membership => user.memberships[membership.groupId] = membership.status)
+            // action.user.user.memberships.forEach(membership => user.memberships[membership.groupId] = membership.status)
+            // action.user.user.attendances.forEach(attendance => user.attendances[attendance.eventId] = attendance.status )
             return {user}
         }
         case REMOVE_USER: {
