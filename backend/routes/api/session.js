@@ -250,15 +250,16 @@ router.get('/callback', async (req,res) => {
 
     const newUser = await User.create(newUserInfo)
 
-    safeUser = {
-        username: newUser.username,
-        email: newUser.email,
-        id: newUser.id,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        memberships: {},
-        attendances: {},
-    }
+    safeUser = generateSafeUser(newUser)
+    // {
+    //     username: newUser.username,
+    //     email: newUser.email,
+    //     id: newUser.id,
+    //     firstName: newUser.firstName,
+    //     lastName: newUser.lastName,
+    //     memberships: {},
+    //     attendances: {},
+    // }
   }
 
   // reset oauth state
