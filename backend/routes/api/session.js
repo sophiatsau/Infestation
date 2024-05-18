@@ -237,7 +237,7 @@ router.get('/callback', async (req,res) => {
   const gmail = claims.email // user's email
 
   // check if user exists
-  const user = await User.unscoped().findOne(generateUserQuery(email))
+  const user = await User.unscoped().findOne(generateUserQuery(gmail))
 
   let safeUser = {}
 
@@ -249,6 +249,8 @@ router.get('/callback', async (req,res) => {
     const newUserInfo = {email: gmail, username: claims.name, hashedPassword: "oauth2_passwordoauth2_passwordoauth2_passwordoauth2_password", firstName: claims.given_name, lastName: claims.family_name}
 
     const newUser = await User.create(newUserInfo)
+    newUser.Memberships = []
+    newUser.Attendances = []
 
     safeUser = generateSafeUser(newUser)
     // {
