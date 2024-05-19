@@ -259,13 +259,13 @@ router.delete('/:eventId', requireAuth, checkEvent, addGroupIdToEvent, isEventOr
 router.get('/:eventId/attendees', checkEvent, async (req,res,next) => {
     const eventId = req.params.eventId;
     const event = await Event.findByPk(eventId);
-    const userId = req.user.id
+    const userId = req.user?.id
     const group = await event.getGroup();
     const groupId = group.id;
 
     const status = ["attending", "waitlist"]
 
-    if (await checkCohost(userId,groupId) || checkOrganizer(group.organizerId, userId)) {
+    if (userId && (await checkCohost(userId,groupId) || checkOrganizer(group.organizerId, userId))) {
         status.push('pending')
     }
 

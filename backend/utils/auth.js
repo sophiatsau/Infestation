@@ -4,7 +4,7 @@
 
 const jwt = require('jsonwebtoken');
 const {jwtConfig} = require('../config');
-const {Group, Membership, GroupImage, User, Venue, Event, EventImage, sequelize} = require('../db/models');
+const {Group, Membership, GroupImage, User, Venue, Event, EventImage, Attendance, sequelize} = require('../db/models');
 
 const {secret, expiresIn} = jwtConfig;
 
@@ -48,10 +48,13 @@ function restoreUser(req,res,next) {
               attributes: {
                 include: ['email', 'createdAt', 'updatedAt', ]
               },
-              include: {
+              include: [{
                 model: Membership,
                 attributes: ['groupId', 'status']
-              }
+              }, {
+                model: Attendance,
+                attributes: ['eventId', 'status']
+              }]
             });
           } catch (e) {
             res.clearCookie('token');

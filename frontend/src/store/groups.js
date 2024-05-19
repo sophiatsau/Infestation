@@ -171,14 +171,6 @@ const groupsReducer = (state = initialState, action) => {
                 }
             }
         }
-        // case GET_GROUP_MEMBERS: {
-        //     return {...state,
-        //         singleGroup: {
-        //             ...state.singleGroup,
-        //             Members: membersReducer(state.singleGroup.Members, action),
-        //         }
-        //     }
-        // }
         case DELETE_MEMBERSHIP:
         case UPDATE_MEMBERSHIP: {
             const newState = {...state,
@@ -199,25 +191,6 @@ const groupsReducer = (state = initialState, action) => {
             }
             return newState
         }
-        // case GET_GROUP_EVENTS: {
-        //     const events = {};
-
-        //     action.events.forEach(event => {
-        //         events[event.id] = event;
-        //     })
-        //     const newGroups = {...state, events};
-        //     return newGroups;
-        // }
-        // case CREATE_GROUP: {
-        //     const newState = {
-        //         allGroups: {
-        //             ...state.allGroups,
-        //             [action.group.id]: action.group
-        //         },
-        //         singleGroup: action.group
-        //     };
-        //     return newState;
-        // }
         case DELETE_GROUP: {
             const newGroups = {...state, singleGroup: {}};
             delete newGroups.allGroups[action.groupId];

@@ -53,7 +53,8 @@ router.post('/', validateSignup, async(req,res,next) => {
     const user = await User.create(newUserInfo);
 
     const safeUser = {
-        username, email, id: user.id, firstName, lastName, memberships: []
+        username, email, id: user.id, firstName, lastName, memberships: {},
+        attendances: {},
     };
 
     //log the user in immediately

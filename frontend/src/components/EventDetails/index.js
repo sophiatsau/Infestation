@@ -8,6 +8,8 @@ import { consumeOneGroup, fetchGroupById } from '../../store/groups';
 
 import GroupInfoBox from './GroupInfoBox'
 import EventInfoBox from './EventInfoBox'
+import RequestAttendanceButton from './RequestAttendanceButton';
+import ViewAttendeesButton from './ViewAttendeesButton';
 
 import './EventDetails.css'
 
@@ -75,6 +77,11 @@ export default function EventDetails() {
             <h2>Description</h2>
             <p>{description}</p>
           </div>
+          {currentUser &&
+          <>
+          <RequestAttendanceButton />
+          </>}
+          <ViewAttendeesButton />
         </div>
     </div>
   )
