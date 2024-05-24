@@ -1,7 +1,13 @@
 import React from 'react'
 
+import OpenModalButton from '../OpenModalButton'
+import RequestAttendanceModal from './RequestAttendanceModal'
+
 export default function RequestAttendanceButton() {
   return (
-    <div>RequestAttendanceButton</div>
+    <OpenModalButton
+      buttonText="Request Attendance"
+      modalComponent={<RequestAttendanceModal />}
+    />
   )
 }
