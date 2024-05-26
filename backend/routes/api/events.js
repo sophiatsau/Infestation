@@ -309,7 +309,7 @@ router.post('/:eventId/attendance', requireAuth, checkEvent, isGroupMember, asyn
             eventId,
             status: "pending",
         });
-        return res.json({userId, status:"pending"});
+        return res.json({userId, eventId, status:"pending"});
 
     } else if (attendance.status === "pending") {
         //if already pending attendance, error
@@ -363,6 +363,7 @@ router.put('/:eventId/attendance', requireAuth, checkEvent, isEventOrganizerOrCo
 router.delete('/:eventId/attendance', requireAuth, checkEvent, isHostOrAttendeeDelete, async (req,res,next) => {
     const {userId} = req.body;
     const eventId = req.params.eventId;
+    console.log("*****************user id", userId, "eventId", eventId)
 
     const attendance = await Attendance.findOne({
         where: {

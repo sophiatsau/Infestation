@@ -47,7 +47,7 @@ export const thunkRequestAttendance = (eventId) => async dispatch => {
     })
     const data = await res.json()
 
-    if (res.ok) dispatch(requestAttendance(data))
+    if (res.ok) dispatch(requestAttendance({...data, eventId}))
     // else console.log(data)
 
     return data
