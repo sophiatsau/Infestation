@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 
 import OpenModalButton from '../OpenModalButton'
 import RequestAttendanceModal from './RequestAttendanceModal'
+import ViewAttendanceStatus from './ViewAttendanceStatus'
 import { consumeOneEvent } from '../../store/events'
 
 export default function RequestAttendanceButton() {
@@ -14,7 +15,7 @@ export default function RequestAttendanceButton() {
 
   const buttonText = status ? "View Attendance Status" : "Request Attendance"
 
-  const modalComponent = status ? <>View Attendance Status</> : <RequestAttendanceModal />
+  const modalComponent = status ? <ViewAttendanceStatus /> : <RequestAttendanceModal />
 
   return (
     <OpenModalButton
