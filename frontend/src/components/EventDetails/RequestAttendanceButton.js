@@ -12,24 +12,6 @@ export default function RequestAttendanceButton() {
   const status = user.attendances[event.id]
   const isMember = user.memberships[event.groupId]
 
-  // const [status, setStatus] = useState(user.attendances[event.id])
-
-  // useEffect(() => {
-  //   setStatus(user.attendances[event.id])
-  // }, [user.attendances, event.id])
-
-  // console.log("🚀 ~ useEffect ~ user.attendances:", user.attendances, "event.id", event.id)
-  // console.log("🚀 ~ useEffect ~ user.attendances[event.id]:", user.attendances[event.id])
-  // console.log("🚀 ~ useEffect ~ user.attendances[2]:", user.attendances[2])
-  // console.log("🚀 ~ useEffect ~ user.attendances[1]:", user.attendances[1])
-  // console.log("🚀 ~ useEffect ~ Object.entries(user.attendances):", Object.entries(user.attendances))
-
-  // console.log("🚀 ~ useEffect ~ user.attendances['2']:", user.attendances["2"])
-
-
-  console.log("status", status, "user", user)
-  console.log("isMember", isMember)
-
   if (!isMember || isMember === "pending") return null
 
   const buttonText = status ? "View Attendance Status" : "Request Attendance"
