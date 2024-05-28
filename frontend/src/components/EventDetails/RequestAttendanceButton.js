@@ -10,6 +10,7 @@ export default function RequestAttendanceButton() {
   const user = useSelector(state => state.session.user)
   const event = useSelector(consumeOneEvent())
   const status = user.attendances[event.id]
+  const isMember = user.memberships[event.groupId]
 
   // const [status, setStatus] = useState(user.attendances[event.id])
 
@@ -27,6 +28,9 @@ export default function RequestAttendanceButton() {
 
 
   console.log("status", status, "user", user)
+  console.log("isMember", isMember)
+
+  if (!isMember || isMember === "pending") return null
 
   const buttonText = status ? "View Attendance Status" : "Request Attendance"
 
