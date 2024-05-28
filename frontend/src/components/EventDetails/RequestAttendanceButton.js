@@ -9,7 +9,7 @@ import { consumeOneEvent } from '../../store/events'
 export default function RequestAttendanceButton() {
   const user = useSelector(state => state.session.user)
   const event = useSelector(consumeOneEvent())
-  const status = useState(user.attendances[event.id])
+  const status = user.attendances[event.id]
 
   // const [status, setStatus] = useState(user.attendances[event.id])
 
@@ -26,7 +26,7 @@ export default function RequestAttendanceButton() {
   // console.log("🚀 ~ useEffect ~ user.attendances['2']:", user.attendances["2"])
 
 
-  // console.log("status", status, "user", user)
+  console.log("status", status, "user", user)
 
   const buttonText = status ? "View Attendance Status" : "Request Attendance"
 
