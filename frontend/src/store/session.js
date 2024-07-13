@@ -111,11 +111,12 @@ const sessionReducer = (state = initialState, action) => {
         case REQUEST_ATTENDANCE: {
             const newState = {...state}
             newState.user.attendances[action.payload.eventId] = action.payload.status
-            return newState
+            return {user:{...newState.user}}
         }
         case DELETE_ATTENDANCE: {
             const newState = {...state}
             delete newState.user.attendances[action.payload.eventId]
+            return {user:{...newState.user}}
         }
         default:
             return state;
