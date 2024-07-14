@@ -5,7 +5,7 @@ import ViewAttendeesTable from './ViewAttendeesTable'
 
 export default function ViewAttendeesModal({eventId}) {
   const attendees = useSelector(consumeEventAttendees())
-  console.log("🚀 ~ ViewAttendeesModal ~ attendees:", attendees)
+  // console.log("🚀 ~ ViewAttendeesModal ~ attendees:", attendees)
   const dispatch = useDispatch()
 
   useEffect(() => {

@@ -88,22 +88,28 @@ const attendeesReducer = (state = initialState, action) => {
         case CREATE_EVENT:
             return initialState
         case GET_ALL_ATTENDEES:
+            console.log("action.payload.Attendees", action.payload.Attendees)
             return action.payload.Attendees
-        // TODO: move this into session slice of state
-        case REQUEST_ATTENDANCE: {
-            return state
+        case REQUEST_ATTENDANCE: { //only update if is event owner
+            console.log("payload", action.payload)
+            return [...state,
+                {
+                    Attendance: {status: action.payload}
+                }
+            ]
         }
         case UPDATE_ATTENDANCE: {
-            const newState = []
-            state.forEach(attendee => {
-                newState.push(attendee.id = action.payload.userId ?
+            // const newState = []
+            // console.log(state,"state")
+            // console.log("state type", typeof state)
+            return state.map(attendee => {
+                return attendee.id == action.payload.userId ?
                     {
                         ...attendee,
                         Attendance: {status: action.payload.status}
                     } : attendee
-                )
             })
-            return newState
+            // return newState
         }
         case DELETE_ATTENDANCE: {
             return state.filter(attendee => attendee.id !== action.payload.userId)
