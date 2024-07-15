@@ -4,14 +4,14 @@ import { useModal } from '../../context/Modal'
 import { consumeOneEvent } from '../../store/events'
 import { thunkRequestAttendance } from '../../store/attendees'
 
-export default function RequestAttendanceModal() {
+export default function RequestAttendanceModal({user}) {
     const {closeModal} = useModal()
     const dispatch = useDispatch()
 
     const event = useSelector(consumeOneEvent())
 
     const requestAttendance = async () => {
-        const res = await dispatch(thunkRequestAttendance(event.id))
+        const res = await dispatch(thunkRequestAttendance(event.id, user))
         closeModal()
     }
 

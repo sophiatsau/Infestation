@@ -1,7 +1,8 @@
 import { csrfFetch } from "./csrf"
-import { GET_ONE_EVENT, CREATE_EVENT, DELETE_EVENT, consumeOneEvent } from "./events"
+import { GET_ONE_EVENT, CREATE_EVENT, consumeOneEvent } from "./events"
 import { GET_ALL_ATTENDEES, REQUEST_ATTENDANCE,UPDATE_ATTENDANCE, DELETE_ATTENDANCE } from "./actions"
 import { useSelector } from "react-redux"
+import { REMOVE_USER } from "./session"
 
 const getEventAttendees = (payload) => {
     return {
@@ -41,13 +42,14 @@ export const thunkGetAttendees = (eventId) => async dispatch => {
     return data
 }
 
-export const thunkRequestAttendance = (eventId) => async dispatch => {
+// user = {user, status: membership status}
+export const thunkRequestAttendance = (eventId, user=null) => async dispatch => {
     const res = await csrfFetch(`/api/events/${eventId}/attendance`, {
         method: 'POST',
     })
     const data = await res.json()
 
-    if (res.ok) dispatch(requestAttendance({...data, eventId}))
+    if (res.ok) dispatch(requestAttendance({...data, eventId, user}))
     // else console.log(data)
 
     return data
@@ -85,33 +87,38 @@ const initialState = []
 const attendeesReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ONE_EVENT:
+        case REMOVE_USER:
         case CREATE_EVENT:
             return initialState
         case GET_ALL_ATTENDEES:
-            console.log("action.payload.Attendees", action.payload.Attendees)
+            // console.log("action.payload.Attendees", action.payload.Attendees)
             return action.payload.Attendees
-        case REQUEST_ATTENDANCE: { //only update if is event owner
-            console.log("payload", action.payload)
+        case REQUEST_ATTENDANCE: { //only update if is event owner / co-host
+            if (action.payload.user.status !== "co-host") {
+                return state
+            }
             return [...state,
                 {
-                    Attendance: {status: action.payload}
+                    id: action.payload.userId,
+                    firstName: action.payload.user.user.firstName,
+                    lastName: action.payload.user.user.lastName,
+                    Attendance: {status: "pending"}
                 }
             ]
         }
         case UPDATE_ATTENDANCE: {
-            // const newState = []
             // console.log(state,"state")
-            // console.log("state type", typeof state)
             return state.map(attendee => {
-                return attendee.id == action.payload.userId ?
+                return attendee.id === action.payload.userId ?
                     {
                         ...attendee,
                         Attendance: {status: action.payload.status}
                     } : attendee
             })
-            // return newState
         }
         case DELETE_ATTENDANCE: {
+            // console.log("payload", action.payload)
+            // console.log("state", state)
             return state.filter(attendee => attendee.id !== action.payload.userId)
         }
         default:

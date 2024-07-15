@@ -8,9 +8,9 @@ export default function ViewAttendeesModal({eventId}) {
   // console.log("🚀 ~ ViewAttendeesModal ~ attendees:", attendees)
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (!attendees) dispatch(thunkGetAttendees(eventId))
-  }, [attendees, dispatch])
+  // useEffect(() => {
+  //   if (!attendees) dispatch(thunkGetAttendees(eventId))
+  // }, [attendees, dispatch])
 
   return (
     <div>

@@ -96,7 +96,7 @@ const membersReducer = (state=initialState, action) => {
             });
             return members
         case UPDATE_MEMBERSHIP:
-            console.log("members reducer", state)
+            // console.log("members reducer", state)
             const updatedMembership = {...state[action.payload.memberId]}
 
             updatedMembership.Membership.status = action.payload.status

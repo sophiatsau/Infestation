@@ -9,14 +9,14 @@ import { consumeOneEvent } from '../../store/events'
 export default function RequestAttendanceButton() {
   const user = useSelector(state => state.session.user)
   const event = useSelector(consumeOneEvent())
-  const status = user.attendances[event.id]
-  const isMember = user.memberships[event.groupId]
+  const status = user.attendances[event.id] // attendance status
+  const isMember = user.memberships[event.groupId] // membership status
 
   if (!isMember || isMember === "pending") return null
 
   const buttonText = status ? "View Attendance Status" : "Request Attendance"
 
-  const modalComponent = status ? <ViewAttendanceStatus /> : <RequestAttendanceModal />
+  const modalComponent = status ? <ViewAttendanceStatus /> : <RequestAttendanceModal user={{user, status:isMember}} />
 
   return (
     <OpenModalButton
