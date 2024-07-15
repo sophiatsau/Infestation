@@ -1,7 +1,8 @@
 import { csrfFetch } from "./csrf"
-import { GET_ONE_EVENT, CREATE_EVENT, DELETE_EVENT, consumeOneEvent } from "./events"
+import { GET_ONE_EVENT, CREATE_EVENT, consumeOneEvent } from "./events"
 import { GET_ALL_ATTENDEES, REQUEST_ATTENDANCE,UPDATE_ATTENDANCE, DELETE_ATTENDANCE } from "./actions"
 import { useSelector } from "react-redux"
+import { REMOVE_USER } from "./session"
 
 const getEventAttendees = (payload) => {
     return {
@@ -24,10 +25,10 @@ const updateAttendance = (payload) => {
     }
 }
 
-const deleteAttendance = (userId) => {
+const deleteAttendance = (payload) => {
     return {
         type: DELETE_ATTENDANCE,
-        userId
+        payload
     }
 }
 
@@ -41,13 +42,14 @@ export const thunkGetAttendees = (eventId) => async dispatch => {
     return data
 }
 
-export const thunkRequestAttendance = (eventId) => async dispatch => {
+// user = {user, status: membership status}
+export const thunkRequestAttendance = (eventId, user=null) => async dispatch => {
     const res = await csrfFetch(`/api/events/${eventId}/attendance`, {
         method: 'POST',
     })
     const data = await res.json()
 
-    if (res.ok) dispatch(requestAttendance(data))
+    if (res.ok) dispatch(requestAttendance({...data, eventId, user}))
     // else console.log(data)
 
     return data
@@ -73,7 +75,7 @@ export const thunkDeleteAttendance = (eventId, userId) => async dispatch => {
 
     const data = await res.json()
 
-    if (res.ok) dispatch(deleteAttendance(userId))
+    if (res.ok) dispatch(deleteAttendance({eventId, userId}))
 
     return data
 }
@@ -85,28 +87,39 @@ const initialState = []
 const attendeesReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ONE_EVENT:
+        case REMOVE_USER:
         case CREATE_EVENT:
             return initialState
         case GET_ALL_ATTENDEES:
+            // console.log("action.payload.Attendees", action.payload.Attendees)
             return action.payload.Attendees
-        // TODO: move this into session slice of state
-        case REQUEST_ATTENDANCE: {
-            return state
+        case REQUEST_ATTENDANCE: { //only update if is event owner / co-host
+            if (action.payload.user.status !== "co-host") {
+                return state
+            }
+            return [...state,
+                {
+                    id: action.payload.userId,
+                    firstName: action.payload.user.user.firstName,
+                    lastName: action.payload.user.user.lastName,
+                    Attendance: {status: "pending"}
+                }
+            ]
         }
         case UPDATE_ATTENDANCE: {
-            const newState = []
-            state.forEach(attendee => {
-                newState.push(attendee.id = action.payload.userId ?
+            // console.log(state,"state")
+            return state.map(attendee => {
+                return attendee.id === action.payload.userId ?
                     {
                         ...attendee,
                         Attendance: {status: action.payload.status}
                     } : attendee
-                )
             })
-            return newState
         }
         case DELETE_ATTENDANCE: {
-            return state.filter(attendee => attendee.id !== action.userId)
+            // console.log("payload", action.payload)
+            // console.log("state", state)
+            return state.filter(attendee => attendee.id !== action.payload.userId)
         }
         default:
             return state

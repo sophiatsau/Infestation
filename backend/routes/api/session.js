@@ -57,8 +57,8 @@ const generateUserQuery = (credential) => {
 }
 
 const generateSafeUser = (user) => {
-  console.log("🚀 ~ generateSafeUser ~ user:", user)
-  console.log("🚀 ~ generateSafeUser ~ user.Attendance:", user.Attendance)
+  // console.log("🚀 ~ generateSafeUser ~ user:", user)
+  // console.log("🚀 ~ generateSafeUser ~ user.Attendance:", user.Attendance)
   const memberships = {}
   user.Memberships.forEach(member => {
     const {groupId, status} = member

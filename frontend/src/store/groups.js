@@ -171,7 +171,19 @@ const groupsReducer = (state = initialState, action) => {
                 }
             }
         }
-        case DELETE_MEMBERSHIP:
+        case DELETE_MEMBERSHIP: {
+            const newState = {...state,
+                singleGroup: {
+                    ...state.singleGroup,
+                    Members: membersReducer(state.singleGroup.Members, action),
+                }
+            }
+            console.log("groups reducer", Object.values(newState.singleGroup.Members))
+            const newMembers = Object.values(newState.singleGroup.Members).filter(member => member.Membership.status !== "pending")
+            newState.singleGroup.numMembers = newMembers.length
+            console.log(newMembers, newMembers.length)
+            return newState
+        }
         case UPDATE_MEMBERSHIP: {
             const newState = {...state,
                 singleGroup: {
@@ -179,7 +191,10 @@ const groupsReducer = (state = initialState, action) => {
                     Members: membersReducer(state.singleGroup.Members, action),
                 }
             }
-            newState.singleGroup.numMembers = Object.values(newState.singleGroup.Members).length
+            console.log("groups reducer", Object.values(newState.singleGroup.Members))
+            const newMembers = Object.values(newState.singleGroup.Members).filter(member => member.Membership.status !== "pending")
+            newState.singleGroup.numMembers = newMembers.length
+            console.log(newMembers, newMembers.length)
             return newState
         }
         case GET_GROUP_MEMBERS: {

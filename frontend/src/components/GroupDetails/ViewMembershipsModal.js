@@ -1,17 +1,10 @@
-import React, {useEffect} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { thunkGetGroupMembers } from '../../store/members'
-// import MembershipCard from './MembershipCard'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import MembershipsTable from './MembershipsTable'
 import { consumeGroupMembers } from '../../store/members'
 
 export default function ViewMembershipsModal({groupId}) {
     const memberships = useSelector(consumeGroupMembers())
-    const dispatch = useDispatch()
-
-    useEffect(() => {
-        if (!memberships) dispatch(thunkGetGroupMembers(groupId))
-    }, [memberships, dispatch, groupId])
 
     if (!memberships) return <>Loading...</>
 

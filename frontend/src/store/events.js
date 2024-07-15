@@ -1,6 +1,7 @@
 import { csrfFetch } from "./csrf";
 import attendeesReducer from "./attendees";
-import { GET_ALL_ATTENDEES } from "./actions";
+import { GET_ALL_ATTENDEES, DELETE_ATTENDANCE, UPDATE_ATTENDANCE, REQUEST_ATTENDANCE } from "./actions";
+import { REMOVE_USER } from "./session";
 
 const GET_ALL_EVENTS = 'events/getAllEvents';
 export const GET_ONE_EVENT = 'events/getOneEvent';
@@ -176,7 +177,7 @@ const eventsReducer = (state = initialState, action) => {
                     ...state.allEvents,
                     [action.event.id]: action.event
                 },
-                singleEvent: action.event
+                singleEvent: {...action.event, Attendees: []}
             };
         }
         case DELETE_EVENT: {
@@ -184,11 +185,15 @@ const eventsReducer = (state = initialState, action) => {
             delete newState.allEvents[action.eventId];
             return newState;
         }
-        case GET_ALL_ATTENDEES: {
+        case GET_ALL_ATTENDEES:
+        case DELETE_ATTENDANCE:
+        case UPDATE_ATTENDANCE:
+        case REMOVE_USER:
+        case REQUEST_ATTENDANCE: {
             return {...state,
                 singleEvent: {
                     ...state.singleEvent,
-                    Attendees: attendeesReducer(state.singleEvent, action)
+                    Attendees: attendeesReducer(state.singleEvent.Attendees, action)
                 }
             }
         }
