@@ -85,6 +85,23 @@
 }
 
 /****************** MEMBERSHIPS **********************/
+.delete-membership-button {
+    width: 100%;
+    height: 60px;
+}
+
+.delete-membership-dropdown {
+    background-color: var(--grey-bg-color);
+    border-radius: 5px;
+    width: 100%;
+    height: 80px;
+    font-size: small;
+}
+
+.delete-membership-dropdown button {
+    padding: 5px;
+}
+
 #memberships-modal {
     margin: 0;
     padding: 0;
@@ -112,6 +129,20 @@
 
 #memberships-table button {
     max-width: 90%;
+    padding: 5px;
+}
+
+.request-membership-button {
+    color: black;
+}
+
+.request-membership-buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.request-membership-buttons button {
+    width: 40%;
     padding: 5px;
 }
 

@@ -28,8 +28,10 @@ export default function RequestMembershipModal() {
     return (
         <div>
             <h2>Request membership to {group.name}?</h2>
-            <button onClick={requestMembership}>Yes</button>
-            <button onClick={closeModal}>No</button>
+            <div className='request-membership-buttons'>
+                <button onClick={requestMembership}>Yes</button>
+                <button onClick={closeModal}>No</button>
+            </div>
         </div>
     )
 }

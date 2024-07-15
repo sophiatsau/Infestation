@@ -26,18 +26,20 @@ export default function ViewStatusModal() {
         closeModal()
     }
 
-    const dropDownClass = openMenu ? "dropdown" : "hidden"
+    const dropDownClass = openMenu ? "dropdown delete-membership-dropdown" : "hidden"
 
     return (
         <div>
             <h2>Your Membership Info</h2>
             <div>Name: {user.firstName} {user.lastName}</div>
             <div className='grey lighter small'>Status: {user.memberships[group.id]}</div>
-            <button onClick={toggleMenu}>Delete Membership</button>
+            <button onClick={toggleMenu} className={openMenu ? 'hidden': 'delete-membership-button'}>Delete Membership</button>
             <div className={dropDownClass}>
                 Delete your membership?
-                <button onClick={deleteMembership}>Yes</button>
-                <button onClick={toggleMenu}>No</button>
+                <div className='request-membership-buttons'>
+                    <button onClick={deleteMembership}>Yes</button>
+                    <button onClick={toggleMenu}>No</button>
+                </div>
             </div>
         </div>
     )
