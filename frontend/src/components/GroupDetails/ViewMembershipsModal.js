@@ -9,9 +9,9 @@ export default function ViewMembershipsModal({groupId}) {
     const memberships = useSelector(consumeGroupMembers())
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        if (!memberships) dispatch(thunkGetGroupMembers(groupId))
-    }, [memberships, dispatch, groupId])
+    // useEffect(() => {
+    //     if (!memberships) dispatch(thunkGetGroupMembers(groupId))
+    // }, [memberships, dispatch, groupId])
 
     if (!memberships) return <>Loading...</>
 
