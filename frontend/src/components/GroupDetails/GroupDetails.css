@@ -129,3 +129,22 @@
     text-decoration: underline;
     background-color: transparent;
 }
+
+.modal-table-dropdown {
+    position: absolute;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 3px;
+    right: 8px;
+    /* top: 55px; */
+    border: 1px black solid;
+    padding: 3px;
+    margin: 0;
+    border-radius: 5px;
+    background-color: var(--grey-bg-color);
+}
+
+.modal-table-dropdown button {
+    width: fit-content;
+    min-width: 101.65px;
+}
