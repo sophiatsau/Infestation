@@ -1,5 +1,5 @@
 import { csrfFetch } from "./csrf";
-import { UPDATE_MEMBERSHIP, REQUEST_MEMBERSHIP, DELETE_MEMBERSHIP, CREATE_GROUP, DELETE_GROUP } from "./actions";
+import { UPDATE_MEMBERSHIP, REQUEST_MEMBERSHIP, DELETE_MEMBERSHIP, CREATE_GROUP, DELETE_GROUP, UPDATE_ATTENDANCE, REQUEST_ATTENDANCE, DELETE_ATTENDANCE } from "./actions";
 
 export const SET_USER = 'session/setUser';
 export const REMOVE_USER = 'session/removeUser';
@@ -67,9 +67,11 @@ const sessionReducer = (state = initialState, action) => {
             if (!action.user.user) return {...action.user}
             const user = {
                 ...action.user.user,
-                memberships: {}
+                // memberships: {},
+                // attendances: {},
             }
-            action.user.user.memberships.forEach(membership => user.memberships[membership.groupId] = membership.status)
+            // action.user.user.memberships.forEach(membership => user.memberships[membership.groupId] = membership.status)
+            // action.user.user.attendances.forEach(attendance => user.attendances[attendance.eventId] = attendance.status )
             return {user}
         }
         case REMOVE_USER: {
@@ -104,6 +106,17 @@ const sessionReducer = (state = initialState, action) => {
             const newState = {...state}
             delete newState.user.memberships[action.payload.groupId]
             return newState
+        }
+        case UPDATE_ATTENDANCE:
+        case REQUEST_ATTENDANCE: {
+            const newState = {...state}
+            newState.user.attendances[action.payload.eventId] = action.payload.status
+            return {user:{...newState.user}}
+        }
+        case DELETE_ATTENDANCE: {
+            const newState = {...state}
+            delete newState.user.attendances[action.payload.eventId]
+            return {user:{...newState.user}}
         }
         default:
             return state;

@@ -5,9 +5,12 @@ import {useParams, useHistory} from 'react-router-dom';
 
 import { fetchEventById, consumeOneEvent } from '../../store/events';
 import { consumeOneGroup, fetchGroupById } from '../../store/groups';
+import { thunkGetAttendees } from '../../store/attendees';
 
 import GroupInfoBox from './GroupInfoBox'
 import EventInfoBox from './EventInfoBox'
+import RequestAttendanceButton from './RequestAttendanceButton';
+import ViewAttendeesButton from './ViewAttendeesButton';
 
 import './EventDetails.css'
 
@@ -43,7 +46,7 @@ export default function EventDetails() {
     (async() => {
       try {
         await dispatch(fetchEventById(eventId))
-          // .then(setLoaded(true))
+        await dispatch(thunkGetAttendees(eventId))
       } catch (e) {
         history.push('/not-found')
       }
@@ -75,6 +78,11 @@ export default function EventDetails() {
             <h2>Description</h2>
             <p>{description}</p>
           </div>
+          {currentUser &&
+          <>
+          <RequestAttendanceButton />
+          </>}
+          <ViewAttendeesButton />
         </div>
     </div>
   )

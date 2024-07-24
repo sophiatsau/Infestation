@@ -8,7 +8,7 @@ const oauthSecret = process.env.CLIENT_SECRET
 const redirectUri = process.env.REDIRECT_URI
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
-const { User, Membership } = require('../../db/models');
+const { User, Membership, Attendance } = require('../../db/models');
 
 //used to validate request bodies
 const { check } = require('express-validator');
@@ -36,6 +36,52 @@ function generateRandomString(length) {
   return randString
 }
 
+/******************* MISC VARS & HELPERS ****************** */
+// query for session user
+const generateUserQuery = (credential) => {
+  return {
+    where: {
+      [Op.or]: {
+          username: credential,
+          email: credential,
+      }
+    },
+    include: [{
+      model: Membership,
+      attributes: ['groupId', 'status']
+    },{
+      model: Attendance,
+      attributes: ['eventId', 'status']
+    }]
+  }
+}
+
+const generateSafeUser = (user) => {
+  // console.log("🚀 ~ generateSafeUser ~ user:", user)
+  // console.log("🚀 ~ generateSafeUser ~ user.Attendance:", user.Attendance)
+  const memberships = {}
+  user.Memberships.forEach(member => {
+    const {groupId, status} = member
+    memberships[groupId] = status
+  })
+
+  const attendances = {}
+  user.Attendances.forEach(attendance => {
+    const {eventId, status} = attendance
+    attendances[eventId] = status
+  })
+
+  return {
+    id: user.id,
+    email: user.email,
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    memberships,
+    attendances,
+  }
+}
+
 /******************* MIDDLEWARE *************** */
 const validateLogin = [
     check('credential')
@@ -56,18 +102,7 @@ const router = express.Router();
 router.post('/', validateLogin, async(req,res,next) => {
     const {credential, password} = req.body;
 
-    const user = await User.unscoped().findOne({
-        where: {
-            [Op.or]: {
-                username: credential,
-                email: credential,
-            }
-        },
-        include: {
-          model: Membership,
-          attributes: ['groupId', 'status']
-        }
-    });
+    const user = await User.unscoped().findOne(generateUserQuery(credential));
 
     if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
         const err = new Error('Invalid credentials');
@@ -77,16 +112,29 @@ router.post('/', validateLogin, async(req,res,next) => {
         return next(err);
     }
 
-    const safeUser = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        memberships: user.Memberships.map(member => {
-          return {groupId: member.groupId, status: member.status}
-        })
-    }
+    const safeUser = generateSafeUser(user)
+
+    // const memberships = {}
+    // user.Memberships.forEach(member => {
+    //   const {groupId, status} = member
+    //   memberships[groupId] = status
+    // })
+
+    // const attendances = {}
+    // user.Attendances.forEach(attendance => {
+    //   const {eventId, status} = attendance
+    //   attendances[eventId] = status
+    // })
+
+    // const safeUser = {
+    //     id: user.id,
+    //     email: user.email,
+    //     username: user.username,
+    //     firstName: user.firstName,
+    //     lastName: user.lastName,
+    //     memberships,
+    //     attendances,
+    // }
 
     //set cookies based on safe user info
     await setTokenCookie(res, safeUser);
@@ -189,47 +237,31 @@ router.get('/callback', async (req,res) => {
   const gmail = claims.email // user's email
 
   // check if user exists
-  const user = await User.unscoped().findOne({
-    where: {
-      [Op.or]: {
-        username: gmail,
-        email: gmail
-      }
-    },
-    include: {
-      model: Membership,
-      attributes: ['groupId', 'status']
-    }
-  })
+  const user = await User.unscoped().findOne(generateUserQuery(gmail))
 
   let safeUser = {}
 
   if (user) {
     // login
-    safeUser = {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      memberships: user.Memberships.map(member => {
-        return {groupId: member.groupId, status: member.status}
-      })
-    }
+    safeUser = generateSafeUser(user)
   } else {
     // sign up
     const newUserInfo = {email: gmail, username: claims.name, hashedPassword: "oauth2_passwordoauth2_passwordoauth2_passwordoauth2_password", firstName: claims.given_name, lastName: claims.family_name}
 
     const newUser = await User.create(newUserInfo)
+    newUser.Memberships = []
+    newUser.Attendances = []
 
-    safeUser = {
-        username: newUser.username,
-        email: newUser.email,
-        id: newUser.id,
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        memberships: []
-    }
+    safeUser = generateSafeUser(newUser)
+    // {
+    //     username: newUser.username,
+    //     email: newUser.email,
+    //     id: newUser.id,
+    //     firstName: newUser.firstName,
+    //     lastName: newUser.lastName,
+    //     memberships: {},
+    //     attendances: {},
+    // }
   }
 
   // reset oauth state
@@ -252,16 +284,7 @@ router.get('/', async (req, res) => {
     //req.user is assigned when restoreUser middleware is called
     const { user } = req;
     if (user) {
-      const safeUser = {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        memberships: user.Memberships.map(member => {
-          return {groupId: member.groupId, status: member.status}
-        })
-      };
+      const safeUser = generateSafeUser(user)
 
       return res.json({
         user: safeUser

@@ -171,15 +171,19 @@ const groupsReducer = (state = initialState, action) => {
                 }
             }
         }
-        // case GET_GROUP_MEMBERS: {
-        //     return {...state,
-        //         singleGroup: {
-        //             ...state.singleGroup,
-        //             Members: membersReducer(state.singleGroup.Members, action),
-        //         }
-        //     }
-        // }
-        case DELETE_MEMBERSHIP:
+        case DELETE_MEMBERSHIP: {
+            const newState = {...state,
+                singleGroup: {
+                    ...state.singleGroup,
+                    Members: membersReducer(state.singleGroup.Members, action),
+                }
+            }
+            console.log("groups reducer", Object.values(newState.singleGroup.Members))
+            const newMembers = Object.values(newState.singleGroup.Members).filter(member => member.Membership.status !== "pending")
+            newState.singleGroup.numMembers = newMembers.length
+            console.log(newMembers, newMembers.length)
+            return newState
+        }
         case UPDATE_MEMBERSHIP: {
             const newState = {...state,
                 singleGroup: {
@@ -187,7 +191,10 @@ const groupsReducer = (state = initialState, action) => {
                     Members: membersReducer(state.singleGroup.Members, action),
                 }
             }
-            newState.singleGroup.numMembers = Object.values(newState.singleGroup.Members).length
+            console.log("groups reducer", Object.values(newState.singleGroup.Members))
+            const newMembers = Object.values(newState.singleGroup.Members).filter(member => member.Membership.status !== "pending")
+            newState.singleGroup.numMembers = newMembers.length
+            console.log(newMembers, newMembers.length)
             return newState
         }
         case GET_GROUP_MEMBERS: {
@@ -199,25 +206,6 @@ const groupsReducer = (state = initialState, action) => {
             }
             return newState
         }
-        // case GET_GROUP_EVENTS: {
-        //     const events = {};
-
-        //     action.events.forEach(event => {
-        //         events[event.id] = event;
-        //     })
-        //     const newGroups = {...state, events};
-        //     return newGroups;
-        // }
-        // case CREATE_GROUP: {
-        //     const newState = {
-        //         allGroups: {
-        //             ...state.allGroups,
-        //             [action.group.id]: action.group
-        //         },
-        //         singleGroup: action.group
-        //     };
-        //     return newState;
-        // }
         case DELETE_GROUP: {
             const newGroups = {...state, singleGroup: {}};
             delete newGroups.allGroups[action.groupId];

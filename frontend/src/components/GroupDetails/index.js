@@ -3,6 +3,7 @@ import {useParams, useHistory} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 
 import {fetchGroupById, consumeOneGroup } from '../../store/groups';
+import { thunkGetGroupMembers } from '../../store/members'
 import { sortEvents, consumeGroupEvents, fetchEventsByGroup } from '../../store/events';
 
 import GroupEvents from './GroupEvents';
@@ -29,6 +30,7 @@ export default function GroupDetails() {
     async function getGroup() {
         try {
           await dispatch(fetchGroupById(groupId))
+          await dispatch(thunkGetGroupMembers(groupId))
         } catch (e) {
           const data = await e.json();
           if (process.env.NODE_ENV !== "production") {
