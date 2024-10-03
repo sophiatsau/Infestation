@@ -156,3 +156,13 @@ img {
 .top-grey-line {
     border-top: solid 1px rgb(200,200,200);
 }
+
+.yes-no-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.yes-no-buttons button {
+    min-width: 35%;
+}
