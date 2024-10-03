@@ -1,9 +1,10 @@
 import React from 'react'
+import ViewAttendeesCard from './ViewAttendeesCard'
 
 
 export default function ViewAttendeesTable({attendees}) {
   return (
-    <table>
+    <table id="attendees-table">
         <thead>
             <tr>
                 <th>Name</th>
@@ -13,8 +14,7 @@ export default function ViewAttendeesTable({attendees}) {
         <tbody>
             {attendees.map(attendee => (
                 <tr key={attendee.id}>
-                    <td>{attendee.firstName} {attendee.lastName}</td>
-                    <td>{attendee.Attendance.status}</td>
+                    <ViewAttendeesCard attendee={attendee} />
                 </tr>
             ))}
         </tbody>
