@@ -166,3 +166,18 @@ img {
 .yes-no-buttons button {
     min-width: 35%;
 }
+
+.dropdown {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 3px;
+    /* left: 8px; */
+    /* top: 55px; */
+    border: 1px black solid;
+    padding: 3px;
+    margin: 0;
+    border-radius: 5px;
+    background-color: var(--grey-bg-color);
+}
