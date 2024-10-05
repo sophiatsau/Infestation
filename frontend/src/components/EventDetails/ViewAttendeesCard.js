@@ -1,7 +1,11 @@
 import React, {useState, useRef, useEffect} from 'react'
+import { thunkUpdateAttendance, thunkDeleteAttendance } from '../../store/attendees'
+import { useDispatch, useSelector } from 'react-redux'
+import { consumeOneEvent } from '../../store/events'
 
 export default function ViewAttendeesCard({attendee, isCoHost}) {
-  const canApprove = attendee.Attendance.status!=="attending" && isCoHost
+  const eventId = useSelector(consumeOneEvent()).id
+  const dispatch = useDispatch()
 
   // drop down menu
   const [openMenu, setOpenMenu] = useState(false)
@@ -23,18 +27,24 @@ export default function ViewAttendeesCard({attendee, isCoHost}) {
   }, [openMenu])
 
   // options on dropdown
-  const moveToWaitlist = async () => {
+  const updateAttendance = (status) => async () => {
+    try {
+      console.log(attendee.id)
+      const res = await dispatch(thunkUpdateAttendance(eventId,attendee.id,status))
+
+      if (process.env.NODE_ENV !== "production") {
+        console.log("attendance update", res)
+      }
+    } catch(e) {
+      if (process.env.NODE_ENV !== "production") {
+        console.log(e)
+      }
+    }
     setOpenMenu(false)
-    return console.log("Adding to Waitlist")
   }
 
-  const moveToAttending = async () => {
-    setOpenMenu(false)
-    return console.log("Adding to Attending")
-  }
-
-  const waitlist = ["Move to Waitlist", moveToWaitlist]
-  const attending = ["Move to Attending", moveToAttending]
+  const waitlist = ["Move to Waitlist", "waitlist"]
+  const attending = ["Move to Attending", "attending"]
 
   const dropdownOptions = {
     attending: [waitlist],
@@ -42,13 +52,12 @@ export default function ViewAttendeesCard({attendee, isCoHost}) {
     pending: [attending, waitlist]
   }
 
+  const approveAttendanceButton = <button onClick={toggleMenu}>Actions</button>
+
+  // delete attendance
   const deleteAttendance = async () => {
     return
   }
-
-  // when pressed, open dropdown menu
-  // dropdown menu: has options. PENDING: move to waitlist, move to attending. WAITLIST: move to attending. ATTENDING: move to waitlist
-  const approveAttendanceButton = <button onClick={toggleMenu}>Actions</button>
 
   return (<>
     <td>{attendee.firstName} {attendee.lastName}</td>
@@ -60,9 +69,9 @@ export default function ViewAttendeesCard({attendee, isCoHost}) {
       {isCoHost &&
       <>
         {approveAttendanceButton}
-        <div class={menuClass} ref={menuRef}>
+        <div className={menuClass} ref={menuRef}>
           {dropdownOptions[attendee.Attendance.status].map((option) => (
-            <button style={{margin:0, padding:"5px"}} className='light-button' onClick={option[1]}>{option[0]}</button>
+            <button key={option[1]} style={{margin:0, padding:"5px"}} className='light-button' onClick={updateAttendance(option[1])}>{option[0]}</button>
           ))}
         </div>
       </>
