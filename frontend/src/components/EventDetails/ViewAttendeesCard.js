@@ -26,10 +26,9 @@ export default function ViewAttendeesCard({attendee, isCoHost}) {
     return () => document.removeEventListener("click", closeMenu)
   }, [openMenu])
 
-  // options on dropdown
+  // options to edit on dropdown
   const updateAttendance = (status) => async () => {
     try {
-      console.log(attendee.id)
       const res = await dispatch(thunkUpdateAttendance(eventId,attendee.id,status))
 
       if (process.env.NODE_ENV !== "production") {
@@ -56,8 +55,20 @@ export default function ViewAttendeesCard({attendee, isCoHost}) {
 
   // delete attendance
   const deleteAttendance = async () => {
+    try {
+      const res = await dispatch(thunkDeleteAttendance(eventId, attendee.id))
+      if (process.env.NODE_ENV!=="production") {
+        console.log("attendance delete", res)
+      }
+    } catch(e) {
+      if (process.env.NODE_ENV!=="production") {
+        console.log(e)
+      }
+    }
     return
   }
+
+  const deleteAttendanceButton = <button onClick={deleteAttendance} style={{margin:0, padding:"5px"}} className='delete-attendance-button'>Remove Attendee</button>
 
   return (<>
     <td>{attendee.firstName} {attendee.lastName}</td>
@@ -73,12 +84,10 @@ export default function ViewAttendeesCard({attendee, isCoHost}) {
           {dropdownOptions[attendee.Attendance.status].map((option) => (
             <button key={option[1]} style={{margin:0, padding:"5px"}} className='light-button' onClick={updateAttendance(option[1])}>{option[0]}</button>
           ))}
+          {deleteAttendanceButton}
         </div>
       </>
       }
-    </td>
-    <td>
-      {/* Delete attendance for co-host of group*/}
     </td>
   </>
   )

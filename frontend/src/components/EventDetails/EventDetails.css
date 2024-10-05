@@ -156,3 +156,14 @@
     text-decoration: underline;
     background-color: transparent;
 }
+
+.delete-attendance-button {
+    background-color: var(--light-color);
+    border-style: none;
+    color: black;
+    box-shadow: none;
+}
+
+.delete-attendance-button:hover {
+    background-color: rgb(255,200,200);
+}
