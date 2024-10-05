@@ -104,7 +104,7 @@ const sessionReducer = (state = initialState, action) => {
         // }
         case DELETE_MEMBERSHIP: {
             const newState = {...state}
-            delete newState.user.memberships[action.payload.groupId]
+            if (action.payload.memberId === state.user.id) delete newState.user.memberships[action.payload.groupId]
             return newState
         }
         case UPDATE_ATTENDANCE:
