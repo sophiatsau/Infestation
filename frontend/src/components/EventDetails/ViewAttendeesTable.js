@@ -1,8 +1,13 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import ViewAttendeesCard from './ViewAttendeesCard'
 
 
-export default function ViewAttendeesTable({attendees}) {
+export default function ViewAttendeesTable({attendees, groupId}) {
+    // get current user's status. if co-host of event's group', return true
+  const user = useSelector(state => state.session.user)
+  const isCoHost = user ? user.memberships[groupId]==="co-host" : null
+  
   return (
     <table id="attendees-table">
         <thead>
@@ -14,7 +19,7 @@ export default function ViewAttendeesTable({attendees}) {
         <tbody>
             {attendees.map(attendee => (
                 <tr key={attendee.id}>
-                    <ViewAttendeesCard attendee={attendee} />
+                    <ViewAttendeesCard {...{attendee, isCoHost}} />
                 </tr>
             ))}
         </tbody>
