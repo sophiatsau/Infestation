@@ -51,7 +51,7 @@ export default function ViewAttendeesCard({attendee, isCoHost}) {
     pending: [attending, waitlist]
   }
 
-  const approveAttendanceButton = <button onClick={toggleMenu}>Actions</button>
+  const approveAttendanceButton = <button onClick={toggleMenu} className='light-button grey'>Options</button>
 
   // delete attendance
   const deleteAttendance = async () => {
@@ -68,27 +68,24 @@ export default function ViewAttendeesCard({attendee, isCoHost}) {
     return
   }
 
-  const deleteAttendanceButton = <button onClick={deleteAttendance} style={{margin:0, padding:"5px"}} className='delete-attendance-button'>Remove Attendee</button>
+  const deleteAttendanceButton = <button onClick={deleteAttendance} style={{margin:0, padding:"5px"}} className='delete-attendance-button'>Remove</button>
 
-  return (<>
+  return (<tr className='attendance-row' key={attendee.id}>
     <td>{attendee.firstName} {attendee.lastName}</td>
     <td>
       {attendee.Attendance.status}
     </td>
+    {isCoHost &&
     <td>
       {/* ACCEPT PENDING, WAITLIST > ATTENDING for co-host of group */}
-      {isCoHost &&
-      <>
-        {approveAttendanceButton}
-        <div className={menuClass} ref={menuRef}>
-          {dropdownOptions[attendee.Attendance.status].map((option) => (
-            <button key={option[1]} style={{margin:0, padding:"5px"}} className='light-button' onClick={updateAttendance(option[1])}>{option[0]}</button>
-          ))}
-          {deleteAttendanceButton}
-        </div>
-      </>
-      }
-    </td>
-  </>
+      {approveAttendanceButton}
+      <div className={menuClass} ref={menuRef}>
+        {dropdownOptions[attendee.Attendance.status].map((option) => (
+          <button key={option[1]} style={{margin:0, padding:"5px"}} className='light-button' onClick={updateAttendance(option[1])}>{option[0]}</button>
+        ))}
+        {deleteAttendanceButton}
+      </div>
+    </td>}
+  </tr>
   )
 }

@@ -167,3 +167,30 @@
 .delete-attendance-button:hover {
     background-color: rgb(255,200,200);
 }
+
+#attendees-table {
+    min-width: 40vw;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#attendees-table>thead * {
+    font-size: large;
+}
+
+#attendees-table>tbody>tr {
+    width: 100%;
+    padding: 0;
+}
+
+.attendance-row td {
+    text-align: center;
+    vertical-align: center;
+    /* display: flex;
+    justify-content: space-between;
+    width: stretch; */
+}
+
+/* th, td {
+    border: 1px solid #ddd; 
+  } */

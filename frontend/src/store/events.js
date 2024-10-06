@@ -190,6 +190,9 @@ const eventsReducer = (state = initialState, action) => {
         case UPDATE_ATTENDANCE:
         case REMOVE_USER:
         case REQUEST_ATTENDANCE: {
+            // update event.numAttending if relevant
+            // if change to attending, +1
+            // if attending -> waitlist, -1
             return {...state,
                 singleEvent: {
                     ...state.singleEvent,
