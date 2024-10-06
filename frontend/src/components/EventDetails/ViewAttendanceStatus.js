@@ -35,8 +35,10 @@ export default function ViewAttendanceStatus() {
       <button onClick={toggleMenu}>Delete Attendance</button>
       <div className={dropDownClass}>
         Delete your attendance?
-        <button onClick={deleteAttendance}>Yes</button>
-        <button onClick={toggleMenu}>No</button>
+        <div className='yes-no-buttons'>
+          <button onClick={deleteAttendance}>Yes</button>
+          <button onClick={toggleMenu}>No</button>
+        </div>
       </div>
     </div>
   )

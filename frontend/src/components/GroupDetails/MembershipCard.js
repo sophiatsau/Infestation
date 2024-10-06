@@ -48,7 +48,7 @@ export default function MembershipCard({membership, approveMembership, authorize
         <td>
             {membership.Membership.status === "pending" && <button style={{margin:0}} onClick={approveMembership(membership)}>Approve</button>}
         </td>
-        <td>
+        <td className='td-button'>
             {isOrganizer && membership.id !== user.id && dropdownOptions}
         </td>
         </>

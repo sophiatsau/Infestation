@@ -18,8 +18,10 @@ export default function RequestAttendanceModal({user}) {
     return (
         <div>
             <h2>Request attendance?</h2>
-            <button onClick={requestAttendance}>Yes</button>
-            <button onClick={closeModal}>No</button>
+            <div className='yes-no-buttons'>
+                <button onClick={requestAttendance}>Yes</button>
+                <button onClick={closeModal}>No</button>
+            </div>
         </div>
     )
 }

@@ -14,13 +14,14 @@ export default function ViewAttendeesTable({attendees, groupId}) {
             <tr>
                 <th>Name</th>
                 <th>Status</th>
+                {isCoHost && <th></th>}
             </tr>
         </thead>
         <tbody>
             {attendees.map(attendee => (
-                <tr key={attendee.id}>
+                // <tr key={attendee.id}> - key is attendee.id inside card
                     <ViewAttendeesCard {...{attendee, isCoHost}} />
-                </tr>
+                // </tr>
             ))}
         </tbody>
     </table>

@@ -156,3 +156,46 @@
     text-decoration: underline;
     background-color: transparent;
 }
+
+.delete-attendance-button {
+    background-color: var(--light-color);
+    border-style: none;
+    color: black;
+    box-shadow: none;
+}
+
+.delete-attendance-button:hover {
+    background-color: rgb(255,200,200);
+}
+
+#attendees-table {
+    min-width: 40vw;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#attendees-table>thead * {
+    font-size: large;
+    text-align: left;;
+}
+
+#attendees-table>tbody>tr {
+    width: 100%;
+    padding: 0;
+}
+
+.attendance-row td {
+    text-align: left;
+    vertical-align: center;
+    /* display: flex;
+    justify-content: space-between;
+    width: stretch; */
+}
+
+.attendance-row .td-button {
+    text-align: center;
+}
+
+/* th, td {
+    border: 1px solid #ddd; 
+  } */
