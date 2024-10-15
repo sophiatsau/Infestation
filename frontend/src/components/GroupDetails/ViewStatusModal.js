@@ -34,10 +34,12 @@ export default function ViewStatusModal() {
             <div>Name: {user.firstName} {user.lastName}</div>
             <div className='grey lighter small'>Status: {user.memberships[group.id]}</div>
             <button onClick={toggleMenu}>Delete Membership</button>
-            <div className={dropDownClass}>
+            <div className={dropDownClass} style={{left:"var(--margin-left"}}>
                 Delete your membership?
-                <button onClick={deleteMembership}>Yes</button>
-                <button onClick={toggleMenu}>No</button>
+                <div className='yes-no-buttons'>
+                    <button onClick={deleteMembership}>Yes</button>
+                    <button onClick={toggleMenu}>No</button>
+                </div>
             </div>
         </div>
     )

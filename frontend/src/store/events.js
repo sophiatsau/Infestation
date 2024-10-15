@@ -185,17 +185,27 @@ const eventsReducer = (state = initialState, action) => {
             delete newState.allEvents[action.eventId];
             return newState;
         }
-        case GET_ALL_ATTENDEES:
-        case DELETE_ATTENDANCE:
-        case UPDATE_ATTENDANCE:
-        case REMOVE_USER:
-        case REQUEST_ATTENDANCE: {
+        case GET_ALL_ATTENDEES: {
             return {...state,
                 singleEvent: {
                     ...state.singleEvent,
                     Attendees: attendeesReducer(state.singleEvent.Attendees, action)
                 }
             }
+        }
+        case DELETE_ATTENDANCE:
+        case UPDATE_ATTENDANCE:
+        case REMOVE_USER:
+        case REQUEST_ATTENDANCE: {
+            const newState = {...state,
+                singleEvent: {
+                    ...state.singleEvent,
+                    Attendees: attendeesReducer(state.singleEvent.Attendees, action)
+                }
+            }
+            newState.singleEvent.numAttending = newState.singleEvent.Attendees.filter(attendee => attendee.Attendance.status==="attending").length
+
+            return newState
         }
         default:
             return state;
